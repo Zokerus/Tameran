@@ -7,6 +7,7 @@
 
 //My Include
 #include "Util/Globals.h"
+#include "Util/Timer.h"
 
 //////////////////////////////////////////////////////////////////////////
 //Class: IGame
@@ -42,7 +43,7 @@ namespace Hydro
 		bool m_ready;
 		bool m_exit;
 
-		//Timer *m_timer;
+		Timer m_timer;
 		//Direct3D *m_direct3D;
 	};
 }

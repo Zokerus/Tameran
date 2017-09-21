@@ -1,0 +1,52 @@
+#include "Timer.h"
+
+Hydro::Timer::Timer()
+{
+	m_ready = false;
+}
+
+Hydro::Timer::~Timer()
+{
+}
+
+const bool Hydro::Timer::Initialize()
+{
+	LARGE_INTEGER li;
+	//Check to see if the system supports high performance timers
+	if (!QueryPerformanceFrequency(&li))
+	{
+		return false;
+	}
+
+	//Calculate the ticks per millisecond
+	m_frequency = (double)li.QuadPart;
+
+	//Start the timer
+	QueryPerformanceCounter(&li);
+	m_startTime = li.QuadPart;
+
+	m_ready = true;
+	return true;
+}
+
+const bool Hydro::Timer::Update()
+{
+	if (!m_ready)
+	{
+		return false;
+	}
+
+	LARGE_INTEGER li;
+	//Get the latest timing
+	QueryPerformanceCounter(&li);
+	//Calculate the frame time
+	m_frameTime = (double)(li.QuadPart - m_startTime) / m_frequency;
+	//Reset the timer
+	m_startTime = li.QuadPart;
+	return true;
+}
+
+float Hydro::Timer::GetTime() const
+{
+	return (float)m_frameTime;
+}

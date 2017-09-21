@@ -150,11 +150,13 @@
     <ClInclude Include="GameWindow.h" />
     <ClInclude Include="IGame.h" />
     <ClInclude Include="Util\Globals.h" />
+    <ClInclude Include="Util\Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameWindow.cpp" />
     <ClCompile Include="IGame.cpp" />
     <ClCompile Include="Util\Globals.cpp" />
+    <ClCompile Include="Util\Timer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

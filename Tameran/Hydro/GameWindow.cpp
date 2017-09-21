@@ -129,6 +129,7 @@ bool Hydro::GameWindow::ProcessMessage()
 
 const std::string& Hydro::GameWindow::GetArgs() const
 {
+	//Showing a warning "nullptr" or ""
 	return m_args;
 }
 

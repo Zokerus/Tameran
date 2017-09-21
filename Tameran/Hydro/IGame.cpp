@@ -1,6 +1,8 @@
 #include "IGame.h"
 
 Hydro::IGame::IGame()
+	:
+	m_timer()
 {
 	m_ready = false;
 	m_exit = false;
@@ -34,8 +36,15 @@ bool Hydro::IGame::Initialize(HWND hWnd, HINSTANCE hInst, unsigned int screenWid
 	m_screenNear = 0.1f;
 	m_screenDepth = 1000.0f;
 
-	m_ready = true;
+	//Initialize the timer object
+	result = m_timer.Initialize();
+	if (!result)
+	{
+		MessageBox(m_hWnd, "Could not initialize the timer object.", "Error", MB_OK);
+		return false;
+	}
 
+	m_ready = true;
 	return true;
 }
 
@@ -53,15 +62,22 @@ bool Hydro::IGame::Run()
 		return false;
 	}
 
+	//Update the timer
+	result = m_timer.Update();
+	if (!result)
+	{
+		return false;
+	}
+
 	//Do the frame processing
-	result = Update(0.0f);
+	result = Update(m_timer.GetTime());
 	if (!result)
 	{
 		return false;
 	}
 
 	//Render the new scene
-	result = Draw(0.0f);
+	result = Draw(m_timer.GetTime());
 	if (!result)
 	{
 		return false;
@@ -94,7 +110,9 @@ void Hydro::IGame::GetExeDirectory()
 			sPath[i] = '/';
 		}
 		else if (letter == '\0')
+		{
 			break;
+		}
 		path[i] = sPath[i];
 	}
 
