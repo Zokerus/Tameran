@@ -148,9 +148,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="GameWindow.h" />
+    <ClInclude Include="IGame.h" />
+    <ClInclude Include="Util\Globals.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameWindow.cpp" />
+    <ClCompile Include="IGame.cpp" />
+    <ClCompile Include="Util\Globals.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

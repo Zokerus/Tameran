@@ -1,0 +1,103 @@
+#include "IGame.h"
+
+Hydro::IGame::IGame()
+{
+	m_ready = false;
+	m_exit = false;
+}
+
+Hydro::IGame::~IGame()
+{
+	if (m_ready)
+	{
+		Shutdown();
+	}
+}
+
+bool Hydro::IGame::Initialize(HWND hWnd, HINSTANCE hInst, unsigned int screenWidth, unsigned int screenHeight)
+{
+	bool result;
+
+	//Get the working directory
+	GetExeDirectory();
+
+	//Store the handle and instance of the window
+	m_hWnd = hWnd;
+	m_hInst = hInst;
+
+	//Store the preset screen width and screen height
+	m_screenWidth = screenWidth;
+	m_screenHeight = screenHeight;
+
+	//Store the vsync value and screen parameters
+	m_vsync = false;
+	m_screenNear = 0.1f;
+	m_screenDepth = 1000.0f;
+
+	m_ready = true;
+
+	return true;
+}
+
+void Hydro::IGame::Shutdown()
+{
+}
+
+bool Hydro::IGame::Run()
+{
+	bool result;
+
+	//The game is about to close or the game is not initialized yet
+	if(m_exit || !m_ready)
+	{
+		return false;
+	}
+
+	//Do the frame processing
+	result = Update(0.0f);
+	if (!result)
+	{
+		return false;
+	}
+
+	//Render the new scene
+	result = Draw(0.0f);
+	if (!result)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+void Hydro::IGame::Exit()
+{
+	m_exit = true;
+}
+
+void Hydro::IGame::GetExeDirectory()
+{
+	//Get the path of executable
+	int indexSlash;
+	WCHAR path[MAX_PATH];
+	char sPath[MAX_PATH];
+
+	HMODULE hModule = GetModuleHandleW(NULL);
+	GetModuleFileName(hModule, sPath, MAX_PATH);
+
+	for (int i = 0; i < MAX_PATH; i++)
+	{
+		char letter = sPath[i];
+		if (letter == 92)
+		{
+			indexSlash = i;
+			sPath[i] = '/';
+		}
+		else if (letter == '\0')
+			break;
+		path[i] = sPath[i];
+	}
+
+	wDir = ((std::wstring)path).substr(0, indexSlash + 1);
+	sDir = ((std::string)sPath).substr(0, indexSlash + 1);
+}
