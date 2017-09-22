@@ -41,8 +41,8 @@ namespace Hydro
 
 	private:
 		std::string m_appName;
-		HINSTANCE m_hInst = nullptr;
-		HWND m_hWnd = nullptr;
+		HINSTANCE m_hInst;
+		HWND m_hWnd;
 		char *m_args;
 		unsigned int m_screenWidth, m_screenHeight;
 		static constexpr bool m_fullscreen = false;

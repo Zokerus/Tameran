@@ -1,8 +1,8 @@
 #include "Timer.h"
 
 Hydro::Timer::Timer()
+	: m_ready(false), m_frequency(0.0), m_startTime(0), m_frameTime(0.0), m_beginTime(0), m_endTime(0)
 {
-	m_ready = false;
 }
 
 Hydro::Timer::~Timer()

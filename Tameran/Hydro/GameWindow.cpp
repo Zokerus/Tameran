@@ -3,25 +3,20 @@
 #define IDI_APPICON	108
 
 Hydro::GameWindow::GameWindow(HINSTANCE hInst, char *pArgs)
-{
-	GameWindow(hInst, pArgs, "DirectX Window", 1024, 768);
-}
+	: GameWindow(hInst, pArgs, "DirectX Window", 1024, 768)
+{}
 
 Hydro::GameWindow::GameWindow(HINSTANCE hInst, char *pArgs, const std::string title)
-{
-	GameWindow(hInst, pArgs, title, 1024, 768);
-}
+	: GameWindow(hInst, pArgs, title, 1024, 768)
+{}
 
 Hydro::GameWindow::GameWindow(HINSTANCE hInst, char *pArgs, const unsigned int screenWidth, const unsigned int screenHeight)
-{
-	GameWindow(hInst, pArgs, "DirectX Window", screenWidth, screenHeight);
-}
+	: GameWindow(hInst, pArgs, "DirectX Window", screenWidth, screenHeight)
+{}
 
 Hydro::GameWindow::GameWindow(HINSTANCE hInst, char *pArgs, const std::string title, const unsigned int screenWidth, const unsigned int screenHeight)
 	:
-	m_hInst(hInst),
-	m_args(pArgs),
-	m_appName(title)
+	m_appName(title), m_hInst(hInst), m_hWnd(nullptr), m_args(pArgs), m_screenWidth(0), m_screenHeight(0)
 {
 	//Store window width and height
 	m_screenWidth = screenWidth;
