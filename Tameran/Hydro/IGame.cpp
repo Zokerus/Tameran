@@ -4,8 +4,7 @@ Hydro::IGame::IGame()
 	:
 	m_hWnd(nullptr), m_hInst(nullptr), m_screenWidth(0), m_screenHeight(0), m_fullscreen(false), m_vsync(false), m_screenNear(0.0f), m_screenDepth(0.0f), m_ready(false), m_exit(false),
 	m_timer()
-{
-}
+{}
 
 Hydro::IGame::~IGame()
 {
@@ -17,7 +16,7 @@ Hydro::IGame::~IGame()
 
 bool Hydro::IGame::Initialize(HWND hWnd, HINSTANCE hInst, unsigned int screenWidth, unsigned int screenHeight)
 {
-	bool result;
+	bool result = false;
 
 	//Get the working directory
 	GetExeDirectory();
@@ -43,7 +42,7 @@ bool Hydro::IGame::Initialize(HWND hWnd, HINSTANCE hInst, unsigned int screenWid
 		return false;
 	}
 
-	m_ready = true;
+	//m_ready not set to true, because you need to initialize the child class afterwards and after that set m_ready
 	return true;
 }
 
@@ -53,7 +52,7 @@ void Hydro::IGame::Shutdown()
 
 bool Hydro::IGame::Run()
 {
-	bool result;
+	bool result = false;
 
 	//The game is about to close or the game is not initialized yet
 	if(m_exit || !m_ready)

@@ -28,7 +28,7 @@ namespace Hydro
 		void ShowMessageBox(const std::string &title, const std::string &message) const;
 		void Kill();
 		bool ProcessMessage();
-		const std::string& GetArgs() const;
+		const char* GetArgs() const;
 		const HWND GetHandle() const;
 
 		const unsigned int GetWidth() const;

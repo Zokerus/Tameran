@@ -1,16 +1,21 @@
 #include <GameWindow.h>
+#include "Game.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdLine, int iCmdshow)
 {
-	bool done = false;
+	bool run = false;
 	using namespace Hydro;
+	using namespace Tameran;
 
 	GameWindow wnd(hInstance, pScmdLine, "Tameran - Hydro Engine", 1024, 768);
-
+	Game game;
 	try
 	{
-		while (wnd.ProcessMessage())
+		run = game.Initialize(wnd.GetHandle(), hInstance, wnd.GetWidth(), wnd.GetHeight());
+
+		while (wnd.ProcessMessage() &&  run)
 		{
+			run = game.Run();
 		}
 
 	}
@@ -18,6 +23,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdLine,
 	{
 		MessageBox(nullptr, "Error in window operations", "Error", MB_OK);
 	}
+
+	//Shutdown game object
+	game.Shutdown();
 
 	return 0;
 }
