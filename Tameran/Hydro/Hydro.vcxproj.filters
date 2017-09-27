@@ -27,6 +27,9 @@
     <ClInclude Include="Util\Timer.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\Direct3D.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameWindow.cpp">

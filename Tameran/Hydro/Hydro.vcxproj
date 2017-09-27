@@ -148,6 +148,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="GameWindow.h" />
+    <ClInclude Include="Graphics\Direct3D.h" />
     <ClInclude Include="IGame.h" />
     <ClInclude Include="Util\Globals.h" />
     <ClInclude Include="Util\Timer.h" />
