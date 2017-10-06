@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="IGame.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Util\Globals.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -33,9 +30,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Util\Globals.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="IGame.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Util\Timer.cpp">
