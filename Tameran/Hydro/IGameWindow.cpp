@@ -1,22 +1,26 @@
-#include "GameWindow.h"
+#include "IGameWindow.h"
 #include <assert.h>
 #define IDI_APPICON	108
 
-Hydro::GameWindow::GameWindow(HINSTANCE hInst, char *pArgs)
-	: GameWindow(hInst, pArgs, "DirectX Window", 1024, 768)
+Hydro::IGameWindow::IGameWindow(HINSTANCE hInst, char *pArgs)
+	: IGameWindow(hInst, pArgs, "DirectX Window", 1024, 768, false, false)
 {}
 
-Hydro::GameWindow::GameWindow(HINSTANCE hInst, char *pArgs, const std::string title)
-	: GameWindow(hInst, pArgs, title, 1024, 768)
+Hydro::IGameWindow::IGameWindow(HINSTANCE hInst, char *pArgs, const std::string title)
+	: IGameWindow(hInst, pArgs, title, 1024, 768, false, false)
 {}
 
-Hydro::GameWindow::GameWindow(HINSTANCE hInst, char *pArgs, const unsigned int screenWidth, const unsigned int screenHeight)
-	: GameWindow(hInst, pArgs, "DirectX Window", screenWidth, screenHeight)
+Hydro::IGameWindow::IGameWindow(HINSTANCE hInst, char *pArgs, const unsigned int screenWidth, const unsigned int screenHeight)
+	: IGameWindow(hInst, pArgs, "DirectX Window", screenWidth, screenHeight, false, false)
 {}
 
-Hydro::GameWindow::GameWindow(HINSTANCE hInst, char *pArgs, const std::string title, const unsigned int screenWidth, const unsigned int screenHeight)
+Hydro::IGameWindow::IGameWindow(HINSTANCE hInst, char *pArgs, const std::string title, const unsigned int screenWidth, const unsigned int screenHeight)
+	: IGameWindow(hInst, pArgs, title, screenWidth, screenHeight, false, false)
+{}
+
+Hydro::IGameWindow::IGameWindow(HINSTANCE hInst, char *pArgs, const std::string title, const unsigned int screenWidth, const unsigned int screenHeight, bool fullscreen, bool vsync)
 	:
-	m_appName(title), m_hInst(hInst), m_hWnd(nullptr), m_args(pArgs), m_screenWidth(0), m_screenHeight(0)
+	m_appName(title), m_hInst(hInst), m_hWnd(nullptr), m_args(pArgs), m_screenWidth(0), m_screenHeight(0), m_fullscreen(fullscreen), m_vsync(vsync), m_ready(false), m_exit(false)
 {
 	//Store window width and height
 	m_screenWidth = screenWidth;
@@ -68,7 +72,7 @@ Hydro::GameWindow::GameWindow(HINSTANCE hInst, char *pArgs, const std::string ti
 	UpdateWindow(m_hWnd);
 }
 
-Hydro::GameWindow::~GameWindow()
+Hydro::IGameWindow::~IGameWindow()
 {
 	//Remove the window
 	DestroyWindow(m_hWnd);
@@ -82,17 +86,17 @@ Hydro::GameWindow::~GameWindow()
 	m_hInst = nullptr;
 }
 
-bool Hydro::GameWindow::IsActive() const
+bool Hydro::IGameWindow::IsActive() const
 {
 	return GetActiveWindow() == m_hWnd;
 }
 
-bool Hydro::GameWindow::IsMinimized() const
+bool Hydro::IGameWindow::IsMinimized() const
 {
 	return IsIconic(m_hWnd) != 0;;
 }
 
-void Hydro::GameWindow::ShowMessageBox(const std::string & title, const std::string & message) const
+void Hydro::IGameWindow::ShowMessageBox(const std::string & title, const std::string & message) const
 {
 	//Convert string to LongPointer Constant CharString
 	LPCSTR lTitle = const_cast<char *>(title.c_str());
@@ -101,13 +105,13 @@ void Hydro::GameWindow::ShowMessageBox(const std::string & title, const std::str
 	MessageBox(m_hWnd, lMessage, lTitle, MB_OK);
 }
 
-void Hydro::GameWindow::Kill()
+void Hydro::IGameWindow::Kill()
 {
 	//Kill the window
 	PostQuitMessage(0);
 }
 
-bool Hydro::GameWindow::ProcessMessage()
+bool Hydro::IGameWindow::ProcessMessage()
 {
 	MSG msg;
 	while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
@@ -122,40 +126,40 @@ bool Hydro::GameWindow::ProcessMessage()
 	return true;
 }
 
-const char* Hydro::GameWindow::GetArgs() const
+const char* Hydro::IGameWindow::GetArgs() const
 {
 	return m_args;
 }
 
-const HWND Hydro::GameWindow::GetHandle() const
+const HWND Hydro::IGameWindow::GetHandle() const
 {
 	return m_hWnd;
 }
 
-const unsigned int Hydro::GameWindow::GetWidth() const
+const unsigned int Hydro::IGameWindow::GetWidth() const
 {
 	return m_screenWidth;
 }
 
-const unsigned int Hydro::GameWindow::GetHeight() const
+const unsigned int Hydro::IGameWindow::GetHeight() const
 {
 	return m_screenHeight;
 }
 
-LRESULT Hydro::GameWindow::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT Hydro::IGameWindow::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	//use create parameter passed in from CreateWindow() to store window class pointer at WinAPI side
 	if (msg == WM_NCCREATE)
 	{
 		// extract ptr to window class from creation data
 		const CREATESTRUCTW* const pCreate = reinterpret_cast<CREATESTRUCTW*>(lParam);
-		GameWindow* const pWnd = reinterpret_cast<GameWindow*>(pCreate->lpCreateParams);
+		IGameWindow* const pWnd = reinterpret_cast<IGameWindow*>(pCreate->lpCreateParams);
 		//sanity check
 		assert(pWnd != nullptr);
 		//set WinAPI-managed user data to store ptr to window class
 		SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pWnd));
 		//set message proc to normal (non-setup) handler now that setup is finished
-		SetWindowLongPtr(hWnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(&GameWindow::HandleMsgThunk));
+		SetWindowLongPtr(hWnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(&IGameWindow::HandleMsgThunk));
 		//forward message to window class handler
 		return pWnd->HandleMsg(hWnd, msg, wParam, lParam);
 	}
@@ -163,15 +167,15 @@ LRESULT Hydro::GameWindow::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LP
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
-LRESULT Hydro::GameWindow::HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT WINAPI Hydro::IGameWindow::HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	//retrieve ptr to window class
-	GameWindow* const pWnd = reinterpret_cast<GameWindow*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
+	IGameWindow* const pWnd = reinterpret_cast<IGameWindow*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
 	// forward message to window class handler
 	return pWnd->HandleMsg(hWnd, msg, wParam, lParam);
 }
 
-LRESULT Hydro::GameWindow::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT WINAPI Hydro::IGameWindow::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg)
 	{
@@ -190,5 +194,34 @@ LRESULT Hydro::GameWindow::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
 	}
 	}
 	return DefWindowProc(hWnd, msg, wParam, lParam);
+}
+
+void Hydro::IGameWindow::GetExeDirectory()
+{
+	//Get the path of executable
+	int indexSlash;
+	WCHAR path[MAX_PATH];
+	char sPath[MAX_PATH];
+
+	HMODULE hModule = GetModuleHandleW(NULL);
+	GetModuleFileName(hModule, sPath, MAX_PATH);
+
+	for (int i = 0; i < MAX_PATH; i++)
+	{
+		char letter = sPath[i];
+		if (letter == 92)
+		{
+			indexSlash = i;
+			sPath[i] = '/';
+		}
+		else if (letter == '\0')
+		{
+			break;
+		}
+		path[i] = sPath[i];
+	}
+
+	wDir = ((std::wstring)path).substr(0, indexSlash + 1);
+	sDir = ((std::string)sPath).substr(0, indexSlash + 1);
 }
 
