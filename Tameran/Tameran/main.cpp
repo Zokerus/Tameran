@@ -1,5 +1,4 @@
-#include <GameWindow.h>
-#include "Game.h"
+#include "GameWindow.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdLine, int iCmdshow)
 {
@@ -8,14 +7,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdLine,
 	using namespace Tameran;
 
 	GameWindow wnd(hInstance, pScmdLine, "Tameran - Hydro Engine", 1024, 768);
-	Game game;
 	try
 	{
-		run = game.Initialize(wnd.GetHandle(), hInstance, wnd.GetWidth(), wnd.GetHeight());
+		run = wnd.Initialize();
 
 		while (wnd.ProcessMessage() &&  run)
 		{
-			run = game.Run();
+			run = wnd.Run();
 		}
 
 	}
@@ -25,7 +23,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdLine,
 	}
 
 	//Shutdown game object
-	game.Shutdown();
+	wnd.Shutdown();
 
 	return 0;
 }

@@ -11,17 +11,13 @@
 #include "Util/Timer.h"
 
 //////////////////////////////////////////////////////////////////////////
-//Class: GameWindow
+//Class: IGameWindow
 //////////////////////////////////////////////////////////////////////////
 namespace Hydro
 {
 	class IGameWindow
 	{
 	public:
-		IGameWindow(HINSTANCE hInst, char *pArgs);
-		IGameWindow(HINSTANCE hInst, char *pArgs, const std::string title);
-		IGameWindow(HINSTANCE hInst, char *pArgs, const unsigned int screenWidth, const unsigned int screenHeight);
-		IGameWindow(HINSTANCE hInst, char *pArgs, const std::string title, const unsigned int screenWidth, const unsigned int screenHeight);
 		IGameWindow(HINSTANCE hInst, char *pArgs, const std::string title, const unsigned int screenWidth, const unsigned int screenHeight, bool fullscreen, bool vsync);
 		IGameWindow() = delete;
 		IGameWindow(const IGameWindow &other) = delete;
@@ -51,7 +47,7 @@ namespace Hydro
 		virtual bool Update(float eTime) = 0;
 		virtual bool Draw(float eTime) = 0;
 
-	private:
+	protected:
 		std::string m_appName;
 		HINSTANCE m_hInst;
 		HWND m_hWnd;

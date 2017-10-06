@@ -2,22 +2,6 @@
 #include <assert.h>
 #define IDI_APPICON	108
 
-Hydro::IGameWindow::IGameWindow(HINSTANCE hInst, char *pArgs)
-	: IGameWindow(hInst, pArgs, "DirectX Window", 1024, 768, false, false)
-{}
-
-Hydro::IGameWindow::IGameWindow(HINSTANCE hInst, char *pArgs, const std::string title)
-	: IGameWindow(hInst, pArgs, title, 1024, 768, false, false)
-{}
-
-Hydro::IGameWindow::IGameWindow(HINSTANCE hInst, char *pArgs, const unsigned int screenWidth, const unsigned int screenHeight)
-	: IGameWindow(hInst, pArgs, "DirectX Window", screenWidth, screenHeight, false, false)
-{}
-
-Hydro::IGameWindow::IGameWindow(HINSTANCE hInst, char *pArgs, const std::string title, const unsigned int screenWidth, const unsigned int screenHeight)
-	: IGameWindow(hInst, pArgs, title, screenWidth, screenHeight, false, false)
-{}
-
 Hydro::IGameWindow::IGameWindow(HINSTANCE hInst, char *pArgs, const std::string title, const unsigned int screenWidth, const unsigned int screenHeight, bool fullscreen, bool vsync)
 	:
 	m_appName(title), m_hInst(hInst), m_hWnd(nullptr), m_args(pArgs), m_screenWidth(0), m_screenHeight(0), m_fullscreen(fullscreen), m_vsync(vsync), m_ready(false), m_exit(false)
@@ -103,6 +87,33 @@ void Hydro::IGameWindow::ShowMessageBox(const std::string & title, const std::st
 	LPCSTR lMessage = const_cast<char *>(message.c_str());
 
 	MessageBox(m_hWnd, lMessage, lTitle, MB_OK);
+}
+
+bool Hydro::IGameWindow::Run()
+{
+	bool result = false;
+
+	//The game is about to close or the game is not initialized yet
+	if (m_exit || !m_ready)
+	{
+		return false;
+	}
+
+	//Do the frame processing
+	result = Update(0.0f);
+	if (!result)
+	{
+		return false;
+	}
+
+	//Render the new scene
+	result = Draw(0.0f);
+	if (!result)
+	{
+		return false;
+	}
+
+	return true;
 }
 
 void Hydro::IGameWindow::Kill()
