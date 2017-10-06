@@ -4,7 +4,7 @@
 
 Hydro::IGameWindow::IGameWindow(HINSTANCE hInst, char *pArgs, const std::string title, const unsigned int screenWidth, const unsigned int screenHeight, bool fullscreen, bool vsync)
 	:
-	m_appName(title), m_hInst(hInst), m_hWnd(nullptr), m_args(pArgs), m_screenWidth(0), m_screenHeight(0), m_fullscreen(fullscreen), m_vsync(vsync), m_ready(false), m_exit(false)
+	m_appName(title), m_hInst(hInst), m_hWnd(nullptr), m_args(pArgs), m_screenWidth(0), m_screenHeight(0), m_fullscreen(fullscreen), m_vsync(vsync), m_ready(false), m_exit(false), m_timer()
 {
 	//Store window width and height
 	m_screenWidth = screenWidth;
@@ -70,6 +70,21 @@ Hydro::IGameWindow::~IGameWindow()
 	m_hInst = nullptr;
 }
 
+bool Hydro::IGameWindow::Initialize()
+{
+	bool result = false;
+
+	//Initialize the timer object
+	result = m_timer.Initialize();
+	if (!result)
+	{
+		ShowMessageBox("Error", "Timer object could not be initialized.");
+		return false;
+	}
+
+	return true;
+}
+
 bool Hydro::IGameWindow::IsActive() const
 {
 	return GetActiveWindow() == m_hWnd;
@@ -99,15 +114,22 @@ bool Hydro::IGameWindow::Run()
 		return false;
 	}
 
+	//Update timer object
+	result = m_timer.Update();
+	if (!result)
+	{
+		return false;
+	}
+
 	//Do the frame processing
-	result = Update(0.0f);
+	result = Update(m_timer.GetTime());
 	if (!result)
 	{
 		return false;
 	}
 
 	//Render the new scene
-	result = Draw(0.0f);
+	result = Draw(m_timer.GetTime());
 	if (!result)
 	{
 		return false;

@@ -31,7 +31,12 @@ Tameran::GameWindow::~GameWindow()
 
 bool Tameran::GameWindow::Initialize()
 {
-	m_ready = true;
+	bool result = false;
+
+	//Initialize the parent class
+	result = Hydro::IGameWindow::Initialize();
+
+	m_ready = result;
 	return m_ready;
 }
 
