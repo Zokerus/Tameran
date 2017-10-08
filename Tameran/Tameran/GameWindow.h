@@ -1,6 +1,9 @@
 #ifndef GAMEWINDOW
 #define GAMEWINDOW
 
+//Includes
+#include <DirectXColors.h>
+
 //My Includes
 #include <IGameWindow.h>
 
@@ -26,8 +29,8 @@ namespace Tameran
 		void Shutdown();
 
 	private:
-		bool Update(float eTime);
-		bool Draw(float eTime);
+		bool Update(float eTime) override;
+		bool Draw(float eTime) override;
 	};
 }
 

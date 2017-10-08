@@ -9,6 +9,7 @@
 //My Include
 #include "Util/Globals.h"
 #include "Util/Timer.h"
+#include "Graphics/Direct3D.h"
 
 //////////////////////////////////////////////////////////////////////////
 //Class: IGameWindow
@@ -25,6 +26,7 @@ namespace Hydro
 		~IGameWindow();
 
 		bool Initialize();
+		void Shutdown();
 
 		bool IsActive() const;
 		bool IsMinimized() const;
@@ -37,6 +39,8 @@ namespace Hydro
 
 		const unsigned int GetWidth() const;
 		const unsigned int GetHeight() const;
+		const bool Fullscreen() const;
+		const bool VSync() const;
 
 	private:
 		static LRESULT WINAPI HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -61,6 +65,7 @@ namespace Hydro
 		bool m_exit;
 
 		Timer m_timer;
+		Direct3D m_direct3D;
 	};
 }
 

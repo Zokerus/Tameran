@@ -153,6 +153,7 @@
     <ClInclude Include="Util\Timer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Graphics\Direct3D.cpp" />
     <ClCompile Include="IGameWindow.cpp" />
     <ClCompile Include="Util\Globals.cpp" />
     <ClCompile Include="Util\Timer.cpp" />

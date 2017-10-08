@@ -42,8 +42,7 @@ bool Tameran::GameWindow::Initialize()
 
 void Tameran::GameWindow::Shutdown()
 {
-	//Hydro::IGameWindow::Shutdown();
-	//Hydro::IGameWindow::Kill();
+	IGameWindow::Shutdown();
 	m_ready = false;
 }
 
@@ -54,5 +53,15 @@ bool Tameran::GameWindow::Update(float eTime)
 
 bool Tameran::GameWindow::Draw(float eTime)
 {
+	bool result = true;
+
+	//Clear the buffers to begin the scene
+	m_direct3D.BeginFrame(DirectX::Colors::CornflowerBlue);
+
+	//Draw something
+
+	//Present the rendered scene to the screen
+	m_direct3D.EndFrame();
+
 	return true;
 }

@@ -23,6 +23,7 @@ const bool Hydro::Timer::Initialize()
 	QueryPerformanceCounter(&li);
 	m_startTime = li.QuadPart;
 
+	//Flag the class as ready
 	m_ready = true;
 	return true;
 }
@@ -31,6 +32,7 @@ const bool Hydro::Timer::Update()
 {
 	if (!m_ready)
 	{
+		//Check if the class is ready
 		return false;
 	}
 

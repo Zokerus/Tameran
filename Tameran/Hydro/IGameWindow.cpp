@@ -1,10 +1,9 @@
 #include "IGameWindow.h"
-#include <assert.h>
 #define IDI_APPICON	108
 
 Hydro::IGameWindow::IGameWindow(HINSTANCE hInst, char *pArgs, const std::string title, const unsigned int screenWidth, const unsigned int screenHeight, bool fullscreen, bool vsync)
 	:
-	m_appName(title), m_hInst(hInst), m_hWnd(nullptr), m_args(pArgs), m_screenWidth(0), m_screenHeight(0), m_fullscreen(fullscreen), m_vsync(vsync), m_ready(false), m_exit(false), m_timer()
+	m_appName(title), m_hInst(hInst), m_hWnd(nullptr), m_args(pArgs), m_screenWidth(screenWidth), m_screenHeight(screenHeight), m_fullscreen(fullscreen), m_vsync(vsync), m_ready(false), m_exit(false), m_timer(), m_direct3D(this)
 {
 	//Store window width and height
 	m_screenWidth = screenWidth;
@@ -58,6 +57,9 @@ Hydro::IGameWindow::IGameWindow(HINSTANCE hInst, char *pArgs, const std::string 
 
 Hydro::IGameWindow::~IGameWindow()
 {
+	m_direct3D.~Direct3D();
+	m_timer.~Timer();
+
 	//Remove the window
 	DestroyWindow(m_hWnd);
 	m_hWnd = nullptr;
@@ -73,7 +75,7 @@ Hydro::IGameWindow::~IGameWindow()
 bool Hydro::IGameWindow::Initialize()
 {
 	bool result = false;
-
+	
 	//Initialize the timer object
 	result = m_timer.Initialize();
 	if (!result)
@@ -82,7 +84,20 @@ bool Hydro::IGameWindow::Initialize()
 		return false;
 	}
 
+	//Initialize the direct3D object
+	result = m_direct3D.Initialize();
+	if (!result)
+	{
+		ShowMessageBox("Error", "Direct3D object could not be initialized.");
+		return false;
+	}
+
 	return true;
+}
+
+void Hydro::IGameWindow::Shutdown()
+{
+	m_direct3D.Shutdown();
 }
 
 bool Hydro::IGameWindow::IsActive() const
@@ -179,7 +194,17 @@ const unsigned int Hydro::IGameWindow::GetHeight() const
 	return m_screenHeight;
 }
 
-LRESULT Hydro::IGameWindow::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+const bool Hydro::IGameWindow::Fullscreen() const
+{
+	return m_fullscreen;
+}
+
+const bool Hydro::IGameWindow::VSync() const
+{
+	return m_vsync;
+}
+
+LRESULT WINAPI Hydro::IGameWindow::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	//use create parameter passed in from CreateWindow() to store window class pointer at WinAPI side
 	if (msg == WM_NCCREATE)
@@ -208,7 +233,7 @@ LRESULT WINAPI Hydro::IGameWindow::HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wP
 	return pWnd->HandleMsg(hWnd, msg, wParam, lParam);
 }
 
-LRESULT WINAPI Hydro::IGameWindow::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT Hydro::IGameWindow::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg)
 	{

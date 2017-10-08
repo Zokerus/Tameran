@@ -11,9 +11,6 @@
 #include <DirectXMath.h>
 #include <DirectXColors.h>
 
-//My Includes
-#include "../GameWindow.h"
-
 //////////////////////////////////////////////////////////////////////////
 //Class: Direct3D
 //////////////////////////////////////////////////////////////////////////
@@ -22,8 +19,7 @@ namespace Hydro
 	class Direct3D
 	{
 	public:
-		Direct3D(GameWindow& window);
-		Direct3D() = delete;
+		Direct3D(class IGameWindow* settings);
 		Direct3D(const Direct3D& other) = delete;
 		Direct3D& operator=(const Direct3D& other) = delete;
 		~Direct3D();
@@ -31,8 +27,8 @@ namespace Hydro
 		bool Initialize();
 		void Shutdown();
 
-		void BeginFrame(DirectX::XMVECTORF32 Color);
-		void Endframe();
+		void BeginFrame(DirectX::XMVECTORF32 color);
+		bool EndFrame();
 
 		void GetProjectionMatrix(DirectX::XMMATRIX &projectionMatrix);
 		void GetWorldMatrix(DirectX::XMMATRIX &worldMatrix);
@@ -50,7 +46,7 @@ namespace Hydro
 		void DisableWireframe();
 		
 	private:
-		GameWindow*					m_window;
+		class IGameWindow*			m_window;
 		IDXGISwapChain*				m_swapChain;
 		ID3D11Device*				m_device;
 		ID3D11DeviceContext*		m_deviceContext;
@@ -70,6 +66,8 @@ namespace Hydro
 		ID3D11RasterizerState*		m_rasterStateWire;
 		ID3D11RasterizerState*		m_rasterStateSolid;
 		ID3D11RasterizerState*		m_rasterNoCullingSolid;
+
+		bool m_ready;
 	};
 }
 
