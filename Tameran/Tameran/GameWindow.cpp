@@ -17,9 +17,9 @@ Tameran::GameWindow::GameWindow(HINSTANCE hInst, char * pArgs, const std::string
 {}
 
 Tameran::GameWindow::GameWindow(HINSTANCE hInst, char * pArgs, const std::string title, const unsigned int screenWidth, const unsigned int screenHeight, bool fullscreen, bool vsync)
-	: IGameWindow(hInst, pArgs, title, screenWidth, screenHeight, fullscreen, vsync)
-{
-}
+	: IGameWindow(hInst, pArgs, title, screenWidth, screenHeight, fullscreen, vsync),
+	m_input(screenWidth, screenHeight)
+{}
 
 Tameran::GameWindow::~GameWindow()
 {
@@ -35,6 +35,18 @@ bool Tameran::GameWindow::Initialize()
 
 	//Initialize the parent class
 	result = Hydro::IGameWindow::Initialize();
+	if (!result)
+	{
+		return false;
+	}
+
+	//Initialize the input class
+	result = m_input.Initialize(m_hInst, m_hWnd);
+	if (!result)
+	{
+		ShowMessageBox("Input Error", "The input class could not be initialized");
+		return false;
+	}
 
 	m_ready = result;
 	return m_ready;
@@ -42,12 +54,29 @@ bool Tameran::GameWindow::Initialize()
 
 void Tameran::GameWindow::Shutdown()
 {
+	//Shutdown the input class
+	m_input.Shutdown();
+
 	IGameWindow::Shutdown();
 	m_ready = false;
 }
 
 bool Tameran::GameWindow::Update(float eTime)
 {
+	bool result = false;
+	
+	//Update the input class
+	result = m_input.Update();
+	if (!result)
+	{
+		return false;
+	}
+
+	if (m_input.IsKeyReleased(DIK_ESCAPE))
+	{
+		return false;
+	}
+
 	return true;
 }
 

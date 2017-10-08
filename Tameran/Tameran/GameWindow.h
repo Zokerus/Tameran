@@ -6,6 +6,7 @@
 
 //My Includes
 #include <IGameWindow.h>
+#include <Input/Input.h>
 
 //////////////////////////////////////////////////////////////////////////
 //Class: Game
@@ -31,6 +32,9 @@ namespace Tameran
 	private:
 		bool Update(float eTime) override;
 		bool Draw(float eTime) override;
+
+	private:
+		Input m_input;
 	};
 }
 
