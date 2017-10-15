@@ -72,6 +72,11 @@ bool Tameran::GameWindow::Update(float eTime)
 		return false;
 	}
 
+	if (m_input.IsKeyDown(DIK_LALT) && m_input.IsKeyReleased(DIK_SPACE))
+	{
+		SwitchFullscreen(); //Just a Prototype
+	}
+
 	if (m_input.IsKeyReleased(DIK_ESCAPE))
 	{
 		return false;

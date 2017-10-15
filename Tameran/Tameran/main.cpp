@@ -6,7 +6,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdLine,
 	using namespace Hydro;
 	using namespace Tameran;
 
-	GameWindow wnd(hInstance, pScmdLine, "Tameran - Hydro Engine", 1024, 768);
+	GameWindow wnd(hInstance, pScmdLine, "Tameran - Hydro Engine", 1024, 768, true, false);
 	try
 	{
 		run = wnd.Initialize();

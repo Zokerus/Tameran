@@ -53,6 +53,8 @@ namespace Hydro
 		virtual bool Update(float eTime) = 0;
 		virtual bool Draw(float eTime) = 0;
 
+		bool SwitchFullscreen();
+
 	protected:
 		std::string m_appName;
 		HINSTANCE m_hInst;

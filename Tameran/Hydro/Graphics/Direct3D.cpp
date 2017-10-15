@@ -224,6 +224,11 @@ bool Hydro::Direct3D::EndFrame()
 	return true;
 }
 
+void Hydro::Direct3D::SetFullScreen(const bool fullscreen)
+{
+	m_swapChain->SetFullscreenState(fullscreen, NULL);
+}
+
 void Hydro::Direct3D::GetProjectionMatrix(DirectX::XMMATRIX & projectionMatrix)
 {
 }

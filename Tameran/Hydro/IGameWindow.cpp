@@ -28,8 +28,19 @@ Hydro::IGameWindow::IGameWindow(HINSTANCE hInst, char *pArgs, const std::string 
 		windowRect.top = 0;
 		windowRect.right = windowRect.left + m_screenWidth;
 		windowRect.bottom = windowRect.top + m_screenHeight;
-		AdjustWindowRect(&windowRect, 0, FALSE);
-		m_hWnd = CreateWindow(name, name, 0, windowRect.left, windowRect.top, m_screenWidth, m_screenHeight, nullptr, nullptr, m_hInst, this);
+		AdjustWindowRect(&windowRect, WS_SYSMENU | WS_POPUP | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_VISIBLE, FALSE);
+		m_hWnd = CreateWindow(name, name, WS_SYSMENU | WS_POPUP | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_VISIBLE, windowRect.left, windowRect.top, m_screenWidth, m_screenHeight, nullptr, nullptr, m_hInst, this);
+	
+		DEVMODE dmScreenSettings;
+		// If full screen set the screen to maximum size of the users desktop and 32bit.
+		memset(&dmScreenSettings, 0, sizeof(dmScreenSettings));
+		dmScreenSettings.dmSize = sizeof(dmScreenSettings);
+		dmScreenSettings.dmPelsWidth = (unsigned long)m_screenWidth;
+		dmScreenSettings.dmPelsHeight = (unsigned long)m_screenHeight;
+		dmScreenSettings.dmBitsPerPel = 32;
+		dmScreenSettings.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
+
+		ChangeDisplaySettings(&dmScreenSettings, CDS_FULLSCREEN);
 	}
 	else
 	{
@@ -38,8 +49,8 @@ Hydro::IGameWindow::IGameWindow(HINSTANCE hInst, char *pArgs, const std::string 
 		windowRect.top = (GetSystemMetrics(SM_CYSCREEN) - m_screenHeight) / 2;
 		windowRect.right = windowRect.left + m_screenWidth;
 		windowRect.bottom = windowRect.top + m_screenHeight;
-		AdjustWindowRect(&windowRect, WS_SYSMENU | WS_CAPTION, FALSE);
-		m_hWnd = CreateWindow(name, name, WS_SYSMENU | WS_CAPTION, windowRect.left, windowRect.top, m_screenWidth, m_screenHeight, nullptr, nullptr, m_hInst, this);
+		AdjustWindowRect(&windowRect, WS_CAPTION | WS_POPUPWINDOW, FALSE);
+		m_hWnd = CreateWindow(name, name, WS_CAPTION | WS_POPUPWINDOW | WS_VISIBLE, windowRect.left, windowRect.top, windowRect.right - windowRect.left, windowRect.bottom - windowRect.top, nullptr, nullptr, m_hInst, this);
 	}
 
 	if (m_hWnd == nullptr)
@@ -281,5 +292,48 @@ void Hydro::IGameWindow::GetExeDirectory()
 
 	wDir = ((std::wstring)path).substr(0, indexSlash + 1);
 	sDir = ((std::string)sPath).substr(0, indexSlash + 1);
+}
+
+bool Hydro::IGameWindow::SwitchFullscreen()
+{
+	if (!m_ready)
+		return false;
+
+	if (!m_fullscreen)
+	{
+		SetWindowLongPtr(m_hWnd, GWL_STYLE,
+			WS_SYSMENU | WS_POPUP | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_VISIBLE);
+		MoveWindow(m_hWnd, 0, 0, m_screenWidth, m_screenHeight, TRUE);
+
+		DEVMODE dmScreenSettings;
+		// If full screen set the screen to maximum size of the users desktop and 32bit.
+		memset(&dmScreenSettings, 0, sizeof(dmScreenSettings));
+		dmScreenSettings.dmSize = sizeof(dmScreenSettings);
+		dmScreenSettings.dmPelsWidth = (unsigned long)m_screenWidth;
+		dmScreenSettings.dmPelsHeight = (unsigned long)m_screenHeight;
+		dmScreenSettings.dmBitsPerPel = 32;
+		dmScreenSettings.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
+
+		// Change the display settings to full screen.
+		ChangeDisplaySettings(&dmScreenSettings, CDS_FULLSCREEN);
+		m_fullscreen = true;
+	}
+	else
+	{
+		ChangeDisplaySettings(NULL, 0);
+		RECT rect;
+		rect.left = (GetSystemMetrics(SM_CXSCREEN) - m_screenWidth) / 2;
+		rect.top = (GetSystemMetrics(SM_CYSCREEN) - m_screenHeight) / 2;
+		rect.right = rect.left + m_screenWidth;
+		rect.bottom = rect.top + m_screenHeight;
+		SetWindowLongPtr(m_hWnd, GWL_STYLE, WS_CAPTION | WS_POPUPWINDOW | WS_VISIBLE);
+		AdjustWindowRect(&rect, WS_CAPTION | WS_POPUPWINDOW, FALSE);
+		MoveWindow(m_hWnd, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, TRUE);
+		m_fullscreen = false;
+	}
+
+	m_direct3D.SetFullScreen(m_fullscreen);
+
+	return true;
 }
 

@@ -30,6 +30,8 @@ namespace Hydro
 		void BeginFrame(DirectX::XMVECTORF32 color);
 		bool EndFrame();
 
+		void SetFullScreen(const bool fullscreen);
+
 		void GetProjectionMatrix(DirectX::XMMATRIX &projectionMatrix);
 		void GetWorldMatrix(DirectX::XMMATRIX &worldMatrix);
 		void GetOrthoMatrix(DirectX::XMMATRIX &orthoMatrix);
