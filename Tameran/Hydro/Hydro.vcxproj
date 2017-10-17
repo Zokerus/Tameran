@@ -156,6 +156,7 @@
     <ClInclude Include="Util\Timer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="GameStateManager.cpp" />
     <ClCompile Include="Graphics\Direct3D.cpp" />
     <ClCompile Include="IGameState.cpp" />
     <ClCompile Include="IGameWindow.cpp" />
