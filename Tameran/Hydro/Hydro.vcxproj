@@ -147,6 +147,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="GameStateManager.h" />
+    <ClInclude Include="IGameState.h" />
     <ClInclude Include="IGameWindow.h" />
     <ClInclude Include="Graphics\Direct3D.h" />
     <ClInclude Include="Input\Input.h" />
@@ -155,6 +157,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Graphics\Direct3D.cpp" />
+    <ClCompile Include="IGameState.cpp" />
     <ClCompile Include="IGameWindow.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="Util\Globals.cpp" />

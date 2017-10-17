@@ -30,6 +30,12 @@
     <ClInclude Include="Input\Input.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="IGameState.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="GameStateManager.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Util\Globals.cpp">
@@ -45,6 +51,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Input\Input.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="IGameState.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
