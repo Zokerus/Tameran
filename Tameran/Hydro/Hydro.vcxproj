@@ -148,6 +148,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="GameStateManager.h" />
+    <ClInclude Include="Graphics\Shader\IShader.h" />
     <ClInclude Include="IGameState.h" />
     <ClInclude Include="IGameWindow.h" />
     <ClInclude Include="Graphics\Direct3D.h" />
@@ -158,6 +159,7 @@
   <ItemGroup>
     <ClCompile Include="GameStateManager.cpp" />
     <ClCompile Include="Graphics\Direct3D.cpp" />
+    <ClCompile Include="Graphics\Shader\IShader.cpp" />
     <ClCompile Include="IGameState.cpp" />
     <ClCompile Include="IGameWindow.cpp" />
     <ClCompile Include="Input\Input.cpp" />
