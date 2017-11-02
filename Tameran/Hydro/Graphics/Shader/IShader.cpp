@@ -15,47 +15,7 @@ Hydro::IShader::~IShader()
 
 bool Hydro::IShader::Initialize(ID3D11Device* device, HWND hWnd)
 {
-	HRESULT result;
-	ID3DBlob* errorMessage(nullptr);
-	ID3DBlob* vertexShaderBuffer(nullptr);
-	ID3DBlob* pixelShaderBuffer(nullptr);
-	D3D11_INPUT_ELEMENT_DESC polygonLayout[2];
-	unsigned int numElements;
-	D3D11_BUFFER_DESC matrixBufferDesc;
-
-	//Load precompiled shader file
-	result = D3DReadFileToBlob((wDir + L"/Data/Shader" + m_shaderName + L"/VertexShader.cso").c_str(), &vertexShaderBuffer);
-	if (FAILED(result))
-	{
-		MessageBox(hWnd, "Failed to load VertexShader", "Error", MB_OK);
-		return false;
-	}
-
-	//Create the vertex shader from buffer
-	result = device->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), NULL, &m_vertexShader);
-	if (FAILED(result))
-	{
-		MessageBox(hWnd, "Failed to create VertexShader", "Error", MB_OK);
-		return false;
-	}
-
-	//Load precompiled shader file
-	result = D3DReadFileToBlob((wDir + L"/Data/Shader" + m_shaderName + L"/PixelShader.cso").c_str(), &pixelShaderBuffer);
-	if (FAILED(result))
-	{
-		MessageBox(hWnd, "Failed to load PixelShader", "Error", MB_OK);
-		return false;
-	}
-
-	//Create the pixel shader from buffer
-	result = device->CreateVertexShader(pixelShaderBuffer->GetBufferPointer(), pixelShaderBuffer->GetBufferSize(), NULL, &m_pixelShader);
-	if (FAILED(result))
-	{
-		MessageBox(hWnd, "Failed to create PixelShader", "Error", MB_OK);
-		return false;
-	}
-
-	return true;
+		return true;
 }
 
 void Hydro::IShader::Shutdown()
@@ -98,9 +58,6 @@ bool Hydro::IShader::SetShaderParameters(ID3D11DeviceContext * deviceContext, Ma
 {
 	return true;
 }
-
-void Hydro::IShader::RenderShader(ID3D11DeviceContext * deviceContext, int indexCount)
-{}
 
 void Hydro::IShader::OutputShaderErrorMessage(ID3DBlob* errorMessage, HWND hwnd, std::string shaderFilename)
 {

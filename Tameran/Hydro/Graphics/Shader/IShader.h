@@ -18,6 +18,7 @@ namespace Hydro
 {
 	class IShader
 	{
+	protected:
 		struct MatrixBufferType
 		{
 			DirectX::XMMATRIX world;
@@ -35,7 +36,6 @@ namespace Hydro
 
 	protected:
 		virtual bool SetShaderParameters(ID3D11DeviceContext *deviceContext, MatrixBufferType *matrices);
-		virtual void RenderShader(ID3D11DeviceContext *deviceContext, int indexCount);
 		void OutputShaderErrorMessage(ID3DBlob *errorMessage, HWND hwnd, std::string shaderFilename);
 
 	protected:
