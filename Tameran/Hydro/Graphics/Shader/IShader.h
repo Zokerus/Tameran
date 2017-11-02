@@ -5,6 +5,7 @@
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
+#include <string>
 #include <fstream>
 
 //My Includes
@@ -25,16 +26,16 @@ namespace Hydro
 		};
 
 	public:
-		IShader();
+		IShader(std::wstring shaderName);
 		~IShader();
 
-		bool Initialize(ID3D11Device *device, HWND hWnd);
+		virtual bool Initialize(ID3D11Device *device, HWND hWnd);
 		void Shutdown();
-		bool Render(ID3D11DeviceContext *deviceContext, int indexCount, MatrixBufferType matrices);
+		virtual bool Render(ID3D11DeviceContext *deviceContext, int indexCount, MatrixBufferType matrices);
 
 	protected:
-		bool SetShaderParameters(ID3D11DeviceContext *deviceContext, MatrixBufferType *matrices);
-		bool RenderShader(ID3D11DeviceContext *deviceContext, int indexCount);
+		virtual bool SetShaderParameters(ID3D11DeviceContext *deviceContext, MatrixBufferType *matrices);
+		virtual void RenderShader(ID3D11DeviceContext *deviceContext, int indexCount);
 		void OutputShaderErrorMessage(ID3DBlob *errorMessage, HWND hwnd, std::string shaderFilename);
 
 	protected:
@@ -42,6 +43,7 @@ namespace Hydro
 		ID3D11PixelShader *m_pixelShader;
 		ID3D11InputLayout *m_layout;
 		ID3D11Buffer *m_matrixBuffer;
+		std::wstring m_shaderName;
 		bool m_ready;
 	};
 }
