@@ -35,7 +35,7 @@ namespace Tameran
 		bool Draw(float eTime) override;
 
 	private:
-		Input m_input;
+		Hydro::Input m_input;
 		Hydro::ShaderManager m_shaderManager;
 	};
 }

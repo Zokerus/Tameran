@@ -1,10 +1,10 @@
 #include "Input.h"
 
-Input::Input(unsigned int screenWidth, unsigned int screenHeight)
+Hydro::Input::Input(unsigned int screenWidth, unsigned int screenHeight)
 	: m_directInput(nullptr), m_keyboard(nullptr), m_mouse(nullptr), m_mouseState(), m_screenWidth(screenWidth), m_screenHeight(screenHeight), m_mouseX(0), m_mouseY(0), m_ready(false)
 {}
 
-Input::~Input()
+Hydro::Input::~Input()
 {
 	if (m_ready)
 	{
@@ -12,7 +12,7 @@ Input::~Input()
 	}
 }
 
-bool Input::Initialize(HINSTANCE hinstance, HWND hwnd)
+bool Hydro::Input::Initialize(HINSTANCE hinstance, HWND hwnd)
 {
 	HRESULT result = false;
 	int i = 0;
@@ -97,7 +97,7 @@ bool Input::Initialize(HINSTANCE hinstance, HWND hwnd)
 	return true;
 }
 
-void Input::Shutdown()
+void Hydro::Input::Shutdown()
 {
 	// Release the mouse.
 	if (m_mouse)
@@ -126,7 +126,7 @@ void Input::Shutdown()
 	m_ready = false;
 }
 
-bool Input::Update()
+bool Hydro::Input::Update()
 {
 	bool result;
 
@@ -159,7 +159,7 @@ bool Input::Update()
 	return true;
 }
 
-void Input::GetMouseLocation(int& xPosition, int& yPosition)
+void Hydro::Input::GetMouseLocation(int& xPosition, int& yPosition)
 {
 	//Is the class ready to work?
 	if (!m_ready)
@@ -173,7 +173,7 @@ void Input::GetMouseLocation(int& xPosition, int& yPosition)
 	return;
 }
 
-bool Input::IsKeyPressed(int key)
+bool Hydro::Input::IsKeyPressed(int key)
 {
 	//Is the class ready to work?
 	if (!m_ready)
@@ -192,7 +192,7 @@ bool Input::IsKeyPressed(int key)
 	return false;
 }
 
-bool Input::IsKeyReleased(int key)
+bool Hydro::Input::IsKeyReleased(int key)
 {
 	//Is the class ready to work?
 	if (!m_ready)
@@ -211,7 +211,7 @@ bool Input::IsKeyReleased(int key)
 	return false;
 }
 
-bool Input::IsKeyDown(int key)
+bool Hydro::Input::IsKeyDown(int key)
 {
 	//Is the class ready to work?
 	if (!m_ready)
@@ -230,7 +230,7 @@ bool Input::IsKeyDown(int key)
 	return false;
 }
 
-bool Input::ReadKeyboard()
+bool Hydro::Input::ReadKeyboard()
 {
 	HRESULT result;
 
@@ -248,7 +248,7 @@ bool Input::ReadKeyboard()
 	return true;
 }
 
-bool Input::ReadMouse()
+bool Hydro::Input::ReadMouse()
 {
 	HRESULT result;
 
@@ -266,7 +266,7 @@ bool Input::ReadMouse()
 	return true;
 }
 
-void Input::ProcessInput()
+void Hydro::Input::ProcessInput()
 {
 	//Update the location of the mouse cursor based on the change of the mouse location during the frame
 	m_mouseX = m_mouseX + m_mouseState.lX;
