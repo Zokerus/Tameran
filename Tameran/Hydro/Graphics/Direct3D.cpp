@@ -229,12 +229,12 @@ void Hydro::Direct3D::SetFullScreen(const bool fullscreen)
 	m_swapChain->SetFullscreenState(fullscreen, NULL);
 }
 
-ID3D11Device* Hydro::Direct3D::GetDevice()
+ID3D11Device* Hydro::Direct3D::GetDevice() const
 {
 	return m_device;
 }
 
-ID3D11DeviceContext* Hydro::Direct3D::GetDeviceContext()
+ID3D11DeviceContext* Hydro::Direct3D::GetDeviceContext() const
 {
 	return m_deviceContext;
 }

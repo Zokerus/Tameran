@@ -36,7 +36,6 @@ namespace Tameran
 
 	private:
 		Hydro::Input m_input;
-		Hydro::ShaderManager m_shaderManager;
 	};
 }
 

@@ -10,6 +10,8 @@
 #include "Util/Globals.h"
 #include "Util/Timer.h"
 #include "Graphics/Direct3D.h"
+#include "Graphics/Shader/ShaderManager.h"
+#include "Graphics/Camera.h"
 
 //////////////////////////////////////////////////////////////////////////
 //Class: IGameWindow
@@ -68,6 +70,8 @@ namespace Hydro
 
 		Timer m_timer;
 		Direct3D m_direct3D;
+		ShaderManager m_shaderManager;
+		Camera m_camera;
 	};
 }
 

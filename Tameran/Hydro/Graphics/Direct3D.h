@@ -32,8 +32,8 @@ namespace Hydro
 
 		void SetFullScreen(const bool fullscreen);
 
-		ID3D11Device* GetDevice();
-		ID3D11DeviceContext* GetDeviceContext();
+		ID3D11Device* GetDevice() const;
+		ID3D11DeviceContext* GetDeviceContext() const;
 
 		void GetProjectionMatrix(DirectX::XMMATRIX &projectionMatrix);
 		void GetWorldMatrix(DirectX::XMMATRIX &worldMatrix);
