@@ -229,6 +229,16 @@ void Hydro::Direct3D::SetFullScreen(const bool fullscreen)
 	m_swapChain->SetFullscreenState(fullscreen, NULL);
 }
 
+ID3D11Device* Hydro::Direct3D::GetDevice()
+{
+	return m_device;
+}
+
+ID3D11DeviceContext* Hydro::Direct3D::GetDeviceContext()
+{
+	return m_deviceContext;
+}
+
 void Hydro::Direct3D::GetProjectionMatrix(DirectX::XMMATRIX & projectionMatrix)
 {
 }

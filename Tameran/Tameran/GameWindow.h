@@ -7,6 +7,7 @@
 //My Includes
 #include <IGameWindow.h>
 #include <Input/Input.h>
+#include <Graphics/Shader/ShaderManager.h>
 
 //////////////////////////////////////////////////////////////////////////
 //Class: Game
@@ -35,6 +36,7 @@ namespace Tameran
 
 	private:
 		Input m_input;
+		Hydro::ShaderManager m_shaderManager;
 	};
 }
 

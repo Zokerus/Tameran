@@ -1,7 +1,7 @@
 #include "IGameState.h"
 
-Hydro::IGameState::IGameState(Direct3D *direct3D)
-	: m_direct3D(direct3D), m_ready(false), m_visible(true), m_enable(true)
+Hydro::IGameState::IGameState(Direct3D* direct3D, ShaderManager* manager)
+	: m_direct3D(direct3D), m_shaderManager(manager), m_ready(false), m_visible(true), m_enable(true)
 {}
 
 Hydro::IGameState::~IGameState()
@@ -20,6 +20,9 @@ bool Hydro::IGameState::Initialize()
 
 void Hydro::IGameState::Shutdown()
 {
+	//Reset the shader manager pointer
+	m_shaderManager = nullptr;
+
 	//Reset the direct3D object pointer
 	m_direct3D = nullptr;
 

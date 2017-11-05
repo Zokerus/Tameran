@@ -3,6 +3,7 @@
 
 //My Includes
 #include "Graphics/Direct3D.h"
+#include "Graphics/Shader/ShaderManager.h"
 
 //////////////////////////////////////////////////////////////////////////
 //Class: IGameState
@@ -12,7 +13,7 @@ namespace Hydro
 	class IGameState
 	{
 	public:
-		IGameState(Direct3D *direct3D);
+		IGameState(Direct3D *direct3D, ShaderManager *manager);
 		~IGameState();
 
 		bool Initialize();
@@ -29,7 +30,8 @@ namespace Hydro
 		void StateChange(IGameState *currState);
 
 	protected:
-		Direct3D *m_direct3D;
+		Direct3D* m_direct3D;
+		ShaderManager* m_shaderManager;
 		bool m_ready, m_visible, m_enable;
 	};
 }

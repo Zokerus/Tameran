@@ -18,7 +18,7 @@ Tameran::GameWindow::GameWindow(HINSTANCE hInst, char * pArgs, const std::string
 
 Tameran::GameWindow::GameWindow(HINSTANCE hInst, char * pArgs, const std::string title, const unsigned int screenWidth, const unsigned int screenHeight, bool fullscreen, bool vsync)
 	: IGameWindow(hInst, pArgs, title, screenWidth, screenHeight, fullscreen, vsync),
-	m_input(screenWidth, screenHeight)
+	m_input(screenWidth, screenHeight), m_shaderManager()
 {}
 
 Tameran::GameWindow::~GameWindow()
@@ -48,12 +48,23 @@ bool Tameran::GameWindow::Initialize()
 		return false;
 	}
 
+	//Initialize the shader manager
+	result = m_shaderManager.Initialize(m_direct3D.GetDevice(), m_hWnd);
+	if (!result)
+	{
+		ShowMessageBox("ShaderManager Error", "The shader management class could not be initialized");
+		return false;
+	}
+
 	m_ready = result;
 	return m_ready;
 }
 
 void Tameran::GameWindow::Shutdown()
 {
+	//Shutdown the shader manager
+	m_shaderManager.Shutdown();
+
 	//Shutdown the input class
 	m_input.Shutdown();
 

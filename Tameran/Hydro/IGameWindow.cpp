@@ -86,6 +86,9 @@ Hydro::IGameWindow::~IGameWindow()
 bool Hydro::IGameWindow::Initialize()
 {
 	bool result = false;
+
+	//Get the current working directory
+	GetExeDirectory();
 	
 	//Initialize the timer object
 	result = m_timer.Initialize();

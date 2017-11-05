@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClInclude Include="GameStateManager.h" />
     <ClInclude Include="Graphics\Shader\IShader.h" />
+    <ClInclude Include="Graphics\Shader\ShaderManager.h" />
     <ClInclude Include="Graphics\Shader\TextureShader.h" />
     <ClInclude Include="IGameState.h" />
     <ClInclude Include="IGameWindow.h" />
@@ -165,6 +166,7 @@
     <ClCompile Include="GameStateManager.cpp" />
     <ClCompile Include="Graphics\Direct3D.cpp" />
     <ClCompile Include="Graphics\Shader\IShader.cpp" />
+    <ClCompile Include="Graphics\Shader\ShaderManager.cpp" />
     <ClCompile Include="Graphics\Shader\TextureShader.cpp" />
     <ClCompile Include="IGameState.cpp" />
     <ClCompile Include="IGameWindow.cpp" />

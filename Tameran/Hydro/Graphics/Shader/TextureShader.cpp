@@ -24,7 +24,8 @@ bool Hydro::TextureShader::Initialize(ID3D11Device* device, HWND hWnd)
 	D3D11_SAMPLER_DESC samplerDesc;
 
 	//Load precompiled shader file
-	result = D3DReadFileToBlob((wDir + L"/Data/Shader" + m_shaderName + L"/VertexShader.cso").c_str(), &vertexShaderBuffer);
+	std::wstring dir = (wDir + L"/Data/Shader/" + m_shaderName + L"/VertexShader.cso");
+	result = D3DReadFileToBlob((wDir + L"/Data/Shader/" + m_shaderName + L"/VertexShader.cso").c_str(), &vertexShaderBuffer);
 	if (FAILED(result))
 	{
 		MessageBox(hWnd, "Failed to load VertexShader", "Error", MB_OK);
@@ -40,7 +41,7 @@ bool Hydro::TextureShader::Initialize(ID3D11Device* device, HWND hWnd)
 	}
 
 	//Load precompiled shader file
-	result = D3DReadFileToBlob((wDir + L"/Data/Shader" + m_shaderName + L"/PixelShader.cso").c_str(), &pixelShaderBuffer);
+	result = D3DReadFileToBlob((wDir + L"/Data/Shader/" + m_shaderName + L"/PixelShader.cso").c_str(), &pixelShaderBuffer);
 	if (FAILED(result))
 	{
 		MessageBox(hWnd, "Failed to load PixelShader", "Error", MB_OK);
