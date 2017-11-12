@@ -152,6 +152,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="GameStateManager.h" />
+    <ClInclude Include="Graphics\2D\Sprite.h" />
     <ClInclude Include="Graphics\2D\Texture.h" />
     <ClInclude Include="Graphics\Camera.h" />
     <ClInclude Include="Graphics\Shader\IShader.h" />
@@ -166,6 +167,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameStateManager.cpp" />
+    <ClCompile Include="Graphics\2D\Sprite.cpp" />
     <ClCompile Include="Graphics\2D\Texture.cpp" />
     <ClCompile Include="Graphics\Camera.cpp" />
     <ClCompile Include="Graphics\Direct3D.cpp" />

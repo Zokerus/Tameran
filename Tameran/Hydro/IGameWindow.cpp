@@ -69,6 +69,8 @@ Hydro::IGameWindow::IGameWindow(HINSTANCE hInst, char *pArgs, const std::string 
 
 Hydro::IGameWindow::~IGameWindow()
 {
+	m_camera.~Camera();
+	m_shaderManager.~ShaderManager();
 	m_direct3D.~Direct3D();
 	m_timer.~Timer();
 
@@ -114,6 +116,10 @@ bool Hydro::IGameWindow::Initialize()
 		ShowMessageBox("ShaderManager Error", "The shader management class could not be initialized");
 		return false;
 	}
+
+	//Set the initial position of the camera and build the matrices needed for rendering
+	m_camera.SetPosition(DirectX::XMFLOAT3(0.0f, 0.0f, -10.0f));
+	m_camera.Render(true);
 
 	return true;
 }

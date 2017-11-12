@@ -51,6 +51,9 @@
     <ClInclude Include="Graphics\2D\Texture.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\2D\Sprite.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Util\Globals.cpp">
@@ -87,6 +90,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\2D\Texture.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\2D\Sprite.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
