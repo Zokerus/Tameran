@@ -49,13 +49,25 @@ namespace Hydro
 		void TurnAlphaBlendingOff();
 		void EnableWireframe();
 		void DisableWireframe();
-		
+
+	private:
+		bool CreateSwapChainAndDevice();
+		bool CreateRenderTargetView();
+		bool CreateDepthBuffer();
+		bool CreateDepthStencilState(ID3D11DepthStencilState* stencilState, bool enabled);
+		bool CreateDepthStencilView(ID3D11DepthStencilState* stencilState, ID3D11DepthStencilView* stencilView);
+		bool CreateBlendState(ID3D11BlendState* blendState, bool enable);
+		bool CreateRasterizerState(ID3D11RasterizerState* rasterState, D3D11_CULL_MODE cullMode, D3D11_FILL_MODE fillMode);
+		bool CreateViewport();
+		void CreateMatrices();
+
 	private:
 		class IGameWindow*			m_window;
 		IDXGISwapChain*				m_swapChain;
 		ID3D11Device*				m_device;
 		ID3D11DeviceContext*		m_deviceContext;
 		ID3D11RenderTargetView*		m_renderTargetView;
+		ID3D11Texture2D*			m_backBuffer;
 
 		D3D_DRIVER_TYPE				m_driverType;
 		D3D_FEATURE_LEVEL			m_featureLevel;
@@ -64,6 +76,9 @@ namespace Hydro
 		DirectX::XMMATRIX			m_projectionMatrix;
 		DirectX::XMMATRIX			m_worldMatrix;
 		DirectX::XMMATRIX			m_orthoMatrix;
+
+		ID3D11DepthStencilState*	m_depthStencilState;
+		ID3D11DepthStencilView*		m_depthStencilView;
 
 		ID3D11DepthStencilState*	m_depthDisabledStencilState;
 		ID3D11BlendState*			m_alphaEnableBlendingState;
