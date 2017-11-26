@@ -54,10 +54,10 @@ namespace Hydro
 		bool CreateSwapChainAndDevice();
 		bool CreateRenderTargetView();
 		bool CreateDepthBuffer();
-		bool CreateDepthStencilState(ID3D11DepthStencilState* stencilState, bool enabled);
-		bool CreateDepthStencilView(ID3D11DepthStencilState* stencilState, ID3D11DepthStencilView* stencilView);
-		bool CreateBlendState(ID3D11BlendState* blendState, bool enable);
-		bool CreateRasterizerState(ID3D11RasterizerState* rasterState, D3D11_CULL_MODE cullMode, D3D11_FILL_MODE fillMode);
+		bool CreateDepthStencilState();
+		bool CreateDepthStencilView();
+		bool CreateBlendState();
+		bool CreateRasterizerState();
 		bool CreateViewport();
 		void CreateMatrices();
 
@@ -86,6 +86,8 @@ namespace Hydro
 		ID3D11RasterizerState*		m_rasterStateWire;
 		ID3D11RasterizerState*		m_rasterStateSolid;
 		ID3D11RasterizerState*		m_rasterNoCullingSolid;
+
+		ID3D11Debug*				m_debug;
 
 		bool m_ready;
 	};

@@ -4,6 +4,7 @@
 //My Includes
 #include "Graphics/Direct3D.h"
 #include "Graphics/Shader/ShaderManager.h"
+#include "Graphics\Camera.h"
 
 //////////////////////////////////////////////////////////////////////////
 //Class: IGameState
@@ -13,7 +14,7 @@ namespace Hydro
 	class IGameState
 	{
 	public:
-		IGameState(Direct3D *direct3D, ShaderManager *manager);
+		IGameState(Direct3D *direct3D, ShaderManager *manager, Camera* camera);
 		~IGameState();
 
 		bool Initialize();
@@ -32,6 +33,7 @@ namespace Hydro
 	protected:
 		Direct3D* m_direct3D;
 		ShaderManager* m_shaderManager;
+		Camera* m_camera;
 		bool m_ready, m_visible, m_enable;
 	};
 }

@@ -7,7 +7,10 @@
 //My Includes
 #include <IGameWindow.h>
 #include <Input/Input.h>
-#include <Graphics/Shader/ShaderManager.h>
+#include <GameStateManager.h>
+
+//Screens
+
 
 //////////////////////////////////////////////////////////////////////////
 //Class: Game
@@ -36,6 +39,10 @@ namespace Tameran
 
 	private:
 		Hydro::Input m_input;
+
+	public:
+		//GameStates + GameStateManager
+		Hydro::GameStateManager m_gameStateManager;
 	};
 }
 

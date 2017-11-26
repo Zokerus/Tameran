@@ -36,7 +36,7 @@ void Hydro::ShaderManager::Shutdown()
 	m_textureShader.Shutdown();
 }
 
-bool Hydro::ShaderManager::RenderTextureShader(ID3D11DeviceContext * deviceContext, int indexCount, DirectX::XMMATRIX world, DirectX::XMMATRIX view, DirectX::XMMATRIX projection, ID3D11ShaderResourceView * texture)
+bool Hydro::ShaderManager::RenderTextureShader(ID3D11DeviceContext* deviceContext, int indexCount, DirectX::XMMATRIX world, DirectX::XMMATRIX view, DirectX::XMMATRIX projection, ID3D11ShaderResourceView * texture)
 {
 	//Render the texture shader
 	if (!m_textureShader.Render(deviceContext, indexCount, world, view, projection, texture))

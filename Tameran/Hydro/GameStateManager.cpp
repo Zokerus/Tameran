@@ -12,6 +12,8 @@ Hydro::GameStateManager::~GameStateManager()
 	{
 		RemoveState();
 	}
+	m_gameState.clear();
+	m_gameState.~vector();
 }
 
 bool Hydro::GameStateManager::Update(float eTime)
@@ -44,7 +46,7 @@ bool Hydro::GameStateManager::Draw(float eTime)
 			}
 		}
 	}
-	return false;
+	return true;
 }
 
 int Hydro::GameStateManager::GetGameStateCount() const

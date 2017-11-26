@@ -18,7 +18,7 @@ Tameran::GameWindow::GameWindow(HINSTANCE hInst, char * pArgs, const std::string
 
 Tameran::GameWindow::GameWindow(HINSTANCE hInst, char * pArgs, const std::string title, const unsigned int screenWidth, const unsigned int screenHeight, bool fullscreen, bool vsync)
 	: IGameWindow(hInst, pArgs, title, screenWidth, screenHeight, fullscreen, vsync),
-	m_input(screenWidth, screenHeight)
+	m_input(screenWidth, screenHeight), m_gameStateManager()
 {}
 
 Tameran::GameWindow::~GameWindow()
@@ -63,10 +63,17 @@ void Tameran::GameWindow::Shutdown()
 
 bool Tameran::GameWindow::Update(float eTime)
 {
-	bool result = false;
+	bool result = true;
 	
 	//Update the input class
 	result = m_input.Update();
+	if (!result)
+	{
+		return false;
+	}
+
+	//Update the gamestate manager
+	result = m_gameStateManager.Update(eTime);
 	if (!result)
 	{
 		return false;
@@ -93,6 +100,12 @@ bool Tameran::GameWindow::Draw(float eTime)
 	m_direct3D.BeginFrame(DirectX::Colors::CornflowerBlue);
 
 	//Draw something
+	//Render the gamestate manager
+	result = m_gameStateManager.Draw(eTime);
+	if (!result)
+	{
+		return false;
+	}
 
 	//Present the rendered scene to the screen
 	m_direct3D.EndFrame();

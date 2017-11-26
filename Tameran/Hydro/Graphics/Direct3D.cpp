@@ -4,7 +4,7 @@
 Hydro::Direct3D::Direct3D(IGameWindow* window)
 	: m_window(window), m_swapChain(nullptr), m_device(nullptr), m_deviceContext(nullptr), m_renderTargetView(nullptr), m_backBuffer(nullptr),
 	m_depthStencilState(nullptr), m_depthStencilView(nullptr), m_depthDisabledStencilState(nullptr), m_alphaEnableBlendingState(nullptr), m_alphaDisableBlendingState(nullptr), m_rasterStateWire(nullptr), m_rasterStateSolid(nullptr), m_rasterNoCullingSolid(nullptr),
-	m_ready(false)
+	m_debug(nullptr), m_ready(false)
 {}
 
 Hydro::Direct3D::~Direct3D()
@@ -36,52 +36,27 @@ bool Hydro::Direct3D::Initialize()
 	}
 
 	//Create Depth stecil
-	if (!CreateDepthStencilState(m_depthStencilState, true))
+	if (!CreateDepthStencilState())
 	{
 		return false;
 	}
 
 	//Create depth stencil view
-	if (!CreateDepthStencilView(m_depthStencilState, m_depthStencilView))
-	{
-		return false;
-	}
-
-	// Now create a second depth stencil state which turns off the Z buffer for 2D rendering.  The only difference is 
-	// that DepthEnable is set to false, all other parameters are the same as the other depth stencil state.
-	if (!CreateDepthStencilState(m_depthDisabledStencilState, false))
+	if (!CreateDepthStencilView())
 	{
 		return false;
 	}
 
 	//Create blend states
-	// alpha blending off
-	if (!CreateBlendState(m_alphaDisableBlendingState, false))
-	{
-		return false;
-	}
-
-	// alpha blending on
-	if (!CreateBlendState(m_alphaEnableBlendingState, true))
+	// alpha blending on/off
+	if (!CreateBlendState())
 	{
 		return false;
 	}
 
 	//Create RasterizerState
-	//solid state culling
-	if (!CreateRasterizerState(m_rasterStateSolid, D3D11_CULL_BACK, D3D11_FILL_SOLID))
-	{
-		return false;
-	}
-
-	//solid state no culling
-	if (!CreateRasterizerState(m_rasterStateSolid, D3D11_CULL_NONE, D3D11_FILL_SOLID))
-	{
-		return false;
-	}
-
-	//wireframe
-	if (!CreateRasterizerState(m_rasterStateSolid, D3D11_CULL_BACK, D3D11_FILL_WIREFRAME))
+	//solid state culling, solid no culling and wireframe no culling
+	if (!CreateRasterizerState())
 	{
 		return false;
 	}
@@ -170,6 +145,13 @@ void Hydro::Direct3D::Shutdown()
 	{
 		m_renderTargetView->Release();
 		m_renderTargetView = nullptr;
+	}
+
+	//m_debug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+	if (m_debug)
+	{
+		m_debug->Release();
+		m_debug = nullptr;
 	}
 
 	if (m_deviceContext)
@@ -388,6 +370,12 @@ bool Hydro::Direct3D::CreateSwapChainAndDevice()
 		return false;
 	}
 
+	result = m_device->QueryInterface(__uuidof(ID3D11Debug), (void**)&m_debug);
+	if (FAILED(result))
+	{
+		OutputDebugString("Failed to create debug object");
+		return false;
+	}
 	return true;
 }
 
@@ -454,7 +442,7 @@ bool Hydro::Direct3D::CreateDepthBuffer()
 	return true;
 }
 
-bool Hydro::Direct3D::CreateDepthStencilState(ID3D11DepthStencilState* stencilState, bool enable)
+bool Hydro::Direct3D::CreateDepthStencilState()
 {
 	HRESULT result;
 	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
@@ -463,7 +451,7 @@ bool Hydro::Direct3D::CreateDepthStencilState(ID3D11DepthStencilState* stencilSt
 	ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
 
 	// Set up the description of the stencil state.
-	depthStencilDesc.DepthEnable = enable;
+	depthStencilDesc.DepthEnable = true;
 	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
 
@@ -484,7 +472,19 @@ bool Hydro::Direct3D::CreateDepthStencilState(ID3D11DepthStencilState* stencilSt
 	depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
 	// Create the depth stencil state.
-	result = m_device->CreateDepthStencilState(&depthStencilDesc, &stencilState);
+	result = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState);
+	if (FAILED(result))
+	{
+		OutputDebugString("Failed to create depth stencil state");
+		return false;
+	}
+
+	//disable the depth feature
+	depthStencilDesc.DepthEnable = false;
+
+	// Now create a second depth stencil state which turns off the Z buffer for 2D rendering.  The only difference is 
+	// that DepthEnable is set to false, all other parameters are the same as the other depth stencil state.
+	result = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthDisabledStencilState);
 	if (FAILED(result))
 	{
 		OutputDebugString("Failed to create depth stencil state");
@@ -492,12 +492,12 @@ bool Hydro::Direct3D::CreateDepthStencilState(ID3D11DepthStencilState* stencilSt
 	}
 
 	// Set the depth stencil state.
-	m_deviceContext->OMSetDepthStencilState(stencilState, 1);
+	m_deviceContext->OMSetDepthStencilState(m_depthStencilState, 1);
 
 	return true;
 }
 
-bool Hydro::Direct3D::CreateDepthStencilView(ID3D11DepthStencilState * stencilState, ID3D11DepthStencilView * stencilView)
+bool Hydro::Direct3D::CreateDepthStencilView()
 {
 	HRESULT result;
 	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
@@ -523,7 +523,7 @@ bool Hydro::Direct3D::CreateDepthStencilView(ID3D11DepthStencilState * stencilSt
 	return true;
 }
 
-bool Hydro::Direct3D::CreateBlendState(ID3D11BlendState* blendState, bool enable)
+bool Hydro::Direct3D::CreateBlendState()
 {
 	HRESULT result;
 	D3D11_BLEND_DESC blendStateDesc;
@@ -532,7 +532,7 @@ bool Hydro::Direct3D::CreateBlendState(ID3D11BlendState* blendState, bool enable
 	ZeroMemory(&blendStateDesc, sizeof(D3D11_BLEND_DESC));
 
 	// Create an alpha enabled blend state description.
-	blendStateDesc.RenderTarget[0].BlendEnable = enable;
+	blendStateDesc.RenderTarget[0].BlendEnable = false;
 	blendStateDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
 	blendStateDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
 	blendStateDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
@@ -542,7 +542,18 @@ bool Hydro::Direct3D::CreateBlendState(ID3D11BlendState* blendState, bool enable
 	blendStateDesc.RenderTarget[0].RenderTargetWriteMask = 0x0f;
 
 	// Create the blend state using the description.
-	result = m_device->CreateBlendState(&blendStateDesc, &blendState);
+	result = m_device->CreateBlendState(&blendStateDesc, &m_alphaDisableBlendingState);
+	if (FAILED(result))
+	{
+		OutputDebugString("Failed to create blend state");
+		return false;
+	}
+
+	//Switch blending on
+	blendStateDesc.RenderTarget[0].BlendEnable = true;
+
+	// Create the blend state using the description.
+	result = m_device->CreateBlendState(&blendStateDesc, &m_alphaEnableBlendingState);
 	if (FAILED(result))
 	{
 		OutputDebugString("Failed to create blend state");
@@ -552,7 +563,7 @@ bool Hydro::Direct3D::CreateBlendState(ID3D11BlendState* blendState, bool enable
 	return true;
 }
 
-bool Hydro::Direct3D::CreateRasterizerState(ID3D11RasterizerState* rasterState, D3D11_CULL_MODE cullMode, D3D11_FILL_MODE fillMode)
+bool Hydro::Direct3D::CreateRasterizerState()
 {
 	HRESULT result;
 	D3D11_RASTERIZER_DESC rasterDesc;
@@ -562,18 +573,41 @@ bool Hydro::Direct3D::CreateRasterizerState(ID3D11RasterizerState* rasterState, 
 
 	// Setup the raster description which will determine how and what polygons will be drawn.
 	rasterDesc.AntialiasedLineEnable = false;
-	rasterDesc.CullMode = cullMode;
+	rasterDesc.CullMode = D3D11_CULL_NONE;
 	rasterDesc.DepthBias = 0;
 	rasterDesc.DepthBiasClamp = 0.0f;
 	rasterDesc.DepthClipEnable = true;
-	rasterDesc.FillMode = fillMode;
+	rasterDesc.FillMode = D3D11_FILL_SOLID;
 	rasterDesc.FrontCounterClockwise = false;
 	rasterDesc.MultisampleEnable = false;
 	rasterDesc.ScissorEnable = false;
 	rasterDesc.SlopeScaledDepthBias = 0.0f;
 
 	// Create the rasterizer state from the description we just filled out.
-	result = m_device->CreateRasterizerState(&rasterDesc, &rasterState);
+	result = m_device->CreateRasterizerState(&rasterDesc, &m_rasterNoCullingSolid);
+	if (FAILED(result))
+	{
+		OutputDebugString("Failed to create rasterizer state");
+		return false;
+	}
+
+	//Solid with culling
+	rasterDesc.CullMode = D3D11_CULL_BACK;
+
+	// Create the rasterizer state from the description we just filled out.
+	result = m_device->CreateRasterizerState(&rasterDesc, &m_rasterStateSolid);
+	if (FAILED(result))
+	{
+		OutputDebugString("Failed to create rasterizer state");
+		return false;
+	}
+
+	//wireframe without culling
+	rasterDesc.CullMode = D3D11_CULL_NONE;
+	rasterDesc.FillMode = D3D11_FILL_WIREFRAME;
+
+	// Create the rasterizer state from the description we just filled out.
+	result = m_device->CreateRasterizerState(&rasterDesc, &m_rasterStateWire);
 	if (FAILED(result))
 	{
 		OutputDebugString("Failed to create rasterizer state");
