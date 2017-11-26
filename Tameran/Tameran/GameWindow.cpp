@@ -18,7 +18,7 @@ Tameran::GameWindow::GameWindow(HINSTANCE hInst, char * pArgs, const std::string
 
 Tameran::GameWindow::GameWindow(HINSTANCE hInst, char * pArgs, const std::string title, const unsigned int screenWidth, const unsigned int screenHeight, bool fullscreen, bool vsync)
 	: IGameWindow(hInst, pArgs, title, screenWidth, screenHeight, fullscreen, vsync),
-	m_input(screenWidth, screenHeight), m_gameStateManager()
+	m_input(screenWidth, screenHeight), m_gameStateManager(), m_titleScreen(this, &m_direct3D, &m_shaderManager, &m_camera, &m_input)
 {}
 
 Tameran::GameWindow::~GameWindow()
@@ -48,12 +48,29 @@ bool Tameran::GameWindow::Initialize()
 		return false;
 	}
 
+	//Initialize the title screen
+	result = m_titleScreen.Initialize();
+	if (!result)
+	{
+		ShowMessageBox("Input Error", "The titlescreen could not be initialized");
+		return false;
+	}
+
+	//add the title screen to the gamestate manager
+	m_gameStateManager.ChangeState(&m_titleScreen);
+
 	m_ready = result;
 	return m_ready;
 }
 
 void Tameran::GameWindow::Shutdown()
 {
+	m_gameStateManager.~GameStateManager();
+
+	m_titleScreen.Shutdown();
+	m_titleScreen.~TitleScreen();
+
+
 	//Shutdown the input class
 	m_input.Shutdown();
 

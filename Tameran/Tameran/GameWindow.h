@@ -10,7 +10,7 @@
 #include <GameStateManager.h>
 
 //Screens
-
+#include "Screens/TitleScreen.h"
 
 //////////////////////////////////////////////////////////////////////////
 //Class: Game
@@ -43,6 +43,7 @@ namespace Tameran
 	public:
 		//GameStates + GameStateManager
 		Hydro::GameStateManager m_gameStateManager;
+		TitleScreen m_titleScreen;
 	};
 }
 
