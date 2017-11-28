@@ -54,6 +54,12 @@
     <ClInclude Include="Graphics\2D\Sprite.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\Text\Font.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Text\Text.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Util\Globals.cpp">
@@ -95,12 +101,21 @@
     <ClCompile Include="Graphics\2D\Sprite.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\Text\Font.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Text\Text.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Data\Shader\TextureShader\VertexShader.hlsl" />
     <FxCompile Include="Data\Shader\TextureShader\PixelShader.hlsl" />
+    <FxCompile Include="Data\Shader\FontShader\VertexShader.hlsl" />
+    <FxCompile Include="Data\Shader\FontShader\PixelShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\Shader\TextureShader\Header.hlsli" />
+    <None Include="Data\Shader\FontShader\Header.hlsli" />
   </ItemGroup>
 </Project>
