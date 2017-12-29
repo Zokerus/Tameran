@@ -144,6 +144,8 @@ bool Hydro::FontShader::Initialize(ID3D11Device* device, HWND hWnd)
 	if (FAILED(result))
 		return false;
 
+	m_ready = true;
+
 	return true;
 }
 
@@ -181,6 +183,18 @@ bool Hydro::FontShader::Render(ID3D11DeviceContext * deviceContext, int indexCou
 		return false;
 	}
 
+	//Set the vertex input layout
+	deviceContext->IASetInputLayout(m_layout);
+
+	//Set the vertex and pixel shaders that will be used to render this triangle
+	deviceContext->VSSetShader(m_vertexShader, NULL, 0);
+	deviceContext->PSSetShader(m_pixelShader, NULL, 0);
+
+	//Set the sampler state in the pixel shader
+	deviceContext->PSSetSamplers(0, 1, &m_sampleState);
+
+	//Render the triangle
+	deviceContext->DrawIndexed(indexCount, 0, 0);
 
 	return true;
 }

@@ -7,6 +7,8 @@
 
 #include <Input/Input.h>
 #include <Graphics/2D/Sprite.h>
+#include <Graphics/Text/Font.h>
+#include <Graphics/Text/Text.h>
 
 //////////////////////////////////////////////////////////////////////////
 //Class: TitleScreen
@@ -29,6 +31,8 @@ namespace Tameran
 		Tameran::GameWindow* m_gameRef;
 		Hydro::Input* m_input;
 		Hydro::Sprite m_background;
+		Hydro::Font m_font;
+		Hydro::Text m_text;
 	};
 }
 

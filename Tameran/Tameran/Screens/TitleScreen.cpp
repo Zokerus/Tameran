@@ -5,6 +5,7 @@ using namespace Hydro;
 
 Tameran::TitleScreen::TitleScreen(GameWindow* game, Direct3D* direct3D, ShaderManager* manager, Camera* camera, Input* input)
 	: IGameState(direct3D, manager, camera), m_gameRef(game), m_input(input), m_background()
+	, m_font(), m_text(game->GetWidth(), game->GetHeight(), 30)
 {
 }
 
@@ -31,6 +32,22 @@ bool Tameran::TitleScreen::Initialize()
 	}
 
 	m_background.Update(m_direct3D->GetDeviceContext(), 0, 0);
+	
+	//Initialize font object
+	result = m_font.Initialize(m_direct3D->GetDevice(), m_direct3D->GetDeviceContext(), "Data/Font/font01", 18.0f, 3);
+	if (!result)
+	{
+		OutputDebugString("Font could not be initialized!");
+		return false;
+	}
+
+	//test of text
+	result = m_text.Initialize(m_direct3D->GetDevice(), m_direct3D->GetDeviceContext(), false, &m_font, "Press ENTER to start", DirectX::XMINT2(20, 20), DirectX::Colors::Yellow);
+	if (!result)
+	{
+		OutputDebugString("Text could not be initialized!");
+		return false;
+	}
 
 	//The Screen is ready to draw and use
 	m_ready = true;
@@ -40,6 +57,12 @@ bool Tameran::TitleScreen::Initialize()
 
 void Tameran::TitleScreen::Shutdown()
 {
+	//Shutdown text object
+	m_text.Shutdown();
+
+	//Shutdown the font object
+	m_font.Shutdown();
+
 	//Shutdown the background 
 	m_background.Shutdown();
 
@@ -94,9 +117,18 @@ bool Tameran::TitleScreen::Draw(float eTime)
 		return false;
 
 	//Draw the background image with the texture shader
-	result = m_shaderManager->RenderTextureShader(m_direct3D->GetDeviceContext(), m_background.GetIndexCount(), world, view, ortho, m_background.GetTexture());
+	result = m_shaderManager->RenderFontShader(m_direct3D->GetDeviceContext(), m_background.GetIndexCount(), world, view, ortho, m_background.GetTexture(), DirectX::Colors::Beige);
 	if (!result)
+	{
 		return false;
+	}
+
+	//Draw Text
+	result = m_text.Render(m_direct3D->GetDeviceContext(), m_shaderManager, world, view, ortho, m_font.GetTexture());
+	if (!result)
+	{
+		return false;
+	}
 
 	//Turn Z buffer back on, for other rendering stuff
 	m_direct3D->TurnZBufferOn();
