@@ -63,6 +63,9 @@
     <ClInclude Include="Graphics\Shader\FontShader.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Controls\IControl.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Util\Globals.cpp">
@@ -111,6 +114,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Shader\FontShader.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Controls\IControl.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

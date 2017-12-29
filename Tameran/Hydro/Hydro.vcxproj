@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Controls\IControl.h" />
     <ClInclude Include="GameStateManager.h" />
     <ClInclude Include="Graphics\2D\Sprite.h" />
     <ClInclude Include="Graphics\2D\Texture.h" />
@@ -169,6 +170,7 @@
     <ClInclude Include="Util\Timer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Controls\IControl.cpp" />
     <ClCompile Include="GameStateManager.cpp" />
     <ClCompile Include="Graphics\2D\Sprite.cpp" />
     <ClCompile Include="Graphics\2D\Texture.cpp" />
