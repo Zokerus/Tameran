@@ -4,7 +4,7 @@
 using namespace Hydro;
 
 Tameran::TitleScreen::TitleScreen(GameWindow* game, Direct3D* direct3D, ShaderManager* manager, Camera* camera, Input* input)
-	: IGameState(direct3D, manager, camera), m_gameRef(game), m_input(input), m_background()
+	: IGameState(direct3D, manager, camera), m_gameRef(game), m_input(input), m_controlManager(), m_background()
 	, m_font(), m_text(game->GetWidth(), game->GetHeight(), 30)
 {
 }
@@ -33,6 +33,9 @@ bool Tameran::TitleScreen::Initialize()
 	{
 		return false;
 	}
+
+	//Set the picture box as not selectable
+	m_background.SetTabStop(false);
 	
 	//Initialize font object
 	result = m_font.Initialize(m_direct3D->GetDevice(), m_direct3D->GetDeviceContext(), "Data/Font/font01", 18.0f, 3);
@@ -49,6 +52,9 @@ bool Tameran::TitleScreen::Initialize()
 		OutputDebugString("Text could not be initialized!");
 		return false;
 	}
+
+	//Add background picture box to the control manager
+	m_controlManager.AddControl(&m_background);
 
 	//The Screen is ready to draw and use
 	m_ready = true;
@@ -84,6 +90,12 @@ bool Tameran::TitleScreen::Update(float eTime)
 	{
 		return false;
 	}
+
+	if (!m_controlManager.Update(eTime, m_input))
+	{
+		return false;
+	}
+
 	return true;
 }
 
@@ -112,9 +124,8 @@ bool Tameran::TitleScreen::Draw(float eTime)
 	m_direct3D->TurnZBufferOff();
 	m_direct3D->TurnAlphaBlendingOn();
 
-
-	//Draw the background image with the texture shader
-	result = m_background.Draw(eTime, m_direct3D->GetDeviceContext(), m_shaderManager, world, view, ortho);
+	//Draw the control objects
+	result = m_controlManager.Draw(eTime, m_direct3D->GetDeviceContext(), m_shaderManager, world, view, ortho);
 	if (!result)
 	{
 		return false;

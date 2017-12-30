@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Controls\ControlManager.h" />
     <ClInclude Include="Controls\IControl.h" />
     <ClInclude Include="Controls\PictureBox.h" />
     <ClInclude Include="GameStateManager.h" />
@@ -172,6 +173,7 @@
     <ClInclude Include="Util\Timer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Controls\ControlManager.cpp" />
     <ClCompile Include="Controls\IControl.cpp" />
     <ClCompile Include="Controls\PictureBox.cpp" />
     <ClCompile Include="GameStateManager.cpp" />

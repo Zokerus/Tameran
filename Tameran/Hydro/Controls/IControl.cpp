@@ -40,6 +40,21 @@ void Hydro::IControl::SetFocus(bool focus)
 	m_focus = focus;
 }
 
+void Hydro::IControl::SetStatus(bool enable)
+{
+	m_enable = enable;
+}
+
+void Hydro::IControl::Visibility(bool visibility)
+{
+	m_visible = visibility;
+}
+
+void Hydro::IControl::SetTabStop(bool tabStop)
+{
+	m_tabstop = tabStop;
+}
+
 std::string Hydro::IControl::GetName() const
 {
 	return m_name;

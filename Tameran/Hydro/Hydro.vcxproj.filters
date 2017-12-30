@@ -72,6 +72,9 @@
     <ClInclude Include="Graphics\2D\Forms\Rectangle.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Controls\ControlManager.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Util\Globals.cpp">
@@ -129,6 +132,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Controls\PictureBox.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Controls\ControlManager.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

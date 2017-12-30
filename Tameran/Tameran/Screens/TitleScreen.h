@@ -5,6 +5,7 @@
 #include <IGameState.h>
 #include <GameStateManager.h>
 #include <Input/Input.h>
+#include <Controls/ControlManager.h>
 #include <Controls\PictureBox.h>
 #include <Graphics/Text/Font.h>
 #include <Graphics/Text/Text.h>
@@ -29,6 +30,7 @@ namespace Tameran
 	private:
 		Tameran::GameWindow* m_gameRef;
 		Hydro::Input* m_input;
+		Hydro::ControlManager m_controlManager;
 		Hydro::PictureBox m_background;
 		Hydro::Font m_font;
 		Hydro::Text m_text;

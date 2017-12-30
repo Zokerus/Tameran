@@ -31,6 +31,9 @@ namespace Hydro
 
 		void OnSelect();
 		void SetFocus(bool focus);
+		void SetStatus(bool enable);
+		void Visibility(bool visibility);
+		void SetTabStop(bool tabStop);
 
 		std::string GetName() const;
 		std::string GetString() const;
