@@ -66,6 +66,12 @@
     <ClInclude Include="Controls\IControl.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Controls\PictureBox.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\2D\Forms\Rectangle.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Util\Globals.cpp">
@@ -117,6 +123,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Controls\IControl.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\2D\Forms\Rectangle.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Controls\PictureBox.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

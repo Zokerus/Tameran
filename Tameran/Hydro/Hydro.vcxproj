@@ -152,7 +152,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Controls\IControl.h" />
+    <ClInclude Include="Controls\PictureBox.h" />
     <ClInclude Include="GameStateManager.h" />
+    <ClInclude Include="Graphics\2D\Forms\Rectangle.h" />
     <ClInclude Include="Graphics\2D\Sprite.h" />
     <ClInclude Include="Graphics\2D\Texture.h" />
     <ClInclude Include="Graphics\Camera.h" />
@@ -171,7 +173,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Controls\IControl.cpp" />
+    <ClCompile Include="Controls\PictureBox.cpp" />
     <ClCompile Include="GameStateManager.cpp" />
+    <ClCompile Include="Graphics\2D\Forms\Rectangle.cpp" />
     <ClCompile Include="Graphics\2D\Sprite.cpp" />
     <ClCompile Include="Graphics\2D\Texture.cpp" />
     <ClCompile Include="Graphics\Camera.cpp" />

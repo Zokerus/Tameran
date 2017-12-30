@@ -1,7 +1,7 @@
 #include "IControl.h"
 
 Hydro::IControl::IControl()
-	: m_name(nullptr), m_text(nullptr), m_size(), m_pos(), m_focus(false), m_enable(true), m_visible(true), m_tabstop(false), m_ready(false),
+	: m_name(), m_text(), m_size(), m_pos(), m_focus(false), m_enable(true), m_visible(true), m_tabstop(false), m_ready(false),
 	m_color(), m_type()
 {}
 
@@ -19,21 +19,7 @@ bool Hydro::IControl::Initialize()
 }
 
 void Hydro::IControl::Shutdown()
-{
-	//Shutdown the name field
-	if (m_name)
-	{
-		delete m_name;
-		m_name = nullptr;
-	}
-
-	//Shutdown the text field
-	if (m_text)
-	{
-		delete m_text;
-		m_text = nullptr;
-	}
-}
+{}
 
 bool Hydro::IControl::Update(float eTime)
 {
@@ -54,12 +40,12 @@ void Hydro::IControl::SetFocus(bool focus)
 	m_focus = focus;
 }
 
-char* Hydro::IControl::GetName() const
+std::string Hydro::IControl::GetName() const
 {
 	return m_name;
 }
 
-char* Hydro::IControl::GetString() const
+std::string Hydro::IControl::GetString() const
 {
 	return m_text;
 }

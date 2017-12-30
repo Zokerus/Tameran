@@ -24,14 +24,15 @@ bool Tameran::TitleScreen::Initialize()
 	//Initialize the parent class
 	IGameState::Initialize();
 
+	//Create screen rectangle
+	Hydro::Rectangle rect(0, 0, m_gameRef->GetWidth(), m_gameRef->GetHeight());
+
 	//Initialize the background image object
-	result = m_background.Initialize(m_direct3D->GetDevice(), m_direct3D->GetDeviceContext(), m_gameRef->GetWidth() , m_gameRef->GetHeight(), "Data/Images/titlescreen32.tga", m_gameRef->GetWidth(), m_gameRef->GetHeight());
+	result = m_background.Initialize(m_direct3D, rect, "Data/Images/titlescreen32.tga", m_gameRef->GetWidth(), m_gameRef->GetHeight());
 	if (!result)
 	{
 		return false;
 	}
-
-	m_background.Update(m_direct3D->GetDeviceContext(), 0, 0);
 	
 	//Initialize font object
 	result = m_font.Initialize(m_direct3D->GetDevice(), m_direct3D->GetDeviceContext(), "Data/Font/font01", 18.0f, 3);
@@ -111,13 +112,9 @@ bool Tameran::TitleScreen::Draw(float eTime)
 	m_direct3D->TurnZBufferOff();
 	m_direct3D->TurnAlphaBlendingOn();
 
-	//Prepare background image for drawing
-	result = m_background.Render(m_direct3D->GetDeviceContext());
-	if (!result)
-		return false;
 
 	//Draw the background image with the texture shader
-	result = m_shaderManager->RenderFontShader(m_direct3D->GetDeviceContext(), m_background.GetIndexCount(), world, view, ortho, m_background.GetTexture(), DirectX::Colors::Beige);
+	result = m_background.Draw(eTime, m_direct3D->GetDeviceContext(), m_shaderManager, world, view, ortho);
 	if (!result)
 	{
 		return false;

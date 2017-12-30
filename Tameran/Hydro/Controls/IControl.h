@@ -1,6 +1,9 @@
 #ifndef ICONTROL
 #define ICONTROL
 
+//Includes
+#include <string>
+
 //My Includes
 #include "../Graphics/Shader/ShaderManager.h"
 #include "../Input/Input.h"
@@ -29,8 +32,8 @@ namespace Hydro
 		void OnSelect();
 		void SetFocus(bool focus);
 
-		char* GetName() const;
-		char* GetString() const;
+		std::string GetName() const;
+		std::string GetString() const;
 		DirectX::XMFLOAT2 GetSize() const;
 		DirectX::XMINT2 GetPosition() const;
 		bool HasFocus() const;
@@ -41,8 +44,8 @@ namespace Hydro
 		ControlType GetType() const;
 
 	protected:
-		char* m_name;
-		char* m_text;
+		std::string m_name;
+		std::string m_text;
 		DirectX::XMFLOAT2 m_size;
 		DirectX::XMINT2 m_pos;
 		bool m_focus, m_enable, m_visible, m_tabstop, m_ready;
