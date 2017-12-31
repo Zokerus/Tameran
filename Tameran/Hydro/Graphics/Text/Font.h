@@ -40,8 +40,8 @@ namespace Hydro
 		void Shutdown();
 
 		ID3D11ShaderResourceView* GetTexture();
-		void BuildVertexArray(void* vertices, char* sentence, float drawX, float drawY);
-		float GetTextWidth(char *sentence) const;
+		void BuildVertexArray(void* vertices, const char* sentence, float drawX, float drawY);
+		float GetTextWidth(const char *sentence) const;
 		float GetFontHeight() const;
 
 	private:

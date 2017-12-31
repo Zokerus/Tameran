@@ -6,9 +6,9 @@
 #include <GameStateManager.h>
 #include <Input/Input.h>
 #include <Controls/ControlManager.h>
-#include <Controls\PictureBox.h>
+#include <Controls/PictureBox.h>
+#include <Controls/Label.h>
 #include <Graphics/Text/Font.h>
-#include <Graphics/Text/Text.h>
 
 //////////////////////////////////////////////////////////////////////////
 //Class: TitleScreen
@@ -33,7 +33,7 @@ namespace Tameran
 		Hydro::ControlManager m_controlManager;
 		Hydro::PictureBox m_background;
 		Hydro::Font m_font;
-		Hydro::Text m_text;
+		Hydro::Label m_label;
 	};
 }
 

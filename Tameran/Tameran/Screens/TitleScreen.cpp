@@ -5,7 +5,7 @@ using namespace Hydro;
 
 Tameran::TitleScreen::TitleScreen(GameWindow* game, Direct3D* direct3D, ShaderManager* manager, Camera* camera, Input* input)
 	: IGameState(direct3D, manager, camera), m_gameRef(game), m_input(input), m_controlManager(), m_background()
-	, m_font(), m_text(game->GetWidth(), game->GetHeight(), 30)
+	, m_font(), m_label(game->GetWidth(), game->GetHeight(), 30)
 {
 }
 
@@ -45,8 +45,10 @@ bool Tameran::TitleScreen::Initialize()
 		return false;
 	}
 
+	float size = m_font.GetTextWidth("Press ENTER to start");
+
 	//test of text
-	result = m_text.Initialize(m_direct3D->GetDevice(), m_direct3D->GetDeviceContext(), false, &m_font, "Press ENTER to start", DirectX::XMINT2(20, 20), DirectX::Colors::Yellow);
+	result = m_label.Initialize(m_direct3D, &m_font, "Press ENTER to start", DirectX::XMINT2(20, 20), DirectX::XMFLOAT2(m_font.GetFontHeight(), size), DirectX::Colors::Yellow);
 	if (!result)
 	{
 		OutputDebugString("Text could not be initialized!");
@@ -55,6 +57,7 @@ bool Tameran::TitleScreen::Initialize()
 
 	//Add background picture box to the control manager
 	m_controlManager.AddControl(&m_background);
+	m_controlManager.AddControl(&m_label);
 
 	//The Screen is ready to draw and use
 	m_ready = true;
@@ -65,7 +68,7 @@ bool Tameran::TitleScreen::Initialize()
 void Tameran::TitleScreen::Shutdown()
 {
 	//Shutdown text object
-	m_text.Shutdown();
+	m_label.Shutdown();
 
 	//Shutdown the font object
 	m_font.Shutdown();
@@ -130,14 +133,6 @@ bool Tameran::TitleScreen::Draw(float eTime)
 	{
 		return false;
 	}
-
-	//Draw Text
-	result = m_text.Render(m_direct3D->GetDeviceContext(), m_shaderManager, world, view, ortho, m_font.GetTexture());
-	if (!result)
-	{
-		return false;
-	}
-
 	//Turn Z buffer back on, for other rendering stuff
 	m_direct3D->TurnZBufferOn();
 	m_direct3D->TurnAlphaBlendingOff();

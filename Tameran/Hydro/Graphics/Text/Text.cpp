@@ -15,7 +15,7 @@ Hydro::Text::~Text()
 	}
 }
 
-bool Hydro::Text::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, bool shadow, Font* font, char* text, DirectX::XMINT2 pos, DirectX::XMVECTORF32 color)
+bool Hydro::Text::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, bool shadow, Font* font, const char* text, DirectX::XMINT2 pos, DirectX::XMVECTORF32 color)
 {
 	Font::VertexType* vertices;
 	unsigned long* indices;
@@ -186,7 +186,7 @@ bool Hydro::Text::Render(ID3D11DeviceContext * deviceContext, ShaderManager * sh
 	return true;
 }
 
-bool Hydro::Text::UpdateSentence(ID3D11DeviceContext * deviceContext, Font * font, char * text, DirectX::XMINT2 pos, DirectX::XMVECTORF32 color)
+bool Hydro::Text::UpdateSentence(ID3D11DeviceContext * deviceContext, Font * font, const char * text, DirectX::XMINT2 pos, DirectX::XMVECTORF32 color)
 {
 	int numLetters;
 	Font::VertexType* vertices;

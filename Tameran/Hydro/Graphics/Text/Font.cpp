@@ -51,7 +51,7 @@ ID3D11ShaderResourceView * Hydro::Font::GetTexture()
 	return m_texture.GetTexture();
 }
 
-void Hydro::Font::BuildVertexArray(void * vertices, char * sentence, float drawX, float drawY)
+void Hydro::Font::BuildVertexArray(void* vertices, const char* sentence, float drawX, float drawY)
 {
 	VertexType *vertexPtr;
 	int numLetters, index, i, letter;
@@ -101,7 +101,7 @@ void Hydro::Font::BuildVertexArray(void * vertices, char * sentence, float drawX
 	}
 }
 
-float Hydro::Font::GetTextWidth(char * sentence) const
+float Hydro::Font::GetTextWidth(const char * sentence) const
 {
 	int numLetters, i, letter;
 	float ratio, width;

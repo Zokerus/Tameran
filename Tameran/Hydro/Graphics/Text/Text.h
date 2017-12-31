@@ -19,12 +19,12 @@ namespace Hydro
 		Text(int screenWidth, int screenHeight, int maxLength);
 		~Text();
 
-		bool Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, bool shadow, Font* font, char* text, DirectX::XMINT2 pos, DirectX::XMVECTORF32 color);
+		bool Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, bool shadow, Font* font, const char* text, DirectX::XMINT2 pos, DirectX::XMVECTORF32 color);
 		void Shutdown();
 		bool Render(ID3D11DeviceContext* deviceContext, ShaderManager* shaderManager, DirectX::XMMATRIX worldMatrix, DirectX::XMMATRIX viewMatrix, DirectX::XMMATRIX orthoMatrix, ID3D11ShaderResourceView* fontTexture);
 		bool Render(ID3D11DeviceContext* deviceContext, ShaderManager* shaderManager, DirectX::XMMATRIX worldMatrix, DirectX::XMMATRIX viewMatrix, DirectX::XMMATRIX orthoMatrix, ID3D11ShaderResourceView* fontTexture, DirectX::XMVECTORF32 foreColor);
 	
-		bool UpdateSentence(ID3D11DeviceContext* deviceContext, Font* font, char* text, DirectX::XMINT2 pos, DirectX::XMVECTORF32 color);
+		bool UpdateSentence(ID3D11DeviceContext* deviceContext, Font* font, const char* text, DirectX::XMINT2 pos, DirectX::XMVECTORF32 color);
 	private:
 		bool RenderSentence(ID3D11DeviceContext* deviceContext, ShaderManager* shaderManager, DirectX::XMMATRIX worldMatrix, DirectX::XMMATRIX viewMatrix, DirectX::XMMATRIX orthoMatrix, ID3D11ShaderResourceView* fontTexture, DirectX::XMVECTORF32 foreColor);
 	
