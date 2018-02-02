@@ -7,7 +7,7 @@
 #include <Input/Input.h>
 #include <Controls/ControlManager.h>
 #include <Controls/PictureBox.h>
-#include <Controls/Label.h>
+#include <Controls/LinkLabel.h>
 #include <Graphics/Text/Font.h>
 
 //////////////////////////////////////////////////////////////////////////
@@ -28,12 +28,15 @@ namespace Tameran
 		bool Draw(float eTime);
 
 	private:
+		void StartLabel_Selected(const Hydro::IControl *sender);
+
+	private:
 		Tameran::GameWindow* m_gameRef;
 		Hydro::Input* m_input;
 		Hydro::ControlManager m_controlManager;
 		Hydro::PictureBox m_background;
 		Hydro::Font m_font;
-		Hydro::Label m_label;
+		Hydro::LinkLabel m_label;
 	};
 }
 

@@ -26,7 +26,7 @@ namespace Hydro
 
 		void HandleInput();
 
-	private:
+	protected:
 		Text m_string;
 		Font *m_font;
 		bool m_ready;

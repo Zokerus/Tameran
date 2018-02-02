@@ -154,6 +154,7 @@
     <ClInclude Include="Controls\ControlManager.h" />
     <ClInclude Include="Controls\IControl.h" />
     <ClInclude Include="Controls\Label.h" />
+    <ClInclude Include="Controls\LinkLabel.h" />
     <ClInclude Include="Controls\PictureBox.h" />
     <ClInclude Include="GameStateManager.h" />
     <ClInclude Include="Graphics\2D\Forms\Rectangle.h" />
@@ -177,6 +178,7 @@
     <ClCompile Include="Controls\ControlManager.cpp" />
     <ClCompile Include="Controls\IControl.cpp" />
     <ClCompile Include="Controls\Label.cpp" />
+    <ClCompile Include="Controls\LinkLabel.cpp" />
     <ClCompile Include="Controls\PictureBox.cpp" />
     <ClCompile Include="GameStateManager.cpp" />
     <ClCompile Include="Graphics\2D\Forms\Rectangle.cpp" />

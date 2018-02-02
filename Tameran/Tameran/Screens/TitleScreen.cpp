@@ -5,7 +5,7 @@ using namespace Hydro;
 
 Tameran::TitleScreen::TitleScreen(GameWindow* game, Direct3D* direct3D, ShaderManager* manager, Camera* camera, Input* input)
 	: IGameState(direct3D, manager, camera), m_gameRef(game), m_input(input), m_controlManager(), m_background()
-	, m_font(), m_label(game->GetWidth(), game->GetHeight(), 30)
+	, m_font(), m_label(DirectX::Colors::Yellow, std::bind(&TitleScreen::StartLabel_Selected, this, std::placeholders::_1), game->GetWidth(), game->GetHeight(), 30)
 {
 }
 
@@ -45,10 +45,14 @@ bool Tameran::TitleScreen::Initialize()
 		return false;
 	}
 
+	//Measure the width of the label text
 	float size = m_font.GetTextWidth("Press ENTER to start");
 
+	//Calculate the screen center
+	float xPos = (m_gameRef->GetWidth() - size) / 2;
+
 	//test of text
-	result = m_label.Initialize(m_direct3D, &m_font, "Press ENTER to start", DirectX::XMINT2(20, 20), DirectX::XMFLOAT2(m_font.GetFontHeight(), size), DirectX::Colors::Yellow);
+	result = m_label.Initialize(m_direct3D, &m_font, "Press ENTER to start", DirectX::XMINT2(xPos, 368), DirectX::XMFLOAT2(m_font.GetFontHeight(), size), DirectX::Colors::White);
 	if (!result)
 	{
 		OutputDebugString("Text could not be initialized!");
@@ -58,6 +62,9 @@ bool Tameran::TitleScreen::Initialize()
 	//Add background picture box to the control manager
 	m_controlManager.AddControl(&m_background);
 	m_controlManager.AddControl(&m_label);
+
+	//set focus on startLabel
+	m_label.SetFocus(true);
 
 	//The Screen is ready to draw and use
 	m_ready = true;
@@ -138,4 +145,9 @@ bool Tameran::TitleScreen::Draw(float eTime)
 	m_direct3D->TurnAlphaBlendingOff();
 
 	return true;
+}
+
+void Tameran::TitleScreen::StartLabel_Selected(const Hydro::IControl *sender)
+{
+	m_gameRef->Kill();
 }
