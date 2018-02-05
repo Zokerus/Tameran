@@ -245,7 +245,7 @@ bool Hydro::Text::UpdateSentence(ID3D11DeviceContext * deviceContext, Font * fon
 
 	//If shadowed then do the same for the second vertex buffer but offset by two pixels on both axis
 	//TODO shadow für den text einfügen
-	if (false)
+	if (m_shadow)
 	{
 		memset(vertices, 0, (sizeof(Font::VertexType) * m_vertexCount));
 
@@ -280,7 +280,7 @@ bool Hydro::Text::RenderSentence(ID3D11DeviceContext * deviceContext, ShaderMana
 	offset = 0;
 
 	//If shadowed then render the shadow text first
-	if (false)
+	if (m_shadow)
 	{
 		shadowColor = DirectX::Colors::Black;
 

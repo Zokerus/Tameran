@@ -23,7 +23,7 @@ bool Hydro::Label::Initialize(Direct3D* direct3D, Font* font, char* string, Dire
 	m_color = color;
 	m_font = font;
 
-	result = m_string.Initialize(direct3D->GetDevice(), direct3D->GetDeviceContext(), false, font, m_text.c_str(), pos, color);
+	result = m_string.Initialize(direct3D->GetDevice(), direct3D->GetDeviceContext(), true, font, m_text.c_str(), pos, color);
 	if (!result)
 	{
 		return false;
