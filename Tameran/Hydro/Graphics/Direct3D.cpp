@@ -1,21 +1,50 @@
 #include "Direct3D.h"
 #include "../IGameWindow.h"
+#include "DXErr.h"
 
 Hydro::Direct3D::Direct3D(IGameWindow* window)
-	: m_window(window), m_swapChain(nullptr), m_device(nullptr), m_deviceContext(nullptr), m_renderTargetView(nullptr), m_backBuffer(nullptr),
-	m_depthStencilState(nullptr), m_depthStencilView(nullptr), m_depthDisabledStencilState(nullptr), m_alphaEnableBlendingState(nullptr), m_alphaDisableBlendingState(nullptr), m_rasterStateWire(nullptr), m_rasterStateSolid(nullptr), m_rasterNoCullingSolid(nullptr),
-	m_debug(nullptr), m_ready(false)
-{}
+	: m_window(window), pSwapChain(nullptr), pDevice(nullptr), pDeviceContext(nullptr), pRenderTargetView(nullptr), pBackBuffer(nullptr),
+	pDepthStencilState(nullptr), pDepthStencilView(nullptr), pDepthDisabledStencilState(nullptr), pAlphaEnableBlendingState(nullptr), pAlphaDisableBlendingState(nullptr), pRasterStateWire(nullptr), pRasterStateSolid(nullptr), pRasterNoCullingSolid(nullptr),
+	pDebug(nullptr)
+{
+		//Create Swapchain and Device
+		CreateSwapChainAndDevice();
+
+		//Create RenderTargetView
+		CreateRenderTargetView();
+
+		//Create Depth buffer
+		CreateDepthBuffer();
+
+		//Create Depth stencil
+		CreateDepthStencilState();
+
+		//Create depth stencil view
+		CreateDepthStencilView();
+
+		//Create blend states
+		// alpha blending on/off
+		CreateBlendState();
+
+		//Create RasterizerState
+		//solid state culling, solid no culling and wireframe no culling
+		CreateRasterizerState();
+
+		// Bind the render target view and depth stencil buffer to the output render pipeline.
+		pDeviceContext->OMSetRenderTargets(1, &pRenderTargetView, pDepthStencilView.Get());
+
+		//create viewport
+		CreateViewport();
+
+		//Create world, projection and ortho matrices
+		CreateMatrices();
+}
 
 Hydro::Direct3D::~Direct3D()
 {
-	if (m_ready)
-	{
-		Shutdown();
-	}
 }
 
-bool Hydro::Direct3D::Initialize()
+/*bool Hydro::Direct3D::Initialize()
 {
 	//Create Swapchain and Device
 	if (!CreateSwapChainAndDevice())
@@ -35,7 +64,7 @@ bool Hydro::Direct3D::Initialize()
 		return false;
 	}
 
-	//Create Depth stecil
+	//Create Depth stencil
 	if (!CreateDepthStencilState())
 	{
 		return false;
@@ -62,7 +91,7 @@ bool Hydro::Direct3D::Initialize()
 	}
 
 	// Bind the render target view and depth stencil buffer to the output render pipeline.
-	m_deviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
+	m_deviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView.Get());
 
 	//create viewport
 	if (!CreateViewport())
@@ -76,9 +105,9 @@ bool Hydro::Direct3D::Initialize()
 	//Flag the class as ready
 	m_ready = true;
 	return true;
-}
+}*/
 
-void Hydro::Direct3D::Shutdown()
+/*void Hydro::Direct3D::Shutdown()
 {
 	//Clear the state of the device context before releasing it
 	if (m_deviceContext)
@@ -174,33 +203,24 @@ void Hydro::Direct3D::Shutdown()
 
 	//Set the ready flag of the class to false
 	m_ready = false;
-}
+}*/
 
 void Hydro::Direct3D::BeginFrame(DirectX::XMVECTORF32 color)
 {
-	//Check if the class is ready to draw
-	if (m_ready)
-	{
-		// Clear the back buffer.
-		m_deviceContext->ClearRenderTargetView(m_renderTargetView, color);
+	// Clear the back buffer.
+	pDeviceContext->ClearRenderTargetView(pRenderTargetView.Get(), color);
 
-		// Clear the depth buffer.
-		m_deviceContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
-	}
+	// Clear the depth buffer.
+	pDeviceContext->ClearDepthStencilView(pDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
 bool Hydro::Direct3D::EndFrame()
 {
-	if (!m_ready)
-	{
-		//If the class is nor ready, return with a false and quit the app
-		return false;
-	}
 	// Present the back buffer to the screen since rendering is complete.
 	if (m_window->VSync())
 	{
 		// Lock to screen refresh rate.
-		if (FAILED(m_swapChain->Present(1, 0)))
+		if (FAILED(pSwapChain->Present(1, 0)))
 		{
 			return false;
 		}
@@ -208,7 +228,7 @@ bool Hydro::Direct3D::EndFrame()
 	else
 	{
 		// Present as fast as possible.
-		if (FAILED(m_swapChain->Present(0, 0)))
+		if (FAILED(pSwapChain->Present(0, 0)))
 		{
 			return false;
 		}
@@ -219,32 +239,32 @@ bool Hydro::Direct3D::EndFrame()
 
 void Hydro::Direct3D::SetFullScreen(const bool fullscreen)
 {
-	m_swapChain->SetFullscreenState(fullscreen, NULL);
+	pSwapChain->SetFullscreenState(fullscreen, NULL);
 }
 
 ID3D11Device* Hydro::Direct3D::GetDevice() const
 {
-	return m_device;
+	return pDevice.Get();
 }
 
 ID3D11DeviceContext* Hydro::Direct3D::GetDeviceContext() const
 {
-	return m_deviceContext;
+	return pDeviceContext.Get();
 }
 
-void Hydro::Direct3D::GetProjectionMatrix(DirectX::XMMATRIX& projectionMatrix)
+void Hydro::Direct3D::GetProjectionMatrix(DirectX::XMMATRIX& ProjectionMatrix)
 {
-	projectionMatrix = m_projectionMatrix;
+	ProjectionMatrix = projectionMatrix;
 }
 
-void Hydro::Direct3D::GetWorldMatrix(DirectX::XMMATRIX& worldMatrix)
+void Hydro::Direct3D::GetWorldMatrix(DirectX::XMMATRIX& WorldMatrix)
 {
-	worldMatrix = m_worldMatrix;
+	WorldMatrix = worldMatrix;
 }
 
-void Hydro::Direct3D::GetOrthoMatrix(DirectX::XMMATRIX& orthoMatrix)
+void Hydro::Direct3D::GetOrthoMatrix(DirectX::XMMATRIX& OrthoMatrix)
 {
-	orthoMatrix = m_orthoMatrix;
+	OrthoMatrix = orthoMatrix;
 }
 
 void Hydro::Direct3D::GetVideoCardInfo(char * cardName, int & memory)
@@ -253,24 +273,24 @@ void Hydro::Direct3D::GetVideoCardInfo(char * cardName, int & memory)
 
 void Hydro::Direct3D::TurnZBufferOn()
 {
-	m_deviceContext->OMSetDepthStencilState(m_depthStencilState, 1);
+	pDeviceContext->OMSetDepthStencilState(pDepthStencilState.Get(), 1);
 }
 
 void Hydro::Direct3D::TurnZBufferOff()
 {
-	m_deviceContext->OMSetDepthStencilState(m_depthDisabledStencilState, 1);
+	pDeviceContext->OMSetDepthStencilState(pDepthDisabledStencilState.Get(), 1);
 }
 
 void Hydro::Direct3D::TurnOnCulling()
 {
 	//Set the culling rastersizer state
-	m_deviceContext->RSSetState(m_rasterStateSolid);
+	pDeviceContext->RSSetState(pRasterStateSolid.Get());
 }
 
 void Hydro::Direct3D::TurnOffCulling()
 {
 	//Set the no back culling raster state
-	m_deviceContext->RSSetState(m_rasterNoCullingSolid);
+	pDeviceContext->RSSetState(pRasterNoCullingSolid.Get());
 }
 
 void Hydro::Direct3D::TurnAlphaBlendingOn()
@@ -284,7 +304,7 @@ void Hydro::Direct3D::TurnAlphaBlendingOn()
 	blendFactor[3] = 0.0f;
 
 	// Turn on the alpha blending.
-	m_deviceContext->OMSetBlendState(m_alphaEnableBlendingState, blendFactor, 0xffffffff);
+	pDeviceContext->OMSetBlendState(pAlphaEnableBlendingState.Get(), blendFactor, 0xffffffff);
 }
 
 void Hydro::Direct3D::TurnAlphaBlendingOff()
@@ -298,20 +318,20 @@ void Hydro::Direct3D::TurnAlphaBlendingOff()
 	blendFactor[3] = 0.0f;
 
 	// Turn off the alpha blending.
-	m_deviceContext->OMSetBlendState(m_alphaDisableBlendingState, blendFactor, 0xffffffff);
+	pDeviceContext->OMSetBlendState(pAlphaDisableBlendingState.Get(), blendFactor, 0xffffffff);
 }
 
 void Hydro::Direct3D::EnableWireframe()
 {
-	m_deviceContext->RSSetState(m_rasterStateWire);
+	pDeviceContext->RSSetState(pRasterStateWire.Get());
 }
 
 void Hydro::Direct3D::DisableWireframe()
 {
-	m_deviceContext->RSSetState(m_rasterStateSolid);
+	pDeviceContext->RSSetState(pRasterStateSolid.Get());
 }
 
-bool Hydro::Direct3D::CreateSwapChainAndDevice()
+void Hydro::Direct3D::CreateSwapChainAndDevice()
 {
 	HRESULT result;
 
@@ -327,9 +347,8 @@ bool Hydro::Direct3D::CreateSwapChainAndDevice()
 	D3D_FEATURE_LEVEL featureLevels[] = { D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_1, D3D_FEATURE_LEVEL_10_0, D3D_FEATURE_LEVEL_9_3 };
 	UINT numFeatureLevels = ARRAYSIZE(featureLevels);
 
-	DXGI_SWAP_CHAIN_DESC swapChainDesc;
 	// Initialize the swap chain description.
-	ZeroMemory(&swapChainDesc, sizeof(DXGI_SWAP_CHAIN_DESC));
+	DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
 	// Set to a double back buffer.
 	swapChainDesc.BufferCount = 1;
 	// Set the width and height of the back buffer.
@@ -344,60 +363,73 @@ bool Hydro::Direct3D::CreateSwapChainAndDevice()
 	// Set the handle for the window to render to.
 	swapChainDesc.OutputWindow = m_window->GetHandle();
 	// Discard the back buffer contents after presenting.
-	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+	//swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 	swapChainDesc.Windowed = true;
 	// Turn multisampling off.
 	swapChainDesc.SampleDesc.Count = 1;
 	swapChainDesc.SampleDesc.Quality = 0;
 	// Don't set the advanced flags.
-	swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+	//swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
 
 	//Create swapchain, device, device context and featurelevel and so on
-	for (UINT i = 0; i < numDriverTypes; i++)
+	for (UINT i = 0; i < 1; i++)
 	{
-		result = D3D11CreateDeviceAndSwapChain(NULL, driverTypes[i], NULL, createDeviceFlags, featureLevels, numFeatureLevels, D3D11_SDK_VERSION, &swapChainDesc, &m_swapChain, &m_device, &m_featureLevel, &m_deviceContext);
+		//result = D3D11CreateDeviceAndSwapChain(NULL, driverTypes[i], NULL, createDeviceFlags, featureLevels, numFeatureLevels, D3D11_SDK_VERSION, &swapChainDesc, &pSwapChain, &pDevice, &featureLevel, &pDeviceContext);
+		//result = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, createDeviceFlags, nullptr, 0, D3D11_SDK_VERSION, &swapChainDesc, &pSwapChain, &pDevice, nullptr, &pDeviceContext);
+		result = D3D11CreateDeviceAndSwapChain(
+			nullptr,
+			D3D_DRIVER_TYPE_HARDWARE,
+			nullptr,
+			createDeviceFlags,
+			nullptr,
+			0,
+			D3D11_SDK_VERSION,
+			&swapChainDesc,
+			&pSwapChain,
+			&pDevice,
+			nullptr,
+			&pDeviceContext);
 		if (SUCCEEDED(result))
 		{
-			m_driverType = driverTypes[i];
+			driverType = driverTypes[i];
 			break;
 		}
 	}
 
 	if (FAILED(result))
 	{
-		OutputDebugString("Failed to create device and swap chain");
-		return false;
+		OutputDebugString("Failed to create device and swapchain");
+		throw std::exception("Failed to create device and swapchain");
 	}
 
-	result = m_device->QueryInterface(__uuidof(ID3D11Debug), (void**)&m_debug);
+	result = pDevice->QueryInterface(__uuidof(ID3D11Debug), (void**)&pDebug);
 	if (FAILED(result))
 	{
 		OutputDebugString("Failed to create debug object");
-		return false;
+		throw std::exception("Failed to create debug object");
 	}
-	return true;
 }
 
-bool Hydro::Direct3D::CreateRenderTargetView()
+void Hydro::Direct3D::CreateRenderTargetView()
 {
 	HRESULT result;
 
 	//Create render target view with the help of the backbuffer
 	ID3D11Texture2D* backBufferPtr = nullptr;
-	result = m_swapChain->GetBuffer(NULL, __uuidof(ID3D11Texture2D), (LPVOID*)(&backBufferPtr));
+	result = pSwapChain->GetBuffer(NULL, __uuidof(ID3D11Texture2D), (LPVOID*)(&backBufferPtr));
 	if (FAILED(result))
 	{
 		OutputDebugString("Failed to create backBuffer");
-		return false;
+		throw std::exception("Failed to create backbuffer");
 	}
 
 	//Create RenderTargetView
-	result = m_device->CreateRenderTargetView(backBufferPtr, nullptr, &m_renderTargetView);
+	result = pDevice->CreateRenderTargetView(backBufferPtr, nullptr, &pRenderTargetView);
 	if (FAILED(result))
 	{
 		OutputDebugString("Failed to create renderTargetView");
-		return false;
+		throw std::exception("Failed to create renderTargetView");
 	}
 
 	//Release the backbuffer pointer because it is not needed anymore
@@ -406,11 +438,9 @@ bool Hydro::Direct3D::CreateRenderTargetView()
 		backBufferPtr->Release();
 		backBufferPtr = nullptr;
 	}
-
-	return true;
 }
 
-bool Hydro::Direct3D::CreateDepthBuffer()
+void Hydro::Direct3D::CreateDepthBuffer()
 {
 	HRESULT result;
 	D3D11_TEXTURE2D_DESC depthBufferDesc;
@@ -432,17 +462,15 @@ bool Hydro::Direct3D::CreateDepthBuffer()
 	depthBufferDesc.MiscFlags = 0;
 
 	// Create the texture for the depth buffer using the filled out description.
-	result = m_device->CreateTexture2D(&depthBufferDesc, NULL, &m_backBuffer);
+	result = pDevice->CreateTexture2D(&depthBufferDesc, NULL, &pBackBuffer);
 	if (FAILED(result))
 	{
 		OutputDebugString("Failed to create depth buffer texture");
-		return false;
+		throw std::exception("Failed to create depth buffer texture");
 	}
-
-	return true;
 }
 
-bool Hydro::Direct3D::CreateDepthStencilState()
+void Hydro::Direct3D::CreateDepthStencilState()
 {
 	HRESULT result;
 	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
@@ -472,11 +500,11 @@ bool Hydro::Direct3D::CreateDepthStencilState()
 	depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
 	// Create the depth stencil state.
-	result = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState);
+	result = pDevice->CreateDepthStencilState(&depthStencilDesc, &pDepthStencilState);
 	if (FAILED(result))
 	{
-		OutputDebugString("Failed to create depth stencil state");
-		return false;
+		OutputDebugString("Failed to create depth stencil state (enabled)");
+		throw std::exception("Failed to create depth stencil state (enabled)");
 	}
 
 	//disable the depth feature
@@ -484,20 +512,18 @@ bool Hydro::Direct3D::CreateDepthStencilState()
 
 	// Now create a second depth stencil state which turns off the Z buffer for 2D rendering.  The only difference is 
 	// that DepthEnable is set to false, all other parameters are the same as the other depth stencil state.
-	result = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthDisabledStencilState);
+	result = pDevice->CreateDepthStencilState(&depthStencilDesc, &pDepthDisabledStencilState);
 	if (FAILED(result))
 	{
-		OutputDebugString("Failed to create depth stencil state");
-		return false;
+		OutputDebugString("Failed to create depth stencil state (disabled)");
+		throw std::exception("Failed to create depth stencil state (disbaled)");
 	}
 
 	// Set the depth stencil state.
-	m_deviceContext->OMSetDepthStencilState(m_depthStencilState, 1);
-
-	return true;
+	pDeviceContext->OMSetDepthStencilState(pDepthStencilState.Get(), 1);
 }
 
-bool Hydro::Direct3D::CreateDepthStencilView()
+void Hydro::Direct3D::CreateDepthStencilView()
 {
 	HRESULT result;
 	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
@@ -511,19 +537,18 @@ bool Hydro::Direct3D::CreateDepthStencilView()
 	depthStencilViewDesc.Texture2D.MipSlice = 0;
 
 	// Create the depth stencil view.
-	result = m_device->CreateDepthStencilView(m_backBuffer, &depthStencilViewDesc, &m_depthStencilView);
+	result = pDevice->CreateDepthStencilView(pBackBuffer.Get(), &depthStencilViewDesc, &pDepthStencilView);
 	if (FAILED(result))
 	{
 		OutputDebugString("Failed to create depth stencil view");
-		return false;
+		throw std::exception("Failed to create depth stencil view");
 	}
 
 	// Bind the render target view and depth stencil buffer to the output render pipeline.
-	m_deviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
-	return true;
+	pDeviceContext->OMSetRenderTargets(1, &pRenderTargetView, pDepthStencilView.Get());
 }
 
-bool Hydro::Direct3D::CreateBlendState()
+void Hydro::Direct3D::CreateBlendState()
 {
 	HRESULT result;
 	D3D11_BLEND_DESC blendStateDesc;
@@ -542,28 +567,26 @@ bool Hydro::Direct3D::CreateBlendState()
 	blendStateDesc.RenderTarget[0].RenderTargetWriteMask = 0x0f;
 
 	// Create the blend state using the description.
-	result = m_device->CreateBlendState(&blendStateDesc, &m_alphaDisableBlendingState);
+	result = pDevice->CreateBlendState(&blendStateDesc, &pAlphaDisableBlendingState);
 	if (FAILED(result))
 	{
-		OutputDebugString("Failed to create blend state");
-		return false;
+		OutputDebugString("Failed to create blend state (disabled)");
+		throw std::exception("Failed to create blend state (disabled)");
 	}
 
 	//Switch blending on
 	blendStateDesc.RenderTarget[0].BlendEnable = true;
 
 	// Create the blend state using the description.
-	result = m_device->CreateBlendState(&blendStateDesc, &m_alphaEnableBlendingState);
+	result = pDevice->CreateBlendState(&blendStateDesc, &pAlphaEnableBlendingState);
 	if (FAILED(result))
 	{
-		OutputDebugString("Failed to create blend state");
-		return false;
+		OutputDebugString("Failed to create blend state (enabled)");
+		throw std::exception("Failed to create blend state (enabled)");
 	}
-
-	return true;
 }
 
-bool Hydro::Direct3D::CreateRasterizerState()
+void Hydro::Direct3D::CreateRasterizerState()
 {
 	HRESULT result;
 	D3D11_RASTERIZER_DESC rasterDesc;
@@ -584,22 +607,22 @@ bool Hydro::Direct3D::CreateRasterizerState()
 	rasterDesc.SlopeScaledDepthBias = 0.0f;
 
 	// Create the rasterizer state from the description we just filled out.
-	result = m_device->CreateRasterizerState(&rasterDesc, &m_rasterNoCullingSolid);
+	result = pDevice->CreateRasterizerState(&rasterDesc, &pRasterNoCullingSolid);
 	if (FAILED(result))
 	{
-		OutputDebugString("Failed to create rasterizer state");
-		return false;
+		OutputDebugString("Failed to create rasterizer state (no culling)");
+		throw std::exception("Failed to create rasterizer state (no culling)");
 	}
 
 	//Solid with culling
 	rasterDesc.CullMode = D3D11_CULL_BACK;
 
 	// Create the rasterizer state from the description we just filled out.
-	result = m_device->CreateRasterizerState(&rasterDesc, &m_rasterStateSolid);
+	result = pDevice->CreateRasterizerState(&rasterDesc, &pRasterStateSolid);
 	if (FAILED(result))
 	{
-		OutputDebugString("Failed to create rasterizer state");
-		return false;
+		OutputDebugString("Failed to create rasterizer state (back culling)");
+		throw std::exception("Failed to create rasterizer state (back culling)");
 	}
 
 	//wireframe without culling
@@ -607,29 +630,25 @@ bool Hydro::Direct3D::CreateRasterizerState()
 	rasterDesc.FillMode = D3D11_FILL_WIREFRAME;
 
 	// Create the rasterizer state from the description we just filled out.
-	result = m_device->CreateRasterizerState(&rasterDesc, &m_rasterStateWire);
+	result = pDevice->CreateRasterizerState(&rasterDesc, &pRasterStateWire);
 	if (FAILED(result))
 	{
-		OutputDebugString("Failed to create rasterizer state");
-		return false;
+		OutputDebugString("Failed to create rasterizer state (wireframe)");
+		throw std::exception("Failed to create rasterizer state (wireframe)");
 	}
-
-	return true;
 }
 
-bool Hydro::Direct3D::CreateViewport()
+void Hydro::Direct3D::CreateViewport()
 {
 	//Viewport creation
-	m_viewport.Width = static_cast<float>(m_window->GetWidth());
-	m_viewport.Height = static_cast<float>(m_window->GetHeight());
-	m_viewport.TopLeftX = 0;
-	m_viewport.TopLeftY = 0;
-	m_viewport.MinDepth = 0.0f;
-	m_viewport.MaxDepth = 1.0f;
+	viewPort.Width = static_cast<float>(m_window->GetWidth());
+	viewPort.Height = static_cast<float>(m_window->GetHeight());
+	viewPort.TopLeftX = 0;
+	viewPort.TopLeftY = 0;
+	viewPort.MinDepth = 0.0f;
+	viewPort.MaxDepth = 1.0f;
 	// Bind the viewport.
-	m_deviceContext->RSSetViewports(1, &m_viewport);
-
-	return true;
+	pDeviceContext->RSSetViewports(1, &viewPort);
 }
 
 void Hydro::Direct3D::CreateMatrices()
@@ -642,11 +661,11 @@ void Hydro::Direct3D::CreateMatrices()
 	screenAspect = (float)m_window->GetWidth() / (float)m_window->GetHeight();
 
 	// Create the projection matrix for 3D rendering.
-	m_projectionMatrix = DirectX::XMMatrixPerspectiveFovLH(fieldOfView, screenAspect, screenNear, screenDepth);
+	projectionMatrix = DirectX::XMMatrixPerspectiveFovLH(fieldOfView, screenAspect, screenNear, screenDepth);
 
 	// Initialize the world matrix to the identity matrix.
-	m_worldMatrix = DirectX::XMMatrixIdentity();
+	worldMatrix = DirectX::XMMatrixIdentity();
 
 	// Create an orthographic projection matrix for 2D rendering.
-	m_orthoMatrix = DirectX::XMMatrixOrthographicLH((float)m_window->GetWidth(), (float)m_window->GetHeight(), screenNear, screenDepth);
+	orthoMatrix = DirectX::XMMatrixOrthographicLH((float)m_window->GetWidth(), (float)m_window->GetHeight(), screenNear, screenDepth);
 }

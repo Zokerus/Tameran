@@ -81,6 +81,9 @@
     <ClInclude Include="Controls\LinkLabel.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\DXErr.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Util\Globals.cpp">
@@ -147,6 +150,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Controls\LinkLabel.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\DXErr.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

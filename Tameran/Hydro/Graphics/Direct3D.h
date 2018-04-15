@@ -10,6 +10,7 @@
 #include <d3d11.h>
 #include <DirectXMath.h>
 #include <DirectXColors.h>
+#include <wrl.h>
 
 //////////////////////////////////////////////////////////////////////////
 //Class: Direct3D
@@ -18,14 +19,14 @@ namespace Hydro
 {
 	class Direct3D
 	{
-	public:
+		public:
 		Direct3D(class IGameWindow* settings);
 		Direct3D(const Direct3D& other) = delete;
 		Direct3D& operator=(const Direct3D& other) = delete;
 		~Direct3D();
 
-		bool Initialize();
-		void Shutdown();
+		//bool Initialize();
+		//void Shutdown();
 
 		void BeginFrame(DirectX::XMVECTORF32 color);
 		bool EndFrame();
@@ -51,45 +52,43 @@ namespace Hydro
 		void DisableWireframe();
 
 	private:
-		bool CreateSwapChainAndDevice();
-		bool CreateRenderTargetView();
-		bool CreateDepthBuffer();
-		bool CreateDepthStencilState();
-		bool CreateDepthStencilView();
-		bool CreateBlendState();
-		bool CreateRasterizerState();
-		bool CreateViewport();
+		void CreateSwapChainAndDevice();
+		void CreateRenderTargetView();
+		void CreateDepthBuffer();
+		void CreateDepthStencilState();
+		void CreateDepthStencilView();
+		void CreateBlendState();
+		void CreateRasterizerState();
+		void CreateViewport();
 		void CreateMatrices();
 
 	private:
 		class IGameWindow*			m_window;
-		IDXGISwapChain*				m_swapChain;
-		ID3D11Device*				m_device;
-		ID3D11DeviceContext*		m_deviceContext;
-		ID3D11RenderTargetView*		m_renderTargetView;
-		ID3D11Texture2D*			m_backBuffer;
+		Microsoft::WRL::ComPtr<IDXGISwapChain>			pSwapChain;
+		Microsoft::WRL::ComPtr<ID3D11Device>			pDevice;
+		Microsoft::WRL::ComPtr<ID3D11DeviceContext>		pDeviceContext;
+		Microsoft::WRL::ComPtr<ID3D11RenderTargetView>	pRenderTargetView;
+		Microsoft::WRL::ComPtr<ID3D11Texture2D>			pBackBuffer;
 
-		D3D_DRIVER_TYPE				m_driverType;
-		D3D_FEATURE_LEVEL			m_featureLevel;
-		D3D11_VIEWPORT				m_viewport;
+		D3D_DRIVER_TYPE									driverType;
+		D3D_FEATURE_LEVEL								featureLevel;
+		D3D11_VIEWPORT									viewPort;
 
-		DirectX::XMMATRIX			m_projectionMatrix;
-		DirectX::XMMATRIX			m_worldMatrix;
-		DirectX::XMMATRIX			m_orthoMatrix;
+		DirectX::XMMATRIX								projectionMatrix;
+		DirectX::XMMATRIX								worldMatrix;
+		DirectX::XMMATRIX								orthoMatrix;
 
-		ID3D11DepthStencilState*	m_depthStencilState;
-		ID3D11DepthStencilView*		m_depthStencilView;
+		Microsoft::WRL::ComPtr<ID3D11DepthStencilState>	pDepthStencilState;
+		Microsoft::WRL::ComPtr<ID3D11DepthStencilView>	pDepthStencilView;
 
-		ID3D11DepthStencilState*	m_depthDisabledStencilState;
-		ID3D11BlendState*			m_alphaEnableBlendingState;
-		ID3D11BlendState*			m_alphaDisableBlendingState;
-		ID3D11RasterizerState*		m_rasterStateWire;
-		ID3D11RasterizerState*		m_rasterStateSolid;
-		ID3D11RasterizerState*		m_rasterNoCullingSolid;
+		Microsoft::WRL::ComPtr<ID3D11DepthStencilState>	pDepthDisabledStencilState;
+		Microsoft::WRL::ComPtr<ID3D11BlendState>		pAlphaEnableBlendingState;
+		Microsoft::WRL::ComPtr<ID3D11BlendState>		pAlphaDisableBlendingState;
+		Microsoft::WRL::ComPtr<ID3D11RasterizerState>	pRasterStateWire;
+		Microsoft::WRL::ComPtr<ID3D11RasterizerState>	pRasterStateSolid;
+		Microsoft::WRL::ComPtr<ID3D11RasterizerState>	pRasterNoCullingSolid;
 
-		ID3D11Debug*				m_debug;
-
-		bool m_ready;
+		Microsoft::WRL::ComPtr<ID3D11Debug>				pDebug;
 	};
 }
 

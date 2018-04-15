@@ -161,6 +161,7 @@
     <ClInclude Include="Graphics\2D\Sprite.h" />
     <ClInclude Include="Graphics\2D\Texture.h" />
     <ClInclude Include="Graphics\Camera.h" />
+    <ClInclude Include="Graphics\DXErr.h" />
     <ClInclude Include="Graphics\Shader\FontShader.h" />
     <ClInclude Include="Graphics\Shader\IShader.h" />
     <ClInclude Include="Graphics\Shader\ShaderManager.h" />
@@ -186,6 +187,7 @@
     <ClCompile Include="Graphics\2D\Texture.cpp" />
     <ClCompile Include="Graphics\Camera.cpp" />
     <ClCompile Include="Graphics\Direct3D.cpp" />
+    <ClCompile Include="Graphics\DXErr.cpp" />
     <ClCompile Include="Graphics\Shader\FontShader.cpp" />
     <ClCompile Include="Graphics\Shader\IShader.cpp" />
     <ClCompile Include="Graphics\Shader\ShaderManager.cpp" />
