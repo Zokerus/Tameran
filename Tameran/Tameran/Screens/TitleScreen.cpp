@@ -52,7 +52,7 @@ bool Tameran::TitleScreen::Initialize()
 	float xPos = (m_gameRef->GetWidth() - size) / 2;
 
 	//test of text
-	result = m_label.Initialize(m_direct3D, &m_font, "Press ENTER to start", DirectX::XMINT2(xPos, 368), DirectX::XMFLOAT2(m_font.GetFontHeight(), size), DirectX::Colors::White);
+	result = m_label.Initialize(m_direct3D, &m_font, "Press ENTER to start", DirectX::XMINT2((int)xPos, 368), DirectX::XMFLOAT2(m_font.GetFontHeight(), size), DirectX::Colors::White);
 	if (!result)
 	{
 		OutputDebugString("Text could not be initialized!");
