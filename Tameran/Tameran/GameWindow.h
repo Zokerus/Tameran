@@ -38,6 +38,9 @@ namespace Tameran
 		bool Draw(float eTime) override;
 
 	private:
+		Hydro::Direct3D m_direct3D;
+		Hydro::ShaderManager m_shaderManager;
+		Hydro::Camera m_camera;
 		Hydro::Input m_input;
 
 	public:

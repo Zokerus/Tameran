@@ -3,8 +3,7 @@
 
 Hydro::IGameWindow::IGameWindow(HINSTANCE hInst, char *pArgs, const std::string title, const unsigned int screenWidth, const unsigned int screenHeight, bool fullscreen, bool vsync)
 	:
-	m_appName(title), m_hInst(hInst), m_hWnd(nullptr), m_args(pArgs), m_screenWidth(screenWidth), m_screenHeight(screenHeight), m_fullscreen(fullscreen), m_vsync(vsync), m_ready(false), m_exit(false), m_timer(), 
-	m_direct3D(this), m_shaderManager(), m_camera()
+	m_appName(title), m_hInst(hInst), m_hWnd(nullptr), m_args(pArgs), m_screenWidth(screenWidth), m_screenHeight(screenHeight), m_fullscreen(fullscreen), m_vsync(vsync), m_ready(false), m_exit(false), m_timer()
 {
 	//Store window width and height
 	m_screenWidth = screenWidth;
@@ -69,9 +68,6 @@ Hydro::IGameWindow::IGameWindow(HINSTANCE hInst, char *pArgs, const std::string 
 
 Hydro::IGameWindow::~IGameWindow()
 {
-	m_camera.~Camera();
-	m_shaderManager.~ShaderManager();
-	m_direct3D.~Direct3D();
 	m_timer.~Timer();
 
 	//Remove the window
@@ -102,35 +98,24 @@ bool Hydro::IGameWindow::Initialize()
 	}
 
 	//Initialize the direct3D object
-	result = m_direct3D.Initialize();
-	if (!result)
-	{
-		ShowMessageBox("Error", "Direct3D object could not be initialized.");
-		return false;
-	}
+	//result = m_direct3D.Initialize();
+	//if (!result)
+	//{
+	//	ShowMessageBox("Error", "Direct3D object could not be initialized.");
+	//	return false;
+	//}
 
-	//Initialize the shader manager
-	result = m_shaderManager.Initialize(m_direct3D.GetDevice(), m_hWnd);
-	if (!result)
-	{
-		ShowMessageBox("ShaderManager Error", "The shader management class could not be initialized");
-		return false;
-	}
-
-	//Set the initial position of the camera and build the matrices needed for rendering
-	m_camera.SetPosition(DirectX::XMFLOAT3(0.0f, 0.0f, -10.0f));
-	m_camera.Render(true);
+	
 
 	return true;
 }
 
 void Hydro::IGameWindow::Shutdown()
 {
-	//Shutdown the shader manager
-	m_shaderManager.Shutdown();
+	
 
 	//Shutdown direct3D class
-	m_direct3D.Shutdown();
+	//m_direct3D.Shutdown();
 }
 
 bool Hydro::IGameWindow::IsActive() const
@@ -354,7 +339,6 @@ bool Hydro::IGameWindow::SwitchFullscreen()
 		m_fullscreen = false;
 	}
 
-	m_direct3D.SetFullScreen(m_fullscreen);
 
 	return true;
 }

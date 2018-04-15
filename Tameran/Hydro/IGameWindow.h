@@ -69,9 +69,6 @@ namespace Hydro
 		bool m_exit;
 
 		Timer m_timer;
-		Direct3D m_direct3D;
-		ShaderManager m_shaderManager;
-		Camera m_camera;
 	};
 }
 

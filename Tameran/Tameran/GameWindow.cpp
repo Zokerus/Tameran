@@ -18,7 +18,7 @@ Tameran::GameWindow::GameWindow(HINSTANCE hInst, char * pArgs, const std::string
 
 Tameran::GameWindow::GameWindow(HINSTANCE hInst, char * pArgs, const std::string title, const unsigned int screenWidth, const unsigned int screenHeight, bool fullscreen, bool vsync)
 	: IGameWindow(hInst, pArgs, title, screenWidth, screenHeight, fullscreen, vsync),
-	m_input(screenWidth, screenHeight), m_gameStateManager(), m_titleScreen(this, &m_direct3D, &m_shaderManager, &m_camera, &m_input)
+	m_direct3D(this), m_shaderManager(), m_camera(), m_input(screenWidth, screenHeight), m_gameStateManager(), m_titleScreen(this, &m_direct3D, &m_shaderManager, &m_camera, &m_input)
 {}
 
 Tameran::GameWindow::~GameWindow()
@@ -39,6 +39,18 @@ bool Tameran::GameWindow::Initialize()
 	{
 		return false;
 	}
+
+	//Initialize the shader manager
+	result = m_shaderManager.Initialize(m_direct3D.GetDevice(), m_hWnd);
+	if (!result)
+	{
+		ShowMessageBox("ShaderManager Error", "The shader management class could not be initialized");
+		return false;
+	}
+
+	//Set the initial position of the camera and build the matrices needed for rendering
+	m_camera.SetPosition(DirectX::XMFLOAT3(0.0f, 0.0f, -10.0f));
+	m_camera.Render(true);
 
 	//Initialize the input class
 	result = m_input.Initialize(m_hInst, m_hWnd);
@@ -74,6 +86,9 @@ void Tameran::GameWindow::Shutdown()
 	//Shutdown the input class
 	m_input.Shutdown();
 
+	//Shutdown the shader manager
+	m_shaderManager.Shutdown();
+
 	IGameWindow::Shutdown();
 	m_ready = false;
 }
@@ -99,6 +114,7 @@ bool Tameran::GameWindow::Update(float eTime)
 	if (m_input.IsKeyDown(DIK_LALT) && m_input.IsKeyReleased(DIK_SPACE))
 	{
 		SwitchFullscreen(); //Just a Prototype
+		m_direct3D.SetFullScreen(m_fullscreen);
 	}
 
 	if (m_input.IsKeyReleased(DIK_ESCAPE))
