@@ -10,6 +10,7 @@
 #include <d3d11.h>
 #include <DirectXMath.h>
 #include <DirectXColors.h>
+#include <string>
 #include <wrl.h>
 
 //////////////////////////////////////////////////////////////////////////
@@ -19,7 +20,17 @@ namespace Hydro
 {
 	class Direct3D
 	{
+		class DXException : public std::exception
+		{
 		public:
+			DXException(HRESULT hr);
+			std::wstring GetErrorName() const;
+			std::wstring GetErrorDescription() const;
+		private:
+			HRESULT hr;
+		};
+
+	public:
 		Direct3D(class IGameWindow* settings);
 		Direct3D(const Direct3D& other) = delete;
 		Direct3D& operator=(const Direct3D& other) = delete;

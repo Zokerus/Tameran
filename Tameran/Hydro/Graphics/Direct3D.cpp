@@ -2,11 +2,15 @@
 #include "../IGameWindow.h"
 #include "DXErr.h"
 
+#include <array>
+
 Hydro::Direct3D::Direct3D(IGameWindow* window)
 	: m_window(window), pSwapChain(nullptr), pDevice(nullptr), pDeviceContext(nullptr), pRenderTargetView(nullptr), pBackBuffer(nullptr),
 	pDepthStencilState(nullptr), pDepthStencilView(nullptr), pDepthDisabledStencilState(nullptr), pAlphaEnableBlendingState(nullptr), pAlphaDisableBlendingState(nullptr), pRasterStateWire(nullptr), pRasterStateSolid(nullptr), pRasterNoCullingSolid(nullptr),
 	pDebug(nullptr)
 {
+	try
+	{
 		//Create Swapchain and Device
 		CreateSwapChainAndDevice();
 
@@ -38,6 +42,12 @@ Hydro::Direct3D::Direct3D(IGameWindow* window)
 
 		//Create world, projection and ortho matrices
 		CreateMatrices();
+	}
+	catch (const DXException& e)
+	{
+		MessageBoxW(nullptr, e.GetErrorDescription().c_str(), e.GetErrorName().c_str(), MB_OK);
+		throw std::exception("Error in creating Direct3D");
+	}
 }
 
 Hydro::Direct3D::~Direct3D()
@@ -207,11 +217,18 @@ Hydro::Direct3D::~Direct3D()
 
 void Hydro::Direct3D::BeginFrame(DirectX::XMVECTORF32 color)
 {
+	try
+	{
 	// Clear the back buffer.
-	pDeviceContext->ClearRenderTargetView(pRenderTargetView.Get(), color);
+	pDeviceContext->ClearRenderTargetView(const_cast<ID3D11RenderTargetView*>(pRenderTargetView.Get()), color);
 
 	// Clear the depth buffer.
-	pDeviceContext->ClearDepthStencilView(pDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
+	pDeviceContext->ClearDepthStencilView(const_cast<ID3D11DepthStencilView*>(pDepthStencilView.Get()), D3D11_CLEAR_DEPTH, 1.0f, 0);
+	}
+	catch (const DXException& e)
+	{
+		MessageBoxW(nullptr, e.GetErrorDescription().c_str(), e.GetErrorName().c_str(), MB_OK);
+	}
 }
 
 bool Hydro::Direct3D::EndFrame()
@@ -400,14 +417,16 @@ void Hydro::Direct3D::CreateSwapChainAndDevice()
 	if (FAILED(result))
 	{
 		OutputDebugString("Failed to create device and swapchain");
-		throw std::exception("Failed to create device and swapchain");
+		//throw std::exception("Failed to create device and swapchain");
+		throw DXException(result);
 	}
 
 	result = pDevice->QueryInterface(__uuidof(ID3D11Debug), (void**)&pDebug);
 	if (FAILED(result))
 	{
 		OutputDebugString("Failed to create debug object");
-		throw std::exception("Failed to create debug object");
+		//throw std::exception("Failed to create debug object");
+		throw DXException(result);
 	}
 }
 
@@ -421,7 +440,8 @@ void Hydro::Direct3D::CreateRenderTargetView()
 	if (FAILED(result))
 	{
 		OutputDebugString("Failed to create backBuffer");
-		throw std::exception("Failed to create backbuffer");
+		//throw std::exception("Failed to create backbuffer");
+		throw DXException(result);
 	}
 
 	//Create RenderTargetView
@@ -429,7 +449,8 @@ void Hydro::Direct3D::CreateRenderTargetView()
 	if (FAILED(result))
 	{
 		OutputDebugString("Failed to create renderTargetView");
-		throw std::exception("Failed to create renderTargetView");
+		//throw std::exception("Failed to create renderTargetView");
+		throw DXException(result);
 	}
 
 	//Release the backbuffer pointer because it is not needed anymore
@@ -466,7 +487,8 @@ void Hydro::Direct3D::CreateDepthBuffer()
 	if (FAILED(result))
 	{
 		OutputDebugString("Failed to create depth buffer texture");
-		throw std::exception("Failed to create depth buffer texture");
+		//throw std::exception("Failed to create depth buffer texture");
+		throw DXException(result);
 	}
 }
 
@@ -504,7 +526,8 @@ void Hydro::Direct3D::CreateDepthStencilState()
 	if (FAILED(result))
 	{
 		OutputDebugString("Failed to create depth stencil state (enabled)");
-		throw std::exception("Failed to create depth stencil state (enabled)");
+		//throw std::exception("Failed to create depth stencil state (enabled)");
+		throw DXException(result);
 	}
 
 	//disable the depth feature
@@ -516,7 +539,8 @@ void Hydro::Direct3D::CreateDepthStencilState()
 	if (FAILED(result))
 	{
 		OutputDebugString("Failed to create depth stencil state (disabled)");
-		throw std::exception("Failed to create depth stencil state (disbaled)");
+		//throw std::exception("Failed to create depth stencil state (disbaled)");
+		throw DXException(result);
 	}
 
 	// Set the depth stencil state.
@@ -541,7 +565,8 @@ void Hydro::Direct3D::CreateDepthStencilView()
 	if (FAILED(result))
 	{
 		OutputDebugString("Failed to create depth stencil view");
-		throw std::exception("Failed to create depth stencil view");
+		//throw std::exception("Failed to create depth stencil view");
+		throw DXException(result);
 	}
 
 	// Bind the render target view and depth stencil buffer to the output render pipeline.
@@ -571,7 +596,8 @@ void Hydro::Direct3D::CreateBlendState()
 	if (FAILED(result))
 	{
 		OutputDebugString("Failed to create blend state (disabled)");
-		throw std::exception("Failed to create blend state (disabled)");
+		//throw std::exception("Failed to create blend state (disabled)");
+		throw DXException(result);
 	}
 
 	//Switch blending on
@@ -582,7 +608,8 @@ void Hydro::Direct3D::CreateBlendState()
 	if (FAILED(result))
 	{
 		OutputDebugString("Failed to create blend state (enabled)");
-		throw std::exception("Failed to create blend state (enabled)");
+		//throw std::exception("Failed to create blend state (enabled)");
+		throw DXException(result);
 	}
 }
 
@@ -611,7 +638,8 @@ void Hydro::Direct3D::CreateRasterizerState()
 	if (FAILED(result))
 	{
 		OutputDebugString("Failed to create rasterizer state (no culling)");
-		throw std::exception("Failed to create rasterizer state (no culling)");
+		//throw std::exception("Failed to create rasterizer state (no culling)");
+		throw DXException(result);
 	}
 
 	//Solid with culling
@@ -622,7 +650,8 @@ void Hydro::Direct3D::CreateRasterizerState()
 	if (FAILED(result))
 	{
 		OutputDebugString("Failed to create rasterizer state (back culling)");
-		throw std::exception("Failed to create rasterizer state (back culling)");
+		//throw std::exception("Failed to create rasterizer state (back culling)");
+		throw DXException(result);
 	}
 
 	//wireframe without culling
@@ -634,7 +663,8 @@ void Hydro::Direct3D::CreateRasterizerState()
 	if (FAILED(result))
 	{
 		OutputDebugString("Failed to create rasterizer state (wireframe)");
-		throw std::exception("Failed to create rasterizer state (wireframe)");
+		//throw std::exception("Failed to create rasterizer state (wireframe)");
+		throw DXException(result);
 	}
 }
 
@@ -668,4 +698,20 @@ void Hydro::Direct3D::CreateMatrices()
 
 	// Create an orthographic projection matrix for 2D rendering.
 	orthoMatrix = DirectX::XMMatrixOrthographicLH((float)m_window->GetWidth(), (float)m_window->GetHeight(), screenNear, screenDepth);
+}
+
+Hydro::Direct3D::DXException::DXException(HRESULT hr)
+	: hr(hr)
+{}
+
+std::wstring Hydro::Direct3D::DXException::GetErrorName() const
+{
+	return DXGetErrorString(hr);
+}
+
+std::wstring  Hydro::Direct3D::DXException::GetErrorDescription() const
+{
+	std::array<wchar_t, 512> wideDescription;
+	DXGetErrorDescription(hr, wideDescription.data(), wideDescription.size());
+	return wideDescription.data();
 }
