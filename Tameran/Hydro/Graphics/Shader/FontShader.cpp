@@ -1,19 +1,7 @@
 #include "FontShader.h"
 
-Hydro::FontShader::FontShader()
+Hydro::FontShader::FontShader(ID3D11Device* device, HWND hWnd)
 	: IShader(L"FontShader"), m_sampleState(nullptr)
-{}
-
-Hydro::FontShader::~FontShader()
-{
-	//Shutdown the font shader
-	if (m_ready)
-	{
-		Shutdown();
-	}
-}
-
-bool Hydro::FontShader::Initialize(ID3D11Device* device, HWND hWnd)
 {
 	HRESULT result;
 	ID3DBlob* errorMessage(nullptr);
@@ -30,32 +18,28 @@ bool Hydro::FontShader::Initialize(ID3D11Device* device, HWND hWnd)
 	result = D3DReadFileToBlob((wDir + L"/Data/Shader/" + m_shaderName + L"/VertexShader.cso").c_str(), &vertexShaderBuffer);
 	if (FAILED(result))
 	{
-		MessageBox(hWnd, "Failed to load VertexShader", "Error", MB_OK);
-		return false;
+		throw std::exception("Failed to load Vertexshader.cso of the FontShader");
 	}
 
 	//Create the vertex shader from buffer
 	result = device->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), NULL, &m_vertexShader);
 	if (FAILED(result))
 	{
-		MessageBox(hWnd, "Failed to create VertexShader", "Error", MB_OK);
-		return false;
+		throw std::exception("Failed to create VertexShader of the FontShader");
 	}
 
 	//Load precompiled shader file
 	result = D3DReadFileToBlob((wDir + L"/Data/Shader/" + m_shaderName + L"/PixelShader.cso").c_str(), &pixelShaderBuffer);
 	if (FAILED(result))
 	{
-		MessageBox(hWnd, "Failed to load PixelShader", "Error", MB_OK);
-		return false;
+		throw std::exception("Failed to load Pixelshader.cso of the FontShader");
 	}
 
 	//Create the pixel shader from buffer
 	result = device->CreatePixelShader(pixelShaderBuffer->GetBufferPointer(), pixelShaderBuffer->GetBufferSize(), NULL, &m_pixelShader);
 	if (FAILED(result))
 	{
-		MessageBox(hWnd, "Failed to create PixelShader", "Error", MB_OK);
-		return false;
+		throw std::exception("Failed to create PixelShader of the FontShader");
 	}
 
 	// Create the vertex input layout description.
@@ -84,7 +68,7 @@ bool Hydro::FontShader::Initialize(ID3D11Device* device, HWND hWnd)
 		vertexShaderBuffer->GetBufferSize(), &m_layout);
 	if (FAILED(result))
 	{
-		return false;
+		throw std::exception("Failed to create InputLayout of FontShader");
 	}
 
 	// Release the vertex shader buffer and pixel shader buffer since they are no longer needed.
@@ -106,7 +90,7 @@ bool Hydro::FontShader::Initialize(ID3D11Device* device, HWND hWnd)
 	result = device->CreateBuffer(&matrixBufferDesc, NULL, &m_matrixBuffer);
 	if (FAILED(result))
 	{
-		return false;
+		throw std::exception("Failed to create MatrixBuffer in FontShader");
 	}
 
 	// Create a texture sampler state description.
@@ -128,7 +112,7 @@ bool Hydro::FontShader::Initialize(ID3D11Device* device, HWND hWnd)
 	result = device->CreateSamplerState(&samplerDesc, &m_sampleState);
 	if (FAILED(result))
 	{
-		return false;
+		throw std::exception("Failed to create SampleState in TextureShader");
 	}
 
 	// Setup the description of the dynamic pixel constant buffer that is in the pixel shader.
@@ -142,14 +126,12 @@ bool Hydro::FontShader::Initialize(ID3D11Device* device, HWND hWnd)
 	// Create the pixel constant buffer pointer so we can access the pixel shader constant buffer from within this class.
 	result = device->CreateBuffer(&pixelBufferDesc, NULL, &m_pixelBuffer);
 	if (FAILED(result))
-		return false;
-
-	m_ready = true;
-
-	return true;
+	{
+		throw std::exception("Failed to create PixelBuffer in FontShader");
+	}
 }
 
-void Hydro::FontShader::Shutdown()
+Hydro::FontShader::~FontShader()
 {
 	// Release the pixel constant buffer.
 	if (m_pixelBuffer)
@@ -164,19 +146,10 @@ void Hydro::FontShader::Shutdown()
 		m_sampleState->Release();
 		m_sampleState = 0;
 	}
-
-	IShader::Shutdown();
-	m_ready = false;
 }
 
 bool Hydro::FontShader::Render(ID3D11DeviceContext * deviceContext, int indexCount, DirectX::XMMATRIX world, DirectX::XMMATRIX view, DirectX::XMMATRIX projection, ID3D11ShaderResourceView * texture, DirectX::XMVECTORF32 pixelColor)
 {
-	//Shader is not initialized
-	if (!m_ready)
-	{
-		return false;
-	}
-
 	//Set the shader parameters
 	if (!SetShaderParameters(deviceContext, world, view, projection, texture, pixelColor))
 	{

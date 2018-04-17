@@ -30,8 +30,6 @@ namespace Hydro
 		IShader(std::wstring shaderName);
 		~IShader();
 
-		virtual bool Initialize(ID3D11Device *device, HWND hWnd);
-		void Shutdown();
 		virtual bool Render(ID3D11DeviceContext *deviceContext, int indexCount, MatrixBufferType matrices);
 
 	protected:
@@ -44,7 +42,6 @@ namespace Hydro
 		ID3D11InputLayout *m_layout;
 		ID3D11Buffer *m_matrixBuffer;
 		std::wstring m_shaderName;
-		bool m_ready;
 	};
 }
 

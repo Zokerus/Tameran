@@ -12,7 +12,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdLine,
 		GameWindow wnd(hInstance, pScmdLine, "Tameran - Hydro Engine", 1024, 768, false, false);
 		run = wnd.Initialize();
 
-		while (wnd.ProcessMessage() &&  run)
+		while (wnd.ProcessMessage() && run)
 		{
 			run = wnd.Run();
 		}
@@ -20,10 +20,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdLine,
 		//Shutdown game object
 		wnd.Shutdown();
 	}
-	catch (std::exception& e)
+	catch (const std::exception& e)
 	{
 		MessageBox(nullptr, e.what(), "Error", MB_OK);
-
 	}
 	catch (...)
 	{

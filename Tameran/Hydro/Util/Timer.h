@@ -14,17 +14,13 @@ namespace Hydro
 	{
 	public:
 		Timer();
-		Timer(const Timer &other) = delete;
-		Timer& operator=(Timer &other) = delete;
 		~Timer();
 
-		const bool Initialize();
 		const bool Update();
 
 		float GetTime() const;
 
 	private:
-		bool m_ready;
 		double m_frequency;
 		INT64 m_startTime;
 		double m_frameTime;

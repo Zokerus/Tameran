@@ -1,18 +1,7 @@
 #include "TextureShader.h"
 
-Hydro::TextureShader::TextureShader()
+Hydro::TextureShader::TextureShader(ID3D11Device* device, HWND hWnd)
 	: IShader(L"TextureShader")
-{}
-
-Hydro::TextureShader::~TextureShader()
-{
-	if (m_ready)
-	{
-		Shutdown();
-	}
-}
-
-bool Hydro::TextureShader::Initialize(ID3D11Device* device, HWND hWnd)
 {
 	HRESULT result;
 	ID3DBlob* errorMessage(nullptr);
@@ -28,32 +17,28 @@ bool Hydro::TextureShader::Initialize(ID3D11Device* device, HWND hWnd)
 	result = D3DReadFileToBlob((wDir + L"/Data/Shader/" + m_shaderName + L"/VertexShader.cso").c_str(), &vertexShaderBuffer);
 	if (FAILED(result))
 	{
-		MessageBox(hWnd, "Failed to load VertexShader", "Error", MB_OK);
-		return false;
+		throw std::exception("Failed to load Vertexshader.cso of the TextureShader");
 	}
 
 	//Create the vertex shader from buffer
 	result = device->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), NULL, &m_vertexShader);
 	if (FAILED(result))
 	{
-		MessageBox(hWnd, "Failed to create VertexShader", "Error", MB_OK);
-		return false;
+		throw std::exception("Failed to create VertexShader of the TextureShader");
 	}
 
 	//Load precompiled shader file
 	result = D3DReadFileToBlob((wDir + L"/Data/Shader/" + m_shaderName + L"/PixelShader.cso").c_str(), &pixelShaderBuffer);
 	if (FAILED(result))
 	{
-		MessageBox(hWnd, "Failed to load PixelShader", "Error", MB_OK);
-		return false;
+		throw std::exception("Failed to load Pixelshader.cso of the TextureShader");
 	}
 
 	//Create the pixel shader from buffer
 	result = device->CreatePixelShader(pixelShaderBuffer->GetBufferPointer(), pixelShaderBuffer->GetBufferSize(), NULL, &m_pixelShader);
 	if (FAILED(result))
 	{
-		MessageBox(hWnd, "Failed to create PixelShader", "Error", MB_OK);
-		return false;
+		throw std::exception("Failed to create PixelShader of the TextureShader");
 	}
 
 	// Create the vertex input layout description.
@@ -82,7 +67,7 @@ bool Hydro::TextureShader::Initialize(ID3D11Device* device, HWND hWnd)
 		vertexShaderBuffer->GetBufferSize(), &m_layout);
 	if (FAILED(result))
 	{
-		return false;
+		throw std::exception("Failed to create InputLayout of TextureShader");
 	}
 
 	// Release the vertex shader buffer and pixel shader buffer since they are no longer needed.
@@ -104,7 +89,7 @@ bool Hydro::TextureShader::Initialize(ID3D11Device* device, HWND hWnd)
 	result = device->CreateBuffer(&matrixBufferDesc, NULL, &m_matrixBuffer);
 	if (FAILED(result))
 	{
-		return false;
+		throw std::exception("Failed to create MatrixBuffer in TextureShader");
 	}
 
 	// Create a texture sampler state description.
@@ -126,15 +111,11 @@ bool Hydro::TextureShader::Initialize(ID3D11Device* device, HWND hWnd)
 	result = device->CreateSamplerState(&samplerDesc, &m_sampleState);
 	if (FAILED(result))
 	{
-		return false;
+		throw std::exception("Failed to create SampleState in TextureShader");
 	}
-
-	m_ready = true;
-
-	return true;
 }
 
-void Hydro::TextureShader::Shutdown()
+Hydro::TextureShader::~TextureShader()
 {
 	//Release the sample state
 	if (m_sampleState)
@@ -142,20 +123,10 @@ void Hydro::TextureShader::Shutdown()
 		m_sampleState->Release();
 		m_sampleState = nullptr;
 	}
-
-	IShader::Shutdown();
-
-	m_ready = false;
 }
 
 bool Hydro::TextureShader::Render(ID3D11DeviceContext * deviceContext, int indexCount, DirectX::XMMATRIX world, DirectX::XMMATRIX view, DirectX::XMMATRIX projection, ID3D11ShaderResourceView * texture)
 {
-	//Shader is not initialized
-	if (!m_ready)
-	{
-		return false;
-	}
-
 	//Set the shader parameters
 	if (!SetShaderParameters(deviceContext, world, view, projection, texture))
 	{

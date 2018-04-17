@@ -44,7 +44,6 @@ Hydro::IGameWindow::IGameWindow(HINSTANCE hInst, char *pArgs, const std::string 
 	}
 	else
 	{
-
 		windowRect.left = (GetSystemMetrics(SM_CXSCREEN) - m_screenWidth) / 2;
 		windowRect.top = (GetSystemMetrics(SM_CYSCREEN) - m_screenHeight) / 2;
 		windowRect.right = windowRect.left + m_screenWidth;
@@ -64,6 +63,9 @@ Hydro::IGameWindow::IGameWindow(HINSTANCE hInst, char *pArgs, const std::string 
 	SetForegroundWindow(m_hWnd);
 	SetFocus(m_hWnd);
 	UpdateWindow(m_hWnd);
+
+	//Get the current working directory
+	GetExeDirectory();
 }
 
 Hydro::IGameWindow::~IGameWindow()
@@ -80,42 +82,6 @@ Hydro::IGameWindow::~IGameWindow()
 	//unregister class
 	UnregisterClass(name, m_hInst);
 	m_hInst = nullptr;
-}
-
-bool Hydro::IGameWindow::Initialize()
-{
-	bool result = false;
-
-	//Get the current working directory
-	GetExeDirectory();
-	
-	//Initialize the timer object
-	result = m_timer.Initialize();
-	if (!result)
-	{
-		ShowMessageBox("Error", "Timer object could not be initialized.");
-		return false;
-	}
-
-	//Initialize the direct3D object
-	//result = m_direct3D.Initialize();
-	//if (!result)
-	//{
-	//	ShowMessageBox("Error", "Direct3D object could not be initialized.");
-	//	return false;
-	//}
-
-	
-
-	return true;
-}
-
-void Hydro::IGameWindow::Shutdown()
-{
-	
-
-	//Shutdown direct3D class
-	//m_direct3D.Shutdown();
 }
 
 bool Hydro::IGameWindow::IsActive() const

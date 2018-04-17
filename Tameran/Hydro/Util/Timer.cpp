@@ -1,19 +1,14 @@
 #include "Timer.h"
+#include <exception>
 
 Hydro::Timer::Timer()
-	: m_ready(false), m_frequency(0.0), m_startTime(0), m_frameTime(0.0), m_beginTime(0), m_endTime(0)
-{}
-
-Hydro::Timer::~Timer()
-{}
-
-const bool Hydro::Timer::Initialize()
+	: m_frequency(0.0), m_startTime(0), m_frameTime(0.0), m_beginTime(0), m_endTime(0)
 {
 	LARGE_INTEGER li;
 	//Check to see if the system supports high performance timers
 	if (!QueryPerformanceFrequency(&li))
 	{
-		return false;
+		throw std::exception("System does not support high performance timer. Timer is not initialized.");
 	}
 
 	//Calculate the ticks per millisecond
@@ -22,20 +17,13 @@ const bool Hydro::Timer::Initialize()
 	//Start the timer
 	QueryPerformanceCounter(&li);
 	m_startTime = li.QuadPart;
-
-	//Flag the class as ready
-	m_ready = true;
-	return true;
 }
+
+Hydro::Timer::~Timer()
+{}
 
 const bool Hydro::Timer::Update()
 {
-	if (!m_ready)
-	{
-		//Check if the class is ready
-		return false;
-	}
-
 	LARGE_INTEGER li;
 	//Get the latest timing
 	QueryPerformanceCounter(&li);

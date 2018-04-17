@@ -1,24 +1,11 @@
 #include "IShader.h"
 
 Hydro::IShader::IShader(std::wstring shaderName)
-	: m_vertexShader(nullptr), m_pixelShader(nullptr), m_layout(nullptr), m_matrixBuffer(nullptr), m_shaderName(shaderName), m_ready(false)
+	: m_vertexShader(nullptr), m_pixelShader(nullptr), m_layout(nullptr), m_matrixBuffer(nullptr), m_shaderName(shaderName)
 {
 }
 
 Hydro::IShader::~IShader()
-{
-	if (m_ready)
-	{
-		Shutdown();
-	}
-}
-
-bool Hydro::IShader::Initialize(ID3D11Device* device, HWND hWnd)
-{
-		return true;
-}
-
-void Hydro::IShader::Shutdown()
 {
 	//Release matrix buffer
 	if (m_matrixBuffer)

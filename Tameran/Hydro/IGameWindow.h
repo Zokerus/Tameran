@@ -27,9 +27,6 @@ namespace Hydro
 		IGameWindow& operator=(const IGameWindow &other) = delete;
 		~IGameWindow();
 
-		bool Initialize();
-		void Shutdown();
-
 		bool IsActive() const;
 		bool IsMinimized() const;
 		void ShowMessageBox(const std::string &title, const std::string &message) const;
