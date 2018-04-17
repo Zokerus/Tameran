@@ -35,7 +35,7 @@ Hydro::Direct3D::Direct3D(IGameWindow* window)
 		CreateRasterizerState();
 
 		// Bind the render target view and depth stencil buffer to the output render pipeline.
-		pDeviceContext->OMSetRenderTargets(1, &pRenderTargetView, pDepthStencilView.Get());
+		pDeviceContext->OMSetRenderTargets(1, pRenderTargetView.GetAddressOf(), pDepthStencilView.Get());
 
 		//create viewport
 		CreateViewport();
@@ -220,10 +220,10 @@ void Hydro::Direct3D::BeginFrame(DirectX::XMVECTORF32 color)
 	try
 	{
 	// Clear the back buffer.
-	pDeviceContext->ClearRenderTargetView(const_cast<ID3D11RenderTargetView*>(pRenderTargetView.Get()), color);
+	pDeviceContext->ClearRenderTargetView(pRenderTargetView.Get(), color);
 
 	// Clear the depth buffer.
-	pDeviceContext->ClearDepthStencilView(const_cast<ID3D11DepthStencilView*>(pDepthStencilView.Get()), D3D11_CLEAR_DEPTH, 1.0f, 0);
+	pDeviceContext->ClearDepthStencilView(pDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 	}
 	catch (const DXException& e)
 	{
@@ -386,7 +386,7 @@ void Hydro::Direct3D::CreateSwapChainAndDevice()
 	swapChainDesc.SampleDesc.Count = 1;
 	swapChainDesc.SampleDesc.Quality = 0;
 	// Don't set the advanced flags.
-	//swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+	swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
 
 	//Create swapchain, device, device context and featurelevel and so on
@@ -445,7 +445,7 @@ void Hydro::Direct3D::CreateRenderTargetView()
 	}
 
 	//Create RenderTargetView
-	result = pDevice->CreateRenderTargetView(backBufferPtr, nullptr, &pRenderTargetView);
+	result = pDevice->CreateRenderTargetView(backBufferPtr, nullptr, pRenderTargetView.GetAddressOf());
 	if (FAILED(result))
 	{
 		OutputDebugString("Failed to create renderTargetView");
@@ -570,7 +570,7 @@ void Hydro::Direct3D::CreateDepthStencilView()
 	}
 
 	// Bind the render target view and depth stencil buffer to the output render pipeline.
-	pDeviceContext->OMSetRenderTargets(1, &pRenderTargetView, pDepthStencilView.Get());
+	pDeviceContext->OMSetRenderTargets(1, pRenderTargetView.GetAddressOf(), pDepthStencilView.Get());
 }
 
 void Hydro::Direct3D::CreateBlendState()
