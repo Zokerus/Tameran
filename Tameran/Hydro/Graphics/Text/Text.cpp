@@ -134,6 +134,8 @@ bool Hydro::Text::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceCo
 		return false;
 	}
 
+	m_ready = true;
+
 	return true;
 }
 
@@ -163,6 +165,8 @@ void Hydro::Text::Shutdown()
 		m_vertexBuffer->Release();
 		m_vertexBuffer = 0;
 	}
+
+	m_ready = false;
 }
 
 bool Hydro::Text::Render(ID3D11DeviceContext* deviceContext, ShaderManager* shaderManager, DirectX::XMMATRIX worldMatrix, DirectX::XMMATRIX viewMatrix, DirectX::XMMATRIX orthoMatrix, ID3D11ShaderResourceView* fontTexture)
@@ -268,7 +272,7 @@ bool Hydro::Text::UpdateSentence(ID3D11DeviceContext * deviceContext, Font * fon
 	return true;
 }
 
-bool Hydro::Text::RenderSentence(ID3D11DeviceContext * deviceContext, ShaderManager * shaderManager, DirectX::XMMATRIX worldMatrix, DirectX::XMMATRIX viewMatrix, DirectX::XMMATRIX orthoMatrix, ID3D11ShaderResourceView * fontTexture, DirectX::XMVECTORF32 foreColor)
+bool Hydro::Text::RenderSentence(ID3D11DeviceContext* deviceContext, ShaderManager* shaderManager, DirectX::XMMATRIX worldMatrix, DirectX::XMMATRIX viewMatrix, DirectX::XMMATRIX orthoMatrix, ID3D11ShaderResourceView * fontTexture, DirectX::XMVECTORF32 foreColor)
 {
 	unsigned int stride, offset;
 	DirectX::XMVECTORF32 shadowColor;

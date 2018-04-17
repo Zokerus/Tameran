@@ -18,18 +18,18 @@
     <ClCompile Include="main.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="GameWindow.cpp">
+    <ClCompile Include="Screens\TitleScreen.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="Screens\TitleScreen.cpp">
+    <ClCompile Include="GameWindow.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GameWindow.h">
+    <ClInclude Include="Screens\TitleScreen.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Screens\TitleScreen.h">
+    <ClInclude Include="GameWindow.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

@@ -52,183 +52,92 @@ Hydro::Direct3D::Direct3D(IGameWindow* window)
 
 Hydro::Direct3D::~Direct3D()
 {
-}
-
-/*bool Hydro::Direct3D::Initialize()
-{
-	//Create Swapchain and Device
-	if (!CreateSwapChainAndDevice())
-	{
-		return false;
-	}
-
-	//Create RenderTargetView
-	if (!CreateRenderTargetView())
-	{
-		return false;
-	}
-
-	//Create Depth buffer
-	if (!CreateDepthBuffer())
-	{
-		return false;
-	}
-
-	//Create Depth stencil
-	if (!CreateDepthStencilState())
-	{
-		return false;
-	}
-
-	//Create depth stencil view
-	if (!CreateDepthStencilView())
-	{
-		return false;
-	}
-
-	//Create blend states
-	// alpha blending on/off
-	if (!CreateBlendState())
-	{
-		return false;
-	}
-
-	//Create RasterizerState
-	//solid state culling, solid no culling and wireframe no culling
-	if (!CreateRasterizerState())
-	{
-		return false;
-	}
-
-	// Bind the render target view and depth stencil buffer to the output render pipeline.
-	m_deviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView.Get());
-
-	//create viewport
-	if (!CreateViewport())
-	{
-		return false;
-	}
-
-	//Create world, projection and ortho matrices
-	CreateMatrices();
-
-	//Flag the class as ready
-	m_ready = true;
-	return true;
-}*/
-
-/*void Hydro::Direct3D::Shutdown()
-{
 	//Clear the state of the device context before releasing it
-	if (m_deviceContext)
+	if (pDeviceContext)
 	{
-		m_deviceContext->ClearState();
+		pDeviceContext->ClearState();
 	}
 
 	//Release all used and created pointers of the class safely
-	if (m_rasterNoCullingSolid)
+	if (pRasterNoCullingSolid)
 	{
-		m_rasterNoCullingSolid->Release();
-		m_rasterNoCullingSolid = nullptr;
-	}
-	
-	if (m_rasterStateSolid)
-	{
-		m_rasterStateSolid->Release();
-		m_rasterStateSolid = nullptr;
+		pRasterNoCullingSolid.Reset();
 	}
 
-	if (m_rasterStateWire)
+	if (pRasterStateSolid)
 	{
-		m_rasterStateWire->Release();
-		m_rasterStateWire = nullptr;
+		pRasterStateSolid.Reset();
 	}
 
-	if (m_alphaDisableBlendingState)
+	if (pRasterStateWire)
 	{
-		m_alphaDisableBlendingState->Release();
-		m_alphaDisableBlendingState = nullptr;
+		pRasterStateWire.Reset();
 	}
 
-	if (m_alphaEnableBlendingState)
+	if (pAlphaDisableBlendingState)
 	{
-		m_alphaEnableBlendingState->Release();
-		m_alphaEnableBlendingState = nullptr;
+		pAlphaDisableBlendingState.Reset();
 	}
 
-	if (m_depthDisabledStencilState)
+	if (pAlphaEnableBlendingState)
 	{
-		m_depthDisabledStencilState->Release();
-		m_depthDisabledStencilState = nullptr;
+		pAlphaEnableBlendingState.Reset();
 	}
 
-	if (m_depthStencilView)
+	if (pDepthDisabledStencilState)
 	{
-		m_depthStencilView->Release();
-		m_depthStencilView = nullptr;
+		pDepthDisabledStencilState.Reset();
 	}
 
-	if (m_depthStencilState)
+	if (pDepthStencilView)
 	{
-		m_depthStencilState->Release();
-		m_depthStencilState = nullptr;
+		pDepthStencilView.Reset();
 	}
 
-	if (m_backBuffer)
+	if (pDepthStencilState)
 	{
-		m_backBuffer->Release();
-		m_backBuffer = nullptr;
+		pDepthStencilState.Reset();
 	}
 
-	if (m_renderTargetView)
+	if (pBackBuffer)
 	{
-		m_renderTargetView->Release();
-		m_renderTargetView = nullptr;
+		pBackBuffer.Reset();
 	}
 
-	//m_debug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
-	if (m_debug)
+	if (pRenderTargetView)
 	{
-		m_debug->Release();
-		m_debug = nullptr;
+		pRenderTargetView.Reset();
 	}
 
-	if (m_deviceContext)
+	//pDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+	if (pDebug)
 	{
-		m_deviceContext->Release();
-		m_deviceContext = nullptr;
+		pDebug.Reset();
 	}
 
-	if (m_device)
+	if (pDeviceContext)
 	{
-		m_device->Release();
-		m_device = nullptr;
+		pDeviceContext.Reset();
 	}
 
-	if (m_swapChain)
+	if (pDevice)
 	{
-		m_swapChain->Release();
-		m_swapChain = nullptr;
+		pDevice.Reset();
 	}
 
-	//Set the ready flag of the class to false
-	m_ready = false;
-}*/
+	if (pSwapChain)
+	{
+		pSwapChain.Reset();
+	}
+}
 
 void Hydro::Direct3D::BeginFrame(DirectX::XMVECTORF32 color)
 {
-	try
-	{
 	// Clear the back buffer.
 	pDeviceContext->ClearRenderTargetView(pRenderTargetView.Get(), color);
 
 	// Clear the depth buffer.
 	pDeviceContext->ClearDepthStencilView(pDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
-	}
-	catch (const DXException& e)
-	{
-		MessageBoxW(nullptr, e.GetErrorDescription().c_str(), e.GetErrorName().c_str(), MB_OK);
-	}
 }
 
 bool Hydro::Direct3D::EndFrame()
@@ -380,7 +289,7 @@ void Hydro::Direct3D::CreateSwapChainAndDevice()
 	// Set the handle for the window to render to.
 	swapChainDesc.OutputWindow = m_window->GetHandle();
 	// Discard the back buffer contents after presenting.
-	//swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 	swapChainDesc.Windowed = true;
 	// Turn multisampling off.
 	swapChainDesc.SampleDesc.Count = 1;
@@ -392,21 +301,7 @@ void Hydro::Direct3D::CreateSwapChainAndDevice()
 	//Create swapchain, device, device context and featurelevel and so on
 	for (UINT i = 0; i < 1; i++)
 	{
-		//result = D3D11CreateDeviceAndSwapChain(NULL, driverTypes[i], NULL, createDeviceFlags, featureLevels, numFeatureLevels, D3D11_SDK_VERSION, &swapChainDesc, &pSwapChain, &pDevice, &featureLevel, &pDeviceContext);
-		//result = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, createDeviceFlags, nullptr, 0, D3D11_SDK_VERSION, &swapChainDesc, &pSwapChain, &pDevice, nullptr, &pDeviceContext);
-		result = D3D11CreateDeviceAndSwapChain(
-			nullptr,
-			D3D_DRIVER_TYPE_HARDWARE,
-			nullptr,
-			createDeviceFlags,
-			nullptr,
-			0,
-			D3D11_SDK_VERSION,
-			&swapChainDesc,
-			&pSwapChain,
-			&pDevice,
-			nullptr,
-			&pDeviceContext);
+		result = D3D11CreateDeviceAndSwapChain(NULL, driverTypes[i], NULL, createDeviceFlags, featureLevels, numFeatureLevels, D3D11_SDK_VERSION, &swapChainDesc, &pSwapChain, &pDevice, &featureLevel, &pDeviceContext);
 		if (SUCCEEDED(result))
 		{
 			driverType = driverTypes[i];

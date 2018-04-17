@@ -14,7 +14,7 @@ Hydro::Label::~Label()
 
 bool Hydro::Label::Initialize(Direct3D* direct3D, Font* font, char* string, DirectX::XMINT2 pos, DirectX::XMFLOAT2 size, DirectX::XMVECTORF32 color)
 {
-	bool result;
+	bool result = true;
 
 	m_tabstop = false;
 	m_text = string;
