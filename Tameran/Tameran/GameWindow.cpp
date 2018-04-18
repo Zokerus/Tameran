@@ -18,7 +18,7 @@ Tameran::GameWindow::GameWindow(HINSTANCE hInst, char * pArgs, const std::string
 
 Tameran::GameWindow::GameWindow(HINSTANCE hInst, char * pArgs, const std::string title, const unsigned int screenWidth, const unsigned int screenHeight, bool fullscreen, bool vsync)
 	: IGameWindow(hInst, pArgs, title, screenWidth, screenHeight, fullscreen, vsync),
-	m_direct3D(this), m_shaderManager(m_direct3D.GetDevice(), m_hWnd), m_camera(), m_input(screenWidth, screenHeight), m_gameStateManager(), m_titleScreen(this, &m_direct3D, &m_shaderManager, &m_camera, &m_input)
+	m_direct3D(this), m_shaderManager(m_direct3D.GetDevice(), m_hWnd), m_camera(), m_input(screenWidth, screenHeight, m_hInst, m_hWnd), m_gameStateManager(), m_titleScreen(this, &m_direct3D, &m_shaderManager, &m_camera, &m_input)
 {}
 
 Tameran::GameWindow::~GameWindow()
@@ -36,14 +36,6 @@ bool Tameran::GameWindow::Initialize()
 	//Set the initial position of the camera and build the matrices needed for rendering
 	m_camera.SetPosition(DirectX::XMFLOAT3(0.0f, 0.0f, -10.0f));
 	m_camera.Render(true);
-
-	//Initialize the input class
-	result = m_input.Initialize(m_hInst, m_hWnd);
-	if (!result)
-	{
-		ShowMessageBox("Input Error", "The input class could not be initialized");
-		return false;
-	}
 
 	//Initialize the title screen
 	result = m_titleScreen.Initialize();
@@ -66,10 +58,6 @@ void Tameran::GameWindow::Shutdown()
 
 	m_titleScreen.Shutdown();
 	m_titleScreen.~TitleScreen();
-
-
-	//Shutdown the input class
-	m_input.Shutdown();
 
 	m_ready = false;
 }

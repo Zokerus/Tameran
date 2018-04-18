@@ -1,143 +1,122 @@
 #include "Input.h"
+#include <exception>
 
-Hydro::Input::Input(unsigned int screenWidth, unsigned int screenHeight)
-	: m_directInput(nullptr), m_keyboard(nullptr), m_mouse(nullptr), m_mouseState(), m_screenWidth(screenWidth), m_screenHeight(screenHeight), m_mouseX(0), m_mouseY(0), m_ready(false)
-{}
-
-Hydro::Input::~Input()
-{
-	if (m_ready)
-	{
-		Shutdown();
-	}
-}
-
-bool Hydro::Input::Initialize(HINSTANCE hinstance, HWND hwnd)
+Hydro::Input::Input(unsigned int ScreenWidth, unsigned int ScreenHeight, HINSTANCE hinstance, HWND hwnd)
+	: pDirectInput(nullptr), pKeyboard(nullptr), pMouse(nullptr), mouseState(), screenWidth(ScreenWidth), screenHeight(ScreenHeight), mouseX(0), mouseY(0)
 {
 	HRESULT result = false;
 	int i = 0;
 
 	//Initialize the main direct input device
-	result = DirectInput8Create(hinstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_directInput, NULL);
+	result = DirectInput8Create(hinstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&pDirectInput, NULL);
 	if (FAILED(result))
 	{
-		return false;
+		throw std::exception("Failed to initialize Input driver");
 	}
 
 	//Initialize the direct input interface for the keyboard
-	result = m_directInput->CreateDevice(GUID_SysKeyboard, &m_keyboard, NULL);
+	result = pDirectInput->CreateDevice(GUID_SysKeyboard, &pKeyboard, NULL);
 	if (FAILED(result))
 	{
-		return false;
+		throw std::exception("Failed to initialize keyboard device");
 	}
 
 	//Set the data format, in this case is it a keyboard, we can use the predefined data format
-	result = m_keyboard->SetDataFormat(&c_dfDIKeyboard);
+	result = pKeyboard->SetDataFormat(&c_dfDIKeyboard);
 	if (FAILED(result))
 	{
-		return false;
+		throw std::exception("Failed to set keyboard format");
 	}
 
 	//Set the cooperative level of the keyboard to not share with other programs
-	result = m_keyboard->SetCooperativeLevel(hwnd, DISCL_FOREGROUND | DISCL_EXCLUSIVE);
+	result = pKeyboard->SetCooperativeLevel(hwnd, DISCL_FOREGROUND | DISCL_EXCLUSIVE);
 	if (FAILED(result))
 	{
-		return false;
+		throw std::exception("Failed to set cooperation level of the keyboard device");
 	}
 
 	//Now acquire the keyboard
-	result = m_keyboard->Acquire();
+	result = pKeyboard->Acquire();
 	if (FAILED(result))
 	{
-		return false;
+		throw std::exception("Failed to aquire keyboard device");
 	}
 
 	//Initialize the direct input device for the mouse
-	result = m_directInput->CreateDevice(GUID_SysMouse, &m_mouse, NULL);
+	result = pDirectInput->CreateDevice(GUID_SysMouse, &pMouse, NULL);
 	if (FAILED(result))
 	{
-		return false;
+		throw std::exception("Failed to initialize mouse device");
 	}
 
 	//Set the data format for the mouse using the pre-defined mouse data format.
-	result = m_mouse->SetDataFormat(&c_dfDIMouse);
+	result = pMouse->SetDataFormat(&c_dfDIMouse);
 	if (FAILED(result))
 	{
-		return false;
+		throw std::exception("Failed to set mouse format");
 	}
 
 	//Set the cooperative level of the mouse to share with other programs
-	result = m_mouse->SetCooperativeLevel(hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
+	result = pMouse->SetCooperativeLevel(hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
 	if (FAILED(result))
 	{
-		return false;
+		throw std::exception("Failed to set cooperation level of the mouse device");
 	}
 
 	//Acquire the mouse
-	result = m_mouse->Acquire();
+	result = pMouse->Acquire();
 	if (FAILED(result))
 	{
-		return false;
+		throw std::exception("Failed to aquire mouse device");
 	}
 
 	//Initialize the released key state
 	for (i = 0; i < 256; i++)
-		m_releasedKeyboardState[i] = true;
+		releasedKeyboardState[i] = true;
 
 	//Read the current state of the keyboard
 	result = ReadKeyboard();
 	if (!result)
-		return false;
+	{
+		throw std::exception("Failed to read initial keyboard data");
+	}
 
 	//Store the keyboardstate from last frame
-	memcpy(m_lasKeyboradState, m_keyboardState, sizeof(m_lasKeyboradState));
-	
-	//Flag the class as ready
-	m_ready = true;
-	return true;
+	memcpy(lasKeyboradState, keyboardState, sizeof(lasKeyboradState));
 }
 
-void Hydro::Input::Shutdown()
+Hydro::Input::~Input()
 {
 	// Release the mouse.
-	if (m_mouse)
+	if (pMouse)
 	{
-		m_mouse->Unacquire();
-		m_mouse->Release();
-		m_mouse = nullptr;
+		pMouse->Unacquire();
+		pMouse->Release();
+		pMouse = nullptr;
 	}
 
 	// Release the keyboard.
-	if (m_keyboard)
+	if (pKeyboard)
 	{
-		m_keyboard->Unacquire();
-		m_keyboard->Release();
-		m_keyboard = nullptr;
+		pKeyboard->Unacquire();
+		pKeyboard->Release();
+		pKeyboard = nullptr;
 	}
 
 	// Release the main interface to direct input.
-	if (m_directInput)
+	if (pDirectInput)
 	{
-		m_directInput->Release();
-		m_directInput = nullptr;
+		pDirectInput->Release();
+		pDirectInput = nullptr;
 	}
-
-	//Reset the ready flag of the class
-	m_ready = false;
 }
 
 bool Hydro::Input::Update()
 {
-	bool result;
-
-	//Is the class ready to work?
-	if (!m_ready)
-	{
-		return false;
-	}
+	bool result = true;
 
 	//Store the keyboardstate from last frame
-	memcpy(m_lasKeyboradState, m_keyboardState, sizeof(m_lasKeyboradState));
+	memcpy(lasKeyboradState, keyboardState, sizeof(lasKeyboradState));
 
 	//Read the current state of the keyboard
 	result = ReadKeyboard();
@@ -161,32 +140,20 @@ bool Hydro::Input::Update()
 
 void Hydro::Input::GetMouseLocation(int& xPosition, int& yPosition)
 {
-	//Is the class ready to work?
-	if (!m_ready)
-	{
-		return;
-	}
-
 	//Return the position of the mouse inside the window
-	xPosition = m_mouseX;
-	yPosition = m_mouseY;
+	xPosition = mouseX;
+	yPosition = mouseY;
 	return;
 }
 
 bool Hydro::Input::IsKeyPressed(int key)
 {
-	//Is the class ready to work?
-	if (!m_ready)
-	{
-		return false;
-	}
-
 	//Check if key is outside of the array limits and return false value
 	if (key > 256 || key < 0)
 		return false;
 
 	//Check if the key is currently depressed and was released in the former frame
-	if ((m_keyboardState[key] & 0x80) && !(m_lasKeyboradState[key] & 0x80))
+	if ((keyboardState[key] & 0x80) && !(lasKeyboradState[key] & 0x80))
 		return true;
 
 	return false;
@@ -194,18 +161,12 @@ bool Hydro::Input::IsKeyPressed(int key)
 
 bool Hydro::Input::IsKeyReleased(int key)
 {
-	//Is the class ready to work?
-	if (!m_ready)
-	{
-		return false;
-	}
-
 	//Check if key is outside of the array limits and return false value
 	if (key > 256 || key < 0)
 		return false;
 
 	//Is the key currently released and was pressed a frame before
-	if (!(m_keyboardState[key] & 0x80) && (m_lasKeyboradState[key] & 0x80))
+	if (!(keyboardState[key] & 0x80) && (lasKeyboradState[key] & 0x80))
 		return true;
 
 	return false;
@@ -213,18 +174,12 @@ bool Hydro::Input::IsKeyReleased(int key)
 
 bool Hydro::Input::IsKeyDown(int key)
 {
-	//Is the class ready to work?
-	if (!m_ready)
-	{
-		return false;
-	}
-
 	//Check if key is outside of the array limits and return false value
 	if (key < 0 && key > 256)
 		return false;
 
 	//Check if the key is currently depressed
-	if (m_keyboardState[key] & 0x80)
+	if (keyboardState[key] & 0x80)
 		return true;
 
 	return false;
@@ -232,33 +187,36 @@ bool Hydro::Input::IsKeyDown(int key)
 
 bool Hydro::Input::ReadKeyboard()
 {
-	HRESULT result;
+	HRESULT result = true;
 
 	//Read the keyboard device
-	result = m_keyboard->GetDeviceState(sizeof(m_keyboardState), (LPVOID)&m_keyboardState);
+	result = pKeyboard->GetDeviceState(sizeof(keyboardState), (LPVOID)&keyboardState);
 	if (FAILED(result))
 	{
 		//If the keyboard lost focus or was not acquired then try to get control back.
 		if (result == DIERR_INPUTLOST || result == DIERR_NOTACQUIRED)
-			m_keyboard->Acquire();
+		{
+			pKeyboard->Acquire();
+		}
 		else
+		{
 			return false;
+		}
 	}
-
 	return true;
 }
 
 bool Hydro::Input::ReadMouse()
 {
-	HRESULT result;
+	HRESULT result = true;
 
 	//Read the mouse device.
-	result = m_mouse->GetDeviceState(sizeof(DIMOUSESTATE), (LPVOID)&m_mouseState);
+	result = pMouse->GetDeviceState(sizeof(DIMOUSESTATE), (LPVOID)&mouseState);
 	if (FAILED(result))
 	{
 		//If the mouse lost focus or was not acquired then try to get control back.
 		if ((result == DIERR_INPUTLOST) || (result == DIERR_NOTACQUIRED))
-			m_mouse->Acquire();
+			pMouse->Acquire();
 		else
 			return false;
 	}
@@ -269,12 +227,12 @@ bool Hydro::Input::ReadMouse()
 void Hydro::Input::ProcessInput()
 {
 	//Update the location of the mouse cursor based on the change of the mouse location during the frame
-	m_mouseX = m_mouseX + m_mouseState.lX;
-	m_mouseY = m_mouseY + m_mouseState.lY;
+	mouseX = mouseX + mouseState.lX;
+	mouseY = mouseY + mouseState.lY;
 
 	//Ensure the mouse location does not exceed the screen width or height
-	if (m_mouseX < 0) { m_mouseX = 0; }
-	if (m_mouseY < 0) { m_mouseY = 0; }
-	if (m_mouseX >= m_screenWidth) { m_mouseX = m_screenWidth - 1; }
-	if (m_mouseY >= m_screenHeight) { m_mouseY = m_screenHeight - 1; }
+	if (mouseX < 0) { mouseX = 0; }
+	if (mouseY < 0) { mouseY = 0; }
+	if (mouseX >= screenWidth) { mouseX = screenWidth - 1; }
+	if (mouseY >= screenHeight) { mouseY = screenHeight - 1; }
 }

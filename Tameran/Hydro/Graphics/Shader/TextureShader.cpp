@@ -13,29 +13,29 @@ Hydro::TextureShader::TextureShader(ID3D11Device* device, HWND hWnd)
 	D3D11_SAMPLER_DESC samplerDesc;
 
 	//Load precompiled shader file
-	std::wstring dir = (wDir + L"/Data/Shader/" + m_shaderName + L"/VertexShader.cso");
-	result = D3DReadFileToBlob((wDir + L"/Data/Shader/" + m_shaderName + L"/VertexShader.cso").c_str(), &vertexShaderBuffer);
+	std::wstring dir = (wDir + L"/Data/Shader/" + shaderName + L"/VertexShader.cso");
+	result = D3DReadFileToBlob((wDir + L"/Data/Shader/" + shaderName + L"/VertexShader.cso").c_str(), &vertexShaderBuffer);
 	if (FAILED(result))
 	{
 		throw std::exception("Failed to load Vertexshader.cso of the TextureShader");
 	}
 
 	//Create the vertex shader from buffer
-	result = device->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), NULL, &m_vertexShader);
+	result = device->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), NULL, &pVertexShader);
 	if (FAILED(result))
 	{
 		throw std::exception("Failed to create VertexShader of the TextureShader");
 	}
 
 	//Load precompiled shader file
-	result = D3DReadFileToBlob((wDir + L"/Data/Shader/" + m_shaderName + L"/PixelShader.cso").c_str(), &pixelShaderBuffer);
+	result = D3DReadFileToBlob((wDir + L"/Data/Shader/" + shaderName + L"/PixelShader.cso").c_str(), &pixelShaderBuffer);
 	if (FAILED(result))
 	{
 		throw std::exception("Failed to load Pixelshader.cso of the TextureShader");
 	}
 
 	//Create the pixel shader from buffer
-	result = device->CreatePixelShader(pixelShaderBuffer->GetBufferPointer(), pixelShaderBuffer->GetBufferSize(), NULL, &m_pixelShader);
+	result = device->CreatePixelShader(pixelShaderBuffer->GetBufferPointer(), pixelShaderBuffer->GetBufferSize(), NULL, &pPixelShader);
 	if (FAILED(result))
 	{
 		throw std::exception("Failed to create PixelShader of the TextureShader");
@@ -64,7 +64,7 @@ Hydro::TextureShader::TextureShader(ID3D11Device* device, HWND hWnd)
 
 	// Create the vertex input layout.
 	result = device->CreateInputLayout(polygonLayout, numElements, vertexShaderBuffer->GetBufferPointer(),
-		vertexShaderBuffer->GetBufferSize(), &m_layout);
+		vertexShaderBuffer->GetBufferSize(), &pLayout);
 	if (FAILED(result))
 	{
 		throw std::exception("Failed to create InputLayout of TextureShader");
@@ -86,7 +86,7 @@ Hydro::TextureShader::TextureShader(ID3D11Device* device, HWND hWnd)
 	matrixBufferDesc.StructureByteStride = 0;
 
 	// Create the constant buffer pointer so we can access the vertex shader constant buffer from within this class.
-	result = device->CreateBuffer(&matrixBufferDesc, NULL, &m_matrixBuffer);
+	result = device->CreateBuffer(&matrixBufferDesc, NULL, &matrixBuffer);
 	if (FAILED(result))
 	{
 		throw std::exception("Failed to create MatrixBuffer in TextureShader");
@@ -108,7 +108,7 @@ Hydro::TextureShader::TextureShader(ID3D11Device* device, HWND hWnd)
 	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
 	// Create the texture sampler state.
-	result = device->CreateSamplerState(&samplerDesc, &m_sampleState);
+	result = device->CreateSamplerState(&samplerDesc, &pSampleState);
 	if (FAILED(result))
 	{
 		throw std::exception("Failed to create SampleState in TextureShader");
@@ -118,10 +118,10 @@ Hydro::TextureShader::TextureShader(ID3D11Device* device, HWND hWnd)
 Hydro::TextureShader::~TextureShader()
 {
 	//Release the sample state
-	if (m_sampleState)
+	if (pSampleState)
 	{
-		m_sampleState->Release();
-		m_sampleState = nullptr;
+		pSampleState->Release();
+		pSampleState = nullptr;
 	}
 }
 
@@ -134,14 +134,14 @@ bool Hydro::TextureShader::Render(ID3D11DeviceContext * deviceContext, int index
 	}
 
 	//Set the vertex input layout
-	deviceContext->IASetInputLayout(m_layout);
+	deviceContext->IASetInputLayout(pLayout);
 
 	//Set the vertex and pixel shaders
-	deviceContext->VSSetShader(m_vertexShader, NULL, 0);
-	deviceContext->PSSetShader(m_pixelShader, NULL, 0);
+	deviceContext->VSSetShader(pVertexShader, NULL, 0);
+	deviceContext->PSSetShader(pPixelShader, NULL, 0);
 
 	//Set the sampler state in the pixel shader
-	deviceContext->PSSetSamplers(0, 1, &m_sampleState);
+	deviceContext->PSSetSamplers(0, 1, &pSampleState);
 
 	//Render the triangle
 	deviceContext->DrawIndexed(indexCount, 0, 0);
@@ -162,7 +162,7 @@ bool Hydro::TextureShader::SetShaderParameters(ID3D11DeviceContext * deviceConte
 	projection = XMMatrixTranspose(projection);
 
 	// Lock the constant buffer so it can be written to.
-	result = deviceContext->Map(m_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	result = deviceContext->Map(matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	if (FAILED(result))
 	{
 		return false;
@@ -177,13 +177,13 @@ bool Hydro::TextureShader::SetShaderParameters(ID3D11DeviceContext * deviceConte
 	dataPtr->projection = projection;
 
 	// Unlock the constant buffer.
-	deviceContext->Unmap(m_matrixBuffer, 0);
+	deviceContext->Unmap(matrixBuffer, 0);
 
 	// Set the position of the constant buffer in the vertex shader.
 	bufferNumber = 0;
 
 	// Finanly set the constant buffer in the vertex shader with the updated values.
-	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
+	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &matrixBuffer);
 
 	//Set shader texture resource in the pixel shader
 	deviceContext->PSSetShaderResources(0, 1, &texture);

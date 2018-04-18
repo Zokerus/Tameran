@@ -37,11 +37,11 @@ namespace Hydro
 		void OutputShaderErrorMessage(ID3DBlob *errorMessage, HWND hwnd, std::string shaderFilename);
 
 	protected:
-		ID3D11VertexShader *m_vertexShader;
-		ID3D11PixelShader *m_pixelShader;
-		ID3D11InputLayout *m_layout;
-		ID3D11Buffer *m_matrixBuffer;
-		std::wstring m_shaderName;
+		ID3D11VertexShader* pVertexShader;
+		ID3D11PixelShader* pPixelShader;
+		ID3D11InputLayout* pLayout;
+		ID3D11Buffer* matrixBuffer;
+		std::wstring shaderName;
 	};
 }
 

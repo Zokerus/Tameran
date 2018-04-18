@@ -1,38 +1,38 @@
 #include "IShader.h"
 
 Hydro::IShader::IShader(std::wstring shaderName)
-	: m_vertexShader(nullptr), m_pixelShader(nullptr), m_layout(nullptr), m_matrixBuffer(nullptr), m_shaderName(shaderName)
+	: pVertexShader(nullptr), pPixelShader(nullptr), pLayout(nullptr), matrixBuffer(nullptr), shaderName(shaderName)
 {
 }
 
 Hydro::IShader::~IShader()
 {
 	//Release matrix buffer
-	if (m_matrixBuffer)
+	if (matrixBuffer)
 	{
-		m_matrixBuffer->Release();
-		m_matrixBuffer = nullptr;
+		matrixBuffer->Release();
+		matrixBuffer = nullptr;
 	}
 
 	//Release vertex layout
-	if (m_layout)
+	if (pLayout)
 	{
-		m_layout->Release();
-		m_layout = nullptr;
+		pLayout->Release();
+		pLayout = nullptr;
 	}
 
 	//Release pixel shader
-	if(m_pixelShader)
+	if(pPixelShader)
 	{
-		m_pixelShader->Release();
-		m_pixelShader = nullptr;
+		pPixelShader->Release();
+		pPixelShader = nullptr;
 	}
 
 	//Release vertex shader
-	if (m_vertexShader)
+	if (pVertexShader)
 	{
-		m_vertexShader->Release();
-		m_vertexShader = nullptr;
+		pVertexShader->Release();
+		pVertexShader = nullptr;
 	}
 }
 

@@ -21,7 +21,7 @@ namespace Hydro
 		bool SetShaderParameters(ID3D11DeviceContext* deviceContext, DirectX::XMMATRIX world, DirectX::XMMATRIX view, DirectX::XMMATRIX projection, ID3D11ShaderResourceView *texture);
 
 	private:
-		ID3D11SamplerState* m_sampleState;
+		ID3D11SamplerState* pSampleState;
 	};
 }
 #endif // !TEXTURESHADER

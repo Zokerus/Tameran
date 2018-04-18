@@ -18,11 +18,9 @@ namespace Hydro
 	class Input
 	{
 	public:
-		Input(unsigned int screenWidth, unsigned int screenHeight);
+		Input(unsigned int ScreenWidth, unsigned int ScreenHeight, HINSTANCE hinstance, HWND hwnd);
 		~Input();
 
-		bool Initialize(HINSTANCE hinstance, HWND hwnd);
-		void Shutdown();
 		bool Update();
 
 		void GetMouseLocation(int &xPosition, int &yPosition);
@@ -37,20 +35,18 @@ namespace Hydro
 		void ProcessInput();
 
 	private:
-		IDirectInput8 *m_directInput;
-		IDirectInputDevice8 *m_keyboard;
-		IDirectInputDevice8 *m_mouse;
+		IDirectInput8* pDirectInput;
+		IDirectInputDevice8* pKeyboard;
+		IDirectInputDevice8* pMouse;
 
-		unsigned char m_keyboardState[256];
-		unsigned char m_lasKeyboradState[256];
-		bool m_releasedKeyboardState[256];
-		DIMOUSESTATE m_mouseState;
+		unsigned char keyboardState[256];
+		unsigned char lasKeyboradState[256];
+		bool releasedKeyboardState[256];
+		DIMOUSESTATE mouseState;
 
 
-		int m_screenWidth, m_screenHeight;
-		int m_mouseX, m_mouseY;
-
-		bool m_ready;
+		int screenWidth, screenHeight;
+		int mouseX, mouseY;
 	};
 }
 #endif //	!INPUTHEADER

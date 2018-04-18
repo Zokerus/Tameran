@@ -1,7 +1,7 @@
 #include "FontShader.h"
 
 Hydro::FontShader::FontShader(ID3D11Device* device, HWND hWnd)
-	: IShader(L"FontShader"), m_sampleState(nullptr)
+	: IShader(L"FontShader"), pSampleState(nullptr), pPixelBuffer(nullptr)
 {
 	HRESULT result;
 	ID3DBlob* errorMessage(nullptr);
@@ -14,29 +14,29 @@ Hydro::FontShader::FontShader(ID3D11Device* device, HWND hWnd)
 	D3D11_BUFFER_DESC pixelBufferDesc;
 
 	//Load precompiled shader file
-	std::wstring dir = (wDir + L"/Data/Shader/" + m_shaderName + L"/VertexShader.cso");
-	result = D3DReadFileToBlob((wDir + L"/Data/Shader/" + m_shaderName + L"/VertexShader.cso").c_str(), &vertexShaderBuffer);
+	std::wstring dir = (wDir + L"/Data/Shader/" + shaderName + L"/VertexShader.cso");
+	result = D3DReadFileToBlob((wDir + L"/Data/Shader/" + shaderName + L"/VertexShader.cso").c_str(), &vertexShaderBuffer);
 	if (FAILED(result))
 	{
 		throw std::exception("Failed to load Vertexshader.cso of the FontShader");
 	}
 
 	//Create the vertex shader from buffer
-	result = device->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), NULL, &m_vertexShader);
+	result = device->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), NULL, &pVertexShader);
 	if (FAILED(result))
 	{
 		throw std::exception("Failed to create VertexShader of the FontShader");
 	}
 
 	//Load precompiled shader file
-	result = D3DReadFileToBlob((wDir + L"/Data/Shader/" + m_shaderName + L"/PixelShader.cso").c_str(), &pixelShaderBuffer);
+	result = D3DReadFileToBlob((wDir + L"/Data/Shader/" + shaderName + L"/PixelShader.cso").c_str(), &pixelShaderBuffer);
 	if (FAILED(result))
 	{
 		throw std::exception("Failed to load Pixelshader.cso of the FontShader");
 	}
 
 	//Create the pixel shader from buffer
-	result = device->CreatePixelShader(pixelShaderBuffer->GetBufferPointer(), pixelShaderBuffer->GetBufferSize(), NULL, &m_pixelShader);
+	result = device->CreatePixelShader(pixelShaderBuffer->GetBufferPointer(), pixelShaderBuffer->GetBufferSize(), NULL, &pPixelShader);
 	if (FAILED(result))
 	{
 		throw std::exception("Failed to create PixelShader of the FontShader");
@@ -65,7 +65,7 @@ Hydro::FontShader::FontShader(ID3D11Device* device, HWND hWnd)
 
 	// Create the vertex input layout.
 	result = device->CreateInputLayout(polygonLayout, numElements, vertexShaderBuffer->GetBufferPointer(),
-		vertexShaderBuffer->GetBufferSize(), &m_layout);
+		vertexShaderBuffer->GetBufferSize(), &pLayout);
 	if (FAILED(result))
 	{
 		throw std::exception("Failed to create InputLayout of FontShader");
@@ -87,7 +87,7 @@ Hydro::FontShader::FontShader(ID3D11Device* device, HWND hWnd)
 	matrixBufferDesc.StructureByteStride = 0;
 
 	// Create the constant buffer pointer so we can access the vertex shader constant buffer from within this class.
-	result = device->CreateBuffer(&matrixBufferDesc, NULL, &m_matrixBuffer);
+	result = device->CreateBuffer(&matrixBufferDesc, NULL, &matrixBuffer);
 	if (FAILED(result))
 	{
 		throw std::exception("Failed to create MatrixBuffer in FontShader");
@@ -109,7 +109,7 @@ Hydro::FontShader::FontShader(ID3D11Device* device, HWND hWnd)
 	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
 	// Create the texture sampler state.
-	result = device->CreateSamplerState(&samplerDesc, &m_sampleState);
+	result = device->CreateSamplerState(&samplerDesc, &pSampleState);
 	if (FAILED(result))
 	{
 		throw std::exception("Failed to create SampleState in TextureShader");
@@ -124,7 +124,7 @@ Hydro::FontShader::FontShader(ID3D11Device* device, HWND hWnd)
 	pixelBufferDesc.StructureByteStride = 0;
 
 	// Create the pixel constant buffer pointer so we can access the pixel shader constant buffer from within this class.
-	result = device->CreateBuffer(&pixelBufferDesc, NULL, &m_pixelBuffer);
+	result = device->CreateBuffer(&pixelBufferDesc, NULL, &pPixelBuffer);
 	if (FAILED(result))
 	{
 		throw std::exception("Failed to create PixelBuffer in FontShader");
@@ -134,17 +134,17 @@ Hydro::FontShader::FontShader(ID3D11Device* device, HWND hWnd)
 Hydro::FontShader::~FontShader()
 {
 	// Release the pixel constant buffer.
-	if (m_pixelBuffer)
+	if (pPixelBuffer)
 	{
-		m_pixelBuffer->Release();
-		m_pixelBuffer = 0;
+		pPixelBuffer->Release();
+		pPixelBuffer = 0;
 	}
 
 	// Release the sampler state.
-	if (m_sampleState)
+	if (pSampleState)
 	{
-		m_sampleState->Release();
-		m_sampleState = 0;
+		pSampleState->Release();
+		pSampleState = 0;
 	}
 }
 
@@ -157,14 +157,14 @@ bool Hydro::FontShader::Render(ID3D11DeviceContext * deviceContext, int indexCou
 	}
 
 	//Set the vertex input layout
-	deviceContext->IASetInputLayout(m_layout);
+	deviceContext->IASetInputLayout(pLayout);
 
 	//Set the vertex and pixel shaders that will be used to render this triangle
-	deviceContext->VSSetShader(m_vertexShader, NULL, 0);
-	deviceContext->PSSetShader(m_pixelShader, NULL, 0);
+	deviceContext->VSSetShader(pVertexShader, NULL, 0);
+	deviceContext->PSSetShader(pPixelShader, NULL, 0);
 
 	//Set the sampler state in the pixel shader
-	deviceContext->PSSetSamplers(0, 1, &m_sampleState);
+	deviceContext->PSSetSamplers(0, 1, &pSampleState);
 
 	//Render the triangle
 	deviceContext->DrawIndexed(indexCount, 0, 0);
@@ -186,7 +186,7 @@ bool Hydro::FontShader::SetShaderParameters(ID3D11DeviceContext * deviceContext,
 	projection = XMMatrixTranspose(projection);
 
 	// Lock the constant buffer so it can be written to.
-	result = deviceContext->Map(m_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	result = deviceContext->Map(matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	if (FAILED(result))
 	{
 		return false;
@@ -201,19 +201,19 @@ bool Hydro::FontShader::SetShaderParameters(ID3D11DeviceContext * deviceContext,
 	dataPtr->projection = projection;
 
 	// Unlock the constant buffer.
-	deviceContext->Unmap(m_matrixBuffer, 0);
+	deviceContext->Unmap(matrixBuffer, 0);
 
 	// Set the position of the constant buffer in the vertex shader.
 	bufferNumber = 0;
 
 	// Finanly set the constant buffer in the vertex shader with the updated values.
-	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
+	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &matrixBuffer);
 
 	//Set shader texture resource in the pixel shader
 	deviceContext->PSSetShaderResources(0, 1, &texture);
 
 	// Lock the pixel constant buffer so it can be written to.
-	result = deviceContext->Map(m_pixelBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	result = deviceContext->Map(pPixelBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	if (FAILED(result))
 	{
 		return false;
@@ -226,12 +226,12 @@ bool Hydro::FontShader::SetShaderParameters(ID3D11DeviceContext * deviceContext,
 	dataPtr2->pixelColor = pixelColor;
 
 	// Unlock the pixel constant buffer.
-	deviceContext->Unmap(m_pixelBuffer, 0);
+	deviceContext->Unmap(pPixelBuffer, 0);
 
 	// Set the position of the pixel constant buffer in the pixel shader.
 	bufferNumber = 0;
 
 	// Now set the pixel constant buffer in the pixel shader with the updated value.
-	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_pixelBuffer);
+	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &pPixelBuffer);
 	return true;
 }

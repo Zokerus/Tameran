@@ -20,8 +20,8 @@ namespace Hydro
 		bool RenderFontShader(ID3D11DeviceContext *deviceContext, int indexCount, DirectX::XMMATRIX world, DirectX::XMMATRIX view, DirectX::XMMATRIX ortho, ID3D11ShaderResourceView *texture, DirectX::XMVECTORF32 color);
 
 	private:
-		TextureShader m_textureShader;
-		FontShader m_fontShader;
+		TextureShader textureShader;
+		FontShader fontShader;
 	};
 }
 
