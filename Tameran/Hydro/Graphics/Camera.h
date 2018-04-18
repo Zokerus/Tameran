@@ -15,8 +15,8 @@ namespace Hydro
 		Camera();
 		~Camera();
 
-		void SetPosition(const DirectX::XMFLOAT3 position);
-		void SetRotation(const DirectX::XMFLOAT3 rotation);
+		void SetPosition(const DirectX::XMFLOAT3 Position);
+		void SetRotation(const DirectX::XMFLOAT3 Rotation);
 
 		DirectX::XMFLOAT3 GetPosition() const;
 		DirectX::XMFLOAT3 GetRotation() const;
@@ -26,8 +26,8 @@ namespace Hydro
 		void GetBaseViewMatrix(DirectX::XMMATRIX &baseViewMatrix);
 
 	private:
-		DirectX::XMFLOAT3 m_position, m_rotation;
-		DirectX::XMMATRIX m_viewMatrix, m_baseViewMatrix;
+		DirectX::XMFLOAT3 position, rotation;
+		DirectX::XMMATRIX viewMatrix, baseViewMatrix;
 	};
 }
 #endif // !CAMERA

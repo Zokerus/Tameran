@@ -1,32 +1,31 @@
 #include "Camera.h"
 
 Hydro::Camera::Camera()
-	: m_position(0, 0, 0), m_rotation(0, 0, 0), m_viewMatrix(), m_baseViewMatrix()
-{
-}
+	: position(0, 0, 0), rotation(0, 0, 0), viewMatrix(), baseViewMatrix()
+{}
 
 Hydro::Camera::~Camera()
 {
 }
 
-void Hydro::Camera::SetPosition(const DirectX::XMFLOAT3 position)
+void Hydro::Camera::SetPosition(const DirectX::XMFLOAT3 Position)
 {
-	m_position = position;
+	position = Position;
 }
 
-void Hydro::Camera::SetRotation(const DirectX::XMFLOAT3 rotation)
+void Hydro::Camera::SetRotation(const DirectX::XMFLOAT3 Rotation)
 {
-	m_rotation = rotation;
+	rotation = Rotation;
 }
 
 DirectX::XMFLOAT3 Hydro::Camera::GetPosition() const
 {
-	return m_position;
+	return position;
 }
 
 DirectX::XMFLOAT3 Hydro::Camera::GetRotation() const
 {
-	return m_rotation;
+	return rotation;
 }
 
 void Hydro::Camera::Render(bool base)
@@ -41,15 +40,15 @@ void Hydro::Camera::Render(bool base)
 	upVector = XMLoadFloat3(&up);
 
 	//Load the position into a Vector structure
-	positionVector = XMLoadFloat3(&m_position);
+	positionVector = XMLoadFloat3(&position);
 
 	//Load it into a Vector
 	lookAtVector = XMLoadFloat3(&lookAt);
 
 	//Set the yaw(y Axis), pitch (x Axis) and roll (z Axis) in radians
-	pitch = m_rotation.x;
-	roll = m_rotation.z;
-	yaw = m_rotation.y;
+	pitch = rotation.x;
+	roll = rotation.z;
+	yaw = rotation.y;
 
 	//Create the rotation matrix from the three angles
 	rotationMatrix = DirectX::XMMatrixRotationRollPitchYaw(pitch, yaw, roll);
@@ -62,21 +61,21 @@ void Hydro::Camera::Render(bool base)
 	lookAtVector = DirectX::XMVectorAdd(positionVector, lookAtVector);
 
 	//Finally create the view matric from three updated vectors
-	m_viewMatrix = DirectX::XMMatrixLookAtLH(positionVector, lookAtVector, upVector);
+	viewMatrix = DirectX::XMMatrixLookAtLH(positionVector, lookAtVector, upVector);
 
 	//if you want to render the baseViewMatrix
 	if (base)
 	{
-		m_baseViewMatrix = m_viewMatrix;
+		baseViewMatrix = viewMatrix;
 	}
 }
 
 void Hydro::Camera::GetViewMatrix(DirectX::XMMATRIX& view)
 {
-	view = m_viewMatrix;
+	view = viewMatrix;
 }
 
 void Hydro::Camera::GetBaseViewMatrix(DirectX::XMMATRIX& baseViewMatrix)
 {
-	m_baseViewMatrix = m_baseViewMatrix;
+	baseViewMatrix = baseViewMatrix;
 }

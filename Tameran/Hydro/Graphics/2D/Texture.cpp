@@ -1,18 +1,8 @@
 #include "Texture.h"
+#include <exception>
 
-Hydro::Texture::Texture()
-	: m_targaData(nullptr), m_width(0), m_height(0), m_texture(nullptr), m_textureView(nullptr), m_ready(false)
-{}
-
-Hydro::Texture::~Texture()
-{
-	if (m_ready)
-	{
-		Shutdown();
-	}
-}
-
-bool Hydro::Texture::Initialize(ID3D11Device * device, ID3D11DeviceContext * deviceContext, std::string fileName)
+Hydro::Texture::Texture(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::string fileName)
+	: pTargaData(nullptr), width(0), height(0), pTexture(nullptr), pTextureView(nullptr)
 {
 	bool result;
 	D3D11_TEXTURE2D_DESC textureDesc;
@@ -21,15 +11,15 @@ bool Hydro::Texture::Initialize(ID3D11Device * device, ID3D11DeviceContext * dev
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
 
 	//Load the targa image data into memory
-	result = LoadTarga(fileName, m_width, m_height);
+	result = LoadTarga(fileName, width, height);
 	if (!result)
 	{
-		return false;
+		throw std::exception(("Failed to load texture data: " + fileName).c_str());
 	}
 
 	// Setup the description of the texture.
-	textureDesc.Height = m_height;
-	textureDesc.Width = m_width;
+	textureDesc.Height = height;
+	textureDesc.Width = width;
 	textureDesc.MipLevels = 0;
 	textureDesc.ArraySize = 1;
 	textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -41,17 +31,17 @@ bool Hydro::Texture::Initialize(ID3D11Device * device, ID3D11DeviceContext * dev
 	textureDesc.MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS;
 
 	// Create the empty texture.
-	hResult = device->CreateTexture2D(&textureDesc, NULL, &m_texture);
+	hResult = device->CreateTexture2D(&textureDesc, NULL, &pTexture);
 	if (FAILED(hResult))
 	{
-		return false;
+		throw std::exception(("Failed to create Texture2D: " + fileName).c_str());
 	}
 
 	// Set the row pitch of the targa image data.
-	rowPitch = (m_width * 4) * sizeof(unsigned char);
+	rowPitch = (width * 4) * sizeof(unsigned char);
 
 	// Copy the targa image data into the texture.
-	deviceContext->UpdateSubresource(m_texture, 0, NULL, m_targaData, rowPitch, 0);
+	deviceContext->UpdateSubresource(pTexture, 0, NULL, pTargaData, rowPitch, 0);
 
 	// Setup the shader resource view description.
 	srvDesc.Format = textureDesc.Format;
@@ -60,62 +50,129 @@ bool Hydro::Texture::Initialize(ID3D11Device * device, ID3D11DeviceContext * dev
 	srvDesc.Texture2D.MipLevels = -1;
 
 	// Create the shader resource view for the texture.
-	hResult = device->CreateShaderResourceView(m_texture, &srvDesc, &m_textureView);
+	hResult = device->CreateShaderResourceView(pTexture, &srvDesc, &pTextureView);
 	if (FAILED(hResult))
 	{
-		return false;
+		throw std::exception(("Failed to create ShaderResourceView of: " + fileName).c_str());
 	}
 
 	// Generate mipmaps for this texture.
-	deviceContext->GenerateMips(m_textureView);
+	deviceContext->GenerateMips(pTextureView);
 
 	// Release the targa image data now that the image data has been loaded into the texture.
-	delete[] m_targaData;
-	m_targaData = 0;
-
-	//the texture class is initialied and ready
-	m_ready = true;
-
-	return true;
+	delete[] pTargaData;
+	pTargaData = nullptr;
 }
 
-void Hydro::Texture::Shutdown()
+Hydro::Texture::~Texture()
 {
 	// Release the texture view resource.
-	if (m_textureView)
+	if (pTextureView)
 	{
-		m_textureView->Release();
-		m_textureView = nullptr;
+		pTextureView->Release();
+		pTextureView = nullptr;
 	}
 
 	// Release the texture.
-	if (m_texture)
+	if (pTexture)
 	{
-		m_texture->Release();
-		m_texture = nullptr;
+		pTexture->Release();
+		pTexture = nullptr;
 	}
 
 	// Release the targa data.
-	if (m_targaData)
+	if (pTargaData)
 	{
-		delete[] m_targaData;
-		m_targaData = nullptr;
+		delete[] pTargaData;
+		pTargaData = nullptr;
 	}
 }
 
+//bool Hydro::Texture::Initialize(ID3D11Device * device, ID3D11DeviceContext * deviceContext, std::string fileName)
+//{
+//	bool result;
+//	D3D11_TEXTURE2D_DESC textureDesc;
+//	HRESULT hResult;
+//	unsigned int rowPitch;
+//	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+//
+//	//Load the targa image data into memory
+//	result = LoadTarga(fileName, width, height);
+//	if (!result)
+//	{
+//		return false;
+//	}
+//
+//	// Setup the description of the texture.
+//	textureDesc.Height = height;
+//	textureDesc.Width = width;
+//	textureDesc.MipLevels = 0;
+//	textureDesc.ArraySize = 1;
+//	textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+//	textureDesc.SampleDesc.Count = 1;
+//	textureDesc.SampleDesc.Quality = 0;
+//	textureDesc.Usage = D3D11_USAGE_DEFAULT;
+//	textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
+//	textureDesc.CPUAccessFlags = 0;
+//	textureDesc.MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS;
+//
+//	// Create the empty texture.
+//	hResult = device->CreateTexture2D(&textureDesc, NULL, &texture);
+//	if (FAILED(hResult))
+//	{
+//		return false;
+//	}
+//
+//	// Set the row pitch of the targa image data.
+//	rowPitch = (width * 4) * sizeof(unsigned char);
+//
+//	// Copy the targa image data into the texture.
+//	deviceContext->UpdateSubresource(texture, 0, NULL, targaData, rowPitch, 0);
+//
+//	// Setup the shader resource view description.
+//	srvDesc.Format = textureDesc.Format;
+//	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+//	srvDesc.Texture2D.MostDetailedMip = 0;
+//	srvDesc.Texture2D.MipLevels = -1;
+//
+//	// Create the shader resource view for the texture.
+//	hResult = device->CreateShaderResourceView(texture, &srvDesc, &textureView);
+//	if (FAILED(hResult))
+//	{
+//		return false;
+//	}
+//
+//	// Generate mipmaps for this texture.
+//	deviceContext->GenerateMips(textureView);
+//
+//	// Release the targa image data now that the image data has been loaded into the texture.
+//	delete[] targaData;
+//	targaData = 0;
+//
+//	//the texture class is initialied and ready
+//	ready = true;
+//
+//	return true;
+//}
+
+//void Hydro::Texture::Shutdown()
+//{
+//	
+//}
+
 ID3D11ShaderResourceView* Hydro::Texture::GetTexture()
 {
-	return m_textureView;
+	return pTextureView;
 }
 
 int Hydro::Texture::GetTextureWidth() const
 {
-	return m_width;
+	return width;
 }
 
 int Hydro::Texture::GetTextureHeight() const
 {
-	return m_height;
+	return height;
 }
 
 bool Hydro::Texture::LoadTarga(std::string fileName, int & width, int & height)
@@ -165,8 +222,8 @@ bool Hydro::Texture::LoadTarga(std::string fileName, int & width, int & height)
 		return false;
 
 	//Allocate memory for the targa destination data
-	m_targaData = new unsigned char[imageSize];
-	if (!m_targaData)
+	pTargaData = new unsigned char[imageSize];
+	if (!pTargaData)
 		return false;
 
 	unsigned char data[4096];
@@ -182,10 +239,10 @@ bool Hydro::Texture::LoadTarga(std::string fileName, int & width, int & height)
 	{
 		for (i = 0; i<width; i++)
 		{
-			m_targaData[index + 0] = targaImage[k + 2];  // Red.
-			m_targaData[index + 1] = targaImage[k + 1];  // Green.
-			m_targaData[index + 2] = targaImage[k + 0];  // Blue
-			m_targaData[index + 3] = targaImage[k + 3];  // Alpha
+			pTargaData[index + 0] = targaImage[k + 2];  // Red.
+			pTargaData[index + 1] = targaImage[k + 1];  // Green.
+			pTargaData[index + 2] = targaImage[k + 0];  // Blue
+			pTargaData[index + 3] = targaImage[k + 3];  // Alpha
 
 			if (imageSize == 4096)
 			{
@@ -206,7 +263,7 @@ bool Hydro::Texture::LoadTarga(std::string fileName, int & width, int & height)
 
 	// Release the targa image data now that it was copied into the destination array.
 	delete[] targaImage;
-	targaImage = 0;
+	targaImage = nullptr;
 
 	return true;
 }

@@ -5,7 +5,7 @@ using namespace Hydro;
 
 Tameran::TitleScreen::TitleScreen(GameWindow* game, Direct3D* direct3D, ShaderManager* manager, Camera* camera, Input* input)
 	: IGameState(direct3D, manager, camera), m_gameRef(game), m_input(input), m_controlManager(), m_background()
-	, m_font(), m_label(DirectX::Colors::Yellow, std::bind(&TitleScreen::StartLabel_Selected, this, std::placeholders::_1), game->GetWidth(), game->GetHeight(), 30)
+	, m_font(m_direct3D->GetDevice(), m_direct3D->GetDeviceContext(), "Data/Font/font01", 18.0f, 3), m_label(DirectX::Colors::Yellow, std::bind(&TitleScreen::StartLabel_Selected, this, std::placeholders::_1), game->GetWidth(), game->GetHeight(), 30)
 {
 }
 
@@ -38,7 +38,7 @@ bool Tameran::TitleScreen::Initialize()
 	m_background.SetTabStop(false);
 	
 	//Initialize font object
-	result = m_font.Initialize(m_direct3D->GetDevice(), m_direct3D->GetDeviceContext(), "Data/Font/font01", 18.0f, 3);
+	//result = m_font.Initialize(m_direct3D->GetDevice(), m_direct3D->GetDeviceContext(), "Data/Font/font01", 18.0f, 3);
 	if (!result)
 	{
 		OutputDebugString("Font could not be initialized!");
@@ -78,7 +78,7 @@ void Tameran::TitleScreen::Shutdown()
 	m_label.Shutdown();
 
 	//Shutdown the font object
-	m_font.Shutdown();
+	//m_font.Shutdown();
 
 	//Shutdown the background 
 	m_background.Shutdown();

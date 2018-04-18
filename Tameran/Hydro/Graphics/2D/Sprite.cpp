@@ -338,10 +338,8 @@ void Hydro::Sprite::ShutdownBuffers()
 
 bool Hydro::Sprite::LoadTexture(ID3D11Device * device, ID3D11DeviceContext * deviceContext, std::string textureFilename)
 {
-	bool result;
-
 	// Create the texture object.
-	m_texture = new Texture();
+	m_texture = new Texture(device, deviceContext, textureFilename);
 	if (!m_texture)
 	{
 		return false;
@@ -349,13 +347,6 @@ bool Hydro::Sprite::LoadTexture(ID3D11Device * device, ID3D11DeviceContext * dev
 
 	//Flag that the texture is loaded by this sprite and must be destroyed at the end
 	m_ownTexture = true;
-
-	// Initialize the texture object.
-	result = m_texture->Initialize(device, deviceContext, textureFilename);
-	if (!result)
-	{
-		return false;
-	}
 
 	return true;
 }
@@ -365,7 +356,6 @@ void Hydro::Sprite::ReleaseTexture()
 	// Release the texture object.
 	if (m_texture && m_ownTexture)
 	{
-		m_texture->Shutdown();
 		delete m_texture;
 		m_texture = nullptr;
 	}

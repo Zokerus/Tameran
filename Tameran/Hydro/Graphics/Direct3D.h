@@ -36,9 +36,6 @@ namespace Hydro
 		Direct3D& operator=(const Direct3D& other) = delete;
 		~Direct3D();
 
-		//bool Initialize();
-		//void Shutdown();
-
 		void BeginFrame(DirectX::XMVECTORF32 color);
 		bool EndFrame();
 
@@ -47,9 +44,9 @@ namespace Hydro
 		ID3D11Device* GetDevice() const;
 		ID3D11DeviceContext* GetDeviceContext() const;
 
-		void GetProjectionMatrix(DirectX::XMMATRIX &projectionMatrix);
-		void GetWorldMatrix(DirectX::XMMATRIX &worldMatrix);
-		void GetOrthoMatrix(DirectX::XMMATRIX &orthoMatrix);
+		void GetProjectionMatrix(DirectX::XMMATRIX& projectionMatrix);
+		void GetWorldMatrix(DirectX::XMMATRIX& worldMatrix);
+		void GetOrthoMatrix(DirectX::XMMATRIX& orthoMatrix);
 
 		void GetVideoCardInfo(char* cardName, int& memory);
 
@@ -74,7 +71,7 @@ namespace Hydro
 		void CreateMatrices();
 
 	private:
-		class IGameWindow*			m_window;
+		class IGameWindow*								pWindow;
 		Microsoft::WRL::ComPtr<IDXGISwapChain>			pSwapChain;
 		Microsoft::WRL::ComPtr<ID3D11Device>			pDevice;
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>		pDeviceContext;

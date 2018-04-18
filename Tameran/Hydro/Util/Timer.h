@@ -21,10 +21,10 @@ namespace Hydro
 		float GetTime() const;
 
 	private:
-		double m_frequency;
-		INT64 m_startTime;
-		double m_frameTime;
-		INT64 m_beginTime, m_endTime;
+		double frequency;
+		INT64 startTime;
+		double frameTime;
+		INT64 beginTime, endTime;
 	};
 }
 

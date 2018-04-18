@@ -5,7 +5,7 @@
 #include <array>
 
 Hydro::Direct3D::Direct3D(IGameWindow* window)
-	: m_window(window), pSwapChain(nullptr), pDevice(nullptr), pDeviceContext(nullptr), pRenderTargetView(nullptr), pBackBuffer(nullptr),
+	: pWindow(window), pSwapChain(nullptr), pDevice(nullptr), pDeviceContext(nullptr), pRenderTargetView(nullptr), pBackBuffer(nullptr),
 	pDepthStencilState(nullptr), pDepthStencilView(nullptr), pDepthDisabledStencilState(nullptr), pAlphaEnableBlendingState(nullptr), pAlphaDisableBlendingState(nullptr), pRasterStateWire(nullptr), pRasterStateSolid(nullptr), pRasterNoCullingSolid(nullptr),
 	pDebug(nullptr)
 {
@@ -143,7 +143,7 @@ void Hydro::Direct3D::BeginFrame(DirectX::XMVECTORF32 color)
 bool Hydro::Direct3D::EndFrame()
 {
 	// Present the back buffer to the screen since rendering is complete.
-	if (m_window->VSync())
+	if (pWindow->VSync())
 	{
 		// Lock to screen refresh rate.
 		if (FAILED(pSwapChain->Present(1, 0)))
@@ -193,7 +193,7 @@ void Hydro::Direct3D::GetOrthoMatrix(DirectX::XMMATRIX& OrthoMatrix)
 	OrthoMatrix = orthoMatrix;
 }
 
-void Hydro::Direct3D::GetVideoCardInfo(char * cardName, int & memory)
+void Hydro::Direct3D::GetVideoCardInfo(char* cardName, int& memory)
 {
 }
 
@@ -278,8 +278,8 @@ void Hydro::Direct3D::CreateSwapChainAndDevice()
 	// Set to a double back buffer.
 	swapChainDesc.BufferCount = 1;
 	// Set the width and height of the back buffer.
-	swapChainDesc.BufferDesc.Width = m_window->GetWidth();
-	swapChainDesc.BufferDesc.Height = m_window->GetHeight();
+	swapChainDesc.BufferDesc.Width = pWindow->GetWidth();
+	swapChainDesc.BufferDesc.Height = pWindow->GetHeight();
 	// Set regular 32-bit surface for the back buffer.
 	swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	swapChainDesc.BufferDesc.RefreshRate.Numerator = 1;
@@ -287,7 +287,7 @@ void Hydro::Direct3D::CreateSwapChainAndDevice()
 	// Set the usage of the back buffer.
 	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	// Set the handle for the window to render to.
-	swapChainDesc.OutputWindow = m_window->GetHandle();
+	swapChainDesc.OutputWindow = pWindow->GetHandle();
 	// Discard the back buffer contents after presenting.
 	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 	swapChainDesc.Windowed = true;
@@ -365,8 +365,8 @@ void Hydro::Direct3D::CreateDepthBuffer()
 	ZeroMemory(&depthBufferDesc, sizeof(depthBufferDesc));
 
 	// Set up the description of the depth buffer.
-	depthBufferDesc.Width = m_window->GetWidth();
-	depthBufferDesc.Height = m_window->GetHeight();
+	depthBufferDesc.Width = pWindow->GetWidth();
+	depthBufferDesc.Height = pWindow->GetHeight();
 	depthBufferDesc.MipLevels = 1;
 	depthBufferDesc.ArraySize = 1;
 	depthBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -566,8 +566,8 @@ void Hydro::Direct3D::CreateRasterizerState()
 void Hydro::Direct3D::CreateViewport()
 {
 	//Viewport creation
-	viewPort.Width = static_cast<float>(m_window->GetWidth());
-	viewPort.Height = static_cast<float>(m_window->GetHeight());
+	viewPort.Width = static_cast<float>(pWindow->GetWidth());
+	viewPort.Height = static_cast<float>(pWindow->GetHeight());
 	viewPort.TopLeftX = 0;
 	viewPort.TopLeftY = 0;
 	viewPort.MinDepth = 0.0f;
@@ -583,7 +583,7 @@ void Hydro::Direct3D::CreateMatrices()
 
 	// Setup the projection matrix.
 	fieldOfView = DirectX::XM_PIDIV4;
-	screenAspect = (float)m_window->GetWidth() / (float)m_window->GetHeight();
+	screenAspect = (float)pWindow->GetWidth() / (float)pWindow->GetHeight();
 
 	// Create the projection matrix for 3D rendering.
 	projectionMatrix = DirectX::XMMatrixPerspectiveFovLH(fieldOfView, screenAspect, screenNear, screenDepth);
@@ -592,7 +592,7 @@ void Hydro::Direct3D::CreateMatrices()
 	worldMatrix = DirectX::XMMatrixIdentity();
 
 	// Create an orthographic projection matrix for 2D rendering.
-	orthoMatrix = DirectX::XMMatrixOrthographicLH((float)m_window->GetWidth(), (float)m_window->GetHeight(), screenNear, screenDepth);
+	orthoMatrix = DirectX::XMMatrixOrthographicLH((float)pWindow->GetWidth(), (float)pWindow->GetHeight(), screenNear, screenDepth);
 }
 
 Hydro::Direct3D::DXException::DXException(HRESULT hr)

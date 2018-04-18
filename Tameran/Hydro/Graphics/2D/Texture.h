@@ -26,11 +26,11 @@ namespace Hydro
 		};
 
 	public:
-		Texture();
+		Texture(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::string fileName);
 		~Texture();
 
-		bool Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::string fileName);
-		void Shutdown();
+		//bool Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::string fileName);
+		//void Shutdown();
 
 		ID3D11ShaderResourceView* GetTexture();
 		int GetTextureWidth() const;
@@ -40,11 +40,10 @@ namespace Hydro
 		bool LoadTarga(std::string fileName, int &width, int &height);  //Loading *.tga files
 																		//TODO Load other formats and add the relevant method
 	private:
-		unsigned char *m_targaData;
-		int m_width, m_height;
-		ID3D11Texture2D *m_texture;
-		ID3D11ShaderResourceView *m_textureView;
-		bool m_ready;
+		unsigned char* pTargaData;
+		int width, height;
+		ID3D11Texture2D* pTexture;
+		ID3D11ShaderResourceView* pTextureView;
 	};
 }
 #endif // !TEXTURE

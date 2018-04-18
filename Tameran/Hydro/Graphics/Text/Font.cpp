@@ -1,64 +1,38 @@
 #include "Font.h"
+#include <exception>
 
-Hydro::Font::Font()
-	: m_font(nullptr), m_texture(), m_fontHeight(0), m_spaceSize(0)
-{}
-
-Hydro::Font::~Font()
+Hydro::Font::Font(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::string fontFilename, float FontHeight, int SpaceSize)
+	: pFont(nullptr), texture(device, deviceContext, fontFilename + ".tga"), fontHeight(FontHeight), spaceSize(SpaceSize)
 {
-	Shutdown();
-}
-
-bool Hydro::Font::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::string fontFilename, float fontHeight, int spaceSize)
-{
-	bool result;
-
-	//Store the size of the font
-	m_fontHeight = fontHeight;
-
-	//Store the size of spaces in pixel size
-	m_spaceSize = spaceSize;
+	bool result = true;
 
 	//Load the text filecontaining the font data
 	result = LoadFontData(fontFilename);
 	if (!result)
 	{
-		return false;
+		throw std::exception(("Failed to load FontData from " + fontFilename).c_str());
 	}
-
-	//Load the texture that has the font characters on it
-	result = LoadTexture(device, deviceContext, fontFilename);
-	if (!result) 
-	{
-		return false;
-	}
-
-	return true;
 }
 
-void Hydro::Font::Shutdown()
+Hydro::Font::~Font()
 {
-	//Release the font texture
-	m_texture.Shutdown();
-	m_texture.~Texture();
-
 	//Release the font data
 	ReleaseFontData();
 }
 
-ID3D11ShaderResourceView * Hydro::Font::GetTexture()
+ID3D11ShaderResourceView* Hydro::Font::GetTexture()
 {
-	return m_texture.GetTexture();
+	return texture.GetTexture();
 }
 
 void Hydro::Font::BuildVertexArray(void* vertices, const char* sentence, float drawX, float drawY)
 {
-	VertexType *vertexPtr;
+	VertexType* vertexPtr;
 	int numLetters, index, i, letter;
 	float ratio;
 
 	//Calculate the height/width ratio
-	ratio = m_fontHeight / 18.0f;
+	ratio = fontHeight / 18.0f;
 
 	//Cast the input vertices into a VertexType structure
 	vertexPtr = (VertexType*)vertices;
@@ -76,32 +50,32 @@ void Hydro::Font::BuildVertexArray(void* vertices, const char* sentence, float d
 
 		//if the letter is a space then just move over three pixels
 		if (letter == 0)
-			drawX = drawX + (float)m_spaceSize * ratio;
+			drawX = drawX + (float)spaceSize * ratio;
 		else
 		{
-			vertexPtr[index].position = DirectX::XMFLOAT3(drawX, (drawY - m_fontHeight), 0.0f);  // Bottom left.
-			vertexPtr[index].texture = DirectX::XMFLOAT2(m_font[letter].left, 1.0f);
+			vertexPtr[index].position = DirectX::XMFLOAT3(drawX, (drawY - fontHeight), 0.0f);  // Bottom left.
+			vertexPtr[index].texture = DirectX::XMFLOAT2(pFont[letter].left, 1.0f);
 			index++;
 
 			vertexPtr[index].position = DirectX::XMFLOAT3(drawX, drawY, 0.0f);  // Top left.
-			vertexPtr[index].texture = DirectX::XMFLOAT2(m_font[letter].left, 0.0f);
+			vertexPtr[index].texture = DirectX::XMFLOAT2(pFont[letter].left, 0.0f);
 			index++;
 
-			vertexPtr[index].position = DirectX::XMFLOAT3((drawX + m_font[letter].size * ratio), (drawY - m_fontHeight), 0.0f);  // Bottom right.
-			vertexPtr[index].texture = DirectX::XMFLOAT2(m_font[letter].right, 1.0f);
+			vertexPtr[index].position = DirectX::XMFLOAT3((drawX + pFont[letter].size * ratio), (drawY - fontHeight), 0.0f);  // Bottom right.
+			vertexPtr[index].texture = DirectX::XMFLOAT2(pFont[letter].right, 1.0f);
 			index++;
 
-			vertexPtr[index].position = DirectX::XMFLOAT3(drawX + m_font[letter].size * ratio, drawY, 0.0f);  // Top right.
-			vertexPtr[index].texture = DirectX::XMFLOAT2(m_font[letter].right, 0.0f);
+			vertexPtr[index].position = DirectX::XMFLOAT3(drawX + pFont[letter].size * ratio, drawY, 0.0f);  // Top right.
+			vertexPtr[index].texture = DirectX::XMFLOAT2(pFont[letter].right, 0.0f);
 			index++;
 
 			// Update the x location for drawing by the size of the letter and one pixel.
-			drawX = drawX + m_font[letter].size * ratio + 1.0f;
+			drawX = drawX + pFont[letter].size * ratio + 1.0f;
 		}
 	}
 }
 
-float Hydro::Font::GetTextWidth(const char * sentence) const
+float Hydro::Font::GetTextWidth(const char* sentence) const
 {
 	int numLetters, i, letter;
 	float ratio, width;
@@ -110,7 +84,7 @@ float Hydro::Font::GetTextWidth(const char * sentence) const
 	width = 0.0f;
 
 	//Calculate the height/width ratio
-	ratio = m_fontHeight / 18.0f;
+	ratio = fontHeight / 18.0f;
 
 	//Get the number of letters in the sentence
 	numLetters = (int)strlen(sentence);
@@ -122,11 +96,11 @@ float Hydro::Font::GetTextWidth(const char * sentence) const
 
 		//if the letter is a space then just move over three pixels
 		if (letter == 0)
-			width = width + (float)m_spaceSize * ratio;
+			width = width + (float)spaceSize * ratio;
 		else
 		{
 			// Update the x location for drawing by the size of the letter and one pixel.
-			width = width + m_font[letter].size * ratio + 1.0f;
+			width = width + pFont[letter].size * ratio + 1.0f;
 		}
 	}
 
@@ -135,7 +109,7 @@ float Hydro::Font::GetTextWidth(const char * sentence) const
 
 float Hydro::Font::GetFontHeight() const
 {
-	return m_fontHeight;
+	return fontHeight;
 }
 
 bool Hydro::Font::LoadFontData(std::string filename)
@@ -145,8 +119,8 @@ bool Hydro::Font::LoadFontData(std::string filename)
 	char temp;
 
 	//Create the font spacing buffer
-	m_font = new FontType[95];  //TODO dynamic number of letters
-	if (!m_font)
+	pFont = new FontType[95];  //TODO dynamic number of letters
+	if (!pFont)
 		return false;
 
 	//Refer to the working directory
@@ -171,9 +145,9 @@ bool Hydro::Font::LoadFontData(std::string filename)
 			fin.get(temp);
 		}
 
-		fin >> m_font[i].left;
-		fin >> m_font[i].right;
-		fin >> m_font[i].size;
+		fin >> pFont[i].left;
+		fin >> pFont[i].right;
+		fin >> pFont[i].size;
 	}
 
 	//Close the file
@@ -185,23 +159,9 @@ bool Hydro::Font::LoadFontData(std::string filename)
 void Hydro::Font::ReleaseFontData()
 {
 	//Release the font data array.
-	if (m_font)
+	if (pFont)
 	{
-		delete[] m_font;
-		m_font = 0;
+		delete[] pFont;
+		pFont = nullptr;
 	}
-}
-
-bool Hydro::Font::LoadTexture(ID3D11Device * device, ID3D11DeviceContext * deviceContext, std::string filename)
-{
-	bool result;
-
-	//Initialize the texture object
-	result = m_texture.Initialize(device, deviceContext, filename + ".tga");
-	if (!result)
-	{
-		return false;
-	}
-
-	return true;
 }

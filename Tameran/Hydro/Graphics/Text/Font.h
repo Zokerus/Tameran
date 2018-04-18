@@ -33,11 +33,8 @@ namespace Hydro
 		};
 
 	public:
-		Font();
+		Font(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::string fontFilename, float FontHeight, int SpaceSize);
 		~Font();
-
-		bool Initialize(ID3D11Device *device, ID3D11DeviceContext *deviceContext,  std::string fontFilename, float fontHeight, int spaceSize);
-		void Shutdown();
 
 		ID3D11ShaderResourceView* GetTexture();
 		void BuildVertexArray(void* vertices, const char* sentence, float drawX, float drawY);
@@ -47,13 +44,12 @@ namespace Hydro
 	private:
 		bool LoadFontData(std::string filename);
 		void ReleaseFontData();
-		bool LoadTexture(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::string filename);
 
 	private:
-		FontType* m_font;
-		Texture m_texture;
-		float m_fontHeight;
-		int m_spaceSize;
+		FontType* pFont;
+		Texture texture;
+		float fontHeight;
+		int spaceSize;
 	};
 }
 

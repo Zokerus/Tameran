@@ -2,7 +2,7 @@
 #include <exception>
 
 Hydro::Timer::Timer()
-	: m_frequency(0.0), m_startTime(0), m_frameTime(0.0), m_beginTime(0), m_endTime(0)
+	: frequency(0.0), startTime(0), frameTime(0.0), beginTime(0), endTime(0)
 {
 	LARGE_INTEGER li;
 	//Check to see if the system supports high performance timers
@@ -12,11 +12,11 @@ Hydro::Timer::Timer()
 	}
 
 	//Calculate the ticks per millisecond
-	m_frequency = (double)li.QuadPart;
+	frequency = (double)li.QuadPart;
 
 	//Start the timer
 	QueryPerformanceCounter(&li);
-	m_startTime = li.QuadPart;
+	startTime = li.QuadPart;
 }
 
 Hydro::Timer::~Timer()
@@ -28,13 +28,13 @@ const bool Hydro::Timer::Update()
 	//Get the latest timing
 	QueryPerformanceCounter(&li);
 	//Calculate the frame time
-	m_frameTime = (double)(li.QuadPart - m_startTime) / m_frequency;
+	frameTime = (double)(li.QuadPart - startTime) / frequency;
 	//Reset the timer
-	m_startTime = li.QuadPart;
+	startTime = li.QuadPart;
 	return true;
 }
 
 float Hydro::Timer::GetTime() const
 {
-	return (float)m_frameTime;
+	return (float)frameTime;
 }
