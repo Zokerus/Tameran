@@ -14,23 +14,14 @@ Hydro::PictureBox::~PictureBox()
 
 bool Hydro::PictureBox::Initialize(Direct3D * direct3D, Hydro::Rectangle rect, std::string textureFileName, int screenWidth, int screenHeight)
 {
-	bool result;
-
 	m_name = "Background";
 	m_text = "";
 	m_size = DirectX::XMFLOAT2((float)rect.GetWidth(), (float)rect.GetHeight());
 	m_pos = DirectX::XMINT2(rect.GetXPos(), rect.GetYPos());
 
 	//Create the sprite object of the picture box
-	m_sprite = new Sprite();
+	m_sprite = new Sprite(direct3D->GetDevice(), direct3D->GetDeviceContext(), screenWidth, screenHeight, textureFileName, (int)m_size.x, (int)m_size.y);
 	if (!m_sprite)
-	{
-		return false;
-	}
-
-	//Initialize the sprite object
-	result = m_sprite->Initialize(direct3D->GetDevice(), direct3D->GetDeviceContext(), screenWidth, screenHeight, textureFileName, (int)m_size.x, (int)m_size.y);
-	if (!result)
 	{
 		return false;
 	}
@@ -45,22 +36,13 @@ bool Hydro::PictureBox::Initialize(Direct3D * direct3D, Hydro::Rectangle rect, s
 
 bool Hydro::PictureBox::Initialize(Direct3D * direct3D, DirectX::XMINT2 pos, std::string textureFileName, int screenWidth, int screenHeight)
 {
-	bool result;
-
 	m_name = "Background";
 	m_text = "";
 	m_pos = pos;
 
 	//Create the sprite object of the picture box
-	m_sprite = new Sprite();
+	m_sprite = new Sprite(direct3D->GetDevice(), direct3D->GetDeviceContext(), screenWidth, screenHeight, textureFileName);
 	if (!m_sprite)
-	{
-		return false;
-	}
-
-	//Initialize the sprite object
-	result = m_sprite->Initialize(direct3D->GetDevice(), direct3D->GetDeviceContext(), screenWidth, screenHeight, textureFileName);
-	if (!result)
 	{
 		return false;
 	}
@@ -81,7 +63,6 @@ void Hydro::PictureBox::Shutdown()
 	//Shutdown the sprite object of the picture box
 	if (m_sprite)
 	{
-		m_sprite->Shutdown();
 		delete m_sprite;
 		m_sprite = nullptr;
 	}
