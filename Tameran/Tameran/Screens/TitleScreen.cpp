@@ -37,14 +37,6 @@ bool Tameran::TitleScreen::Initialize()
 	//Set the picture box as not selectable
 	m_background.SetTabStop(false);
 	
-	//Initialize font object
-	//result = m_font.Initialize(m_direct3D->GetDevice(), m_direct3D->GetDeviceContext(), "Data/Font/font01", 18.0f, 3);
-	if (!result)
-	{
-		OutputDebugString("Font could not be initialized!");
-		return false;
-	}
-
 	//Measure the width of the label text
 	float size = m_font.GetTextWidth("Press ENTER to start");
 

@@ -10,7 +10,7 @@ namespace Hydro
 	{
 	public:
 		Rectangle();
-		Rectangle(int xPos, int yPos, int width, int height);
+		Rectangle(int XPos, int YPos, int Width, int Height);
 		~Rectangle();
 
 		int GetXPos() const;
@@ -18,10 +18,10 @@ namespace Hydro
 		int GetWidth() const;
 		int GetHeight() const;
 
-		void SetParameters(int xPos, int yPos, int width, int height);
+		void SetParameters(int XPos, int YPos, int Width, int Height);
 
 	private:
-		int m_xPos, m_yPos, m_width, m_height;
+		int xPos, yPos, width, height;
 	};
 }
 
