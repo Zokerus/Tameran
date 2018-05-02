@@ -21,15 +21,12 @@ namespace Hydro
 		ControlManager();
 		~ControlManager();
 
-		//bool Initialize(); not needed as this point
-		void Shutdown();
-
-		bool Update(float eTime, Input *input);
-		bool Draw(float eTime, ID3D11DeviceContext *deviceContext, ShaderManager *shaderManager, DirectX::XMMATRIX worldMatrix, DirectX::XMMATRIX viewMatrix, DirectX::XMMATRIX orthoMatrix);
+		bool Update(float eTime, Input* input);
+		bool Draw(float eTime, ID3D11DeviceContext* deviceContext, ShaderManager* shaderManager, DirectX::XMMATRIX worldMatrix, DirectX::XMMATRIX viewMatrix, DirectX::XMMATRIX orthoMatrix);
 
 		int ControlCount();
 
-		void AddControl(IControl *control);
+		void AddControl(IControl* Ccontrol);
 		void RemoveControl();
 
 		void NextControl();
@@ -37,10 +34,10 @@ namespace Hydro
 		void SetFocusChangeEvent(std::function<void(const IControl*)> func);
 
 	private:
-		std::vector<IControl*> m_control;
-		int m_selectedControl;
+		std::vector<IControl*> control;
+		int selectedControl;
 
-		std::function<void(const IControl*)> m_focusChanged;
+		std::function<void(const IControl*)> focusChanged;
 
 	};
 }

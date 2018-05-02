@@ -84,13 +84,13 @@ bool Tameran::TitleScreen::Initialize()
 void Tameran::TitleScreen::Shutdown()
 {
 	//Shutdown text object
-	m_label.Shutdown();
+	//m_label.Shutdown();
 
 	//Shutdown the font object
 	//m_font.Shutdown();
 
 	//Shutdown the background 
-	m_background.Shutdown();
+	//m_background.Shutdown();
 
 	//Reset the input pointer
 	m_input = nullptr;
