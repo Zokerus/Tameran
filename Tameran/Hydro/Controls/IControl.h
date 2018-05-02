@@ -3,6 +3,7 @@
 
 //Includes
 #include <string>
+#include <exception>
 
 //My Includes
 #include "../Graphics/Shader/ShaderManager.h"
@@ -19,24 +20,22 @@ namespace Hydro
 		enum ControlType { Lablel, LinkLabel, PictureBox, Button};
 
 	public:
-		IControl();
+		IControl(std::string Name, DirectX::XMFLOAT2 Size, DirectX::XMINT2 Pos, bool Focus, bool Enable, bool Visible, bool Tabstop, DirectX::XMVECTORF32 Color, ControlType Type);
 		~IControl();
-
-		bool Initialize();
-		void Shutdown();
 
 		virtual bool Update(float eTime);
 		virtual bool Draw(float eTime, ID3D11DeviceContext* deviceContext, ShaderManager* shaderManager, DirectX::XMMATRIX worldMatrix, DirectX::XMMATRIX viewMatrix, DirectX::XMMATRIX orthoMatrix);
 		virtual void HandleInput(Input* input);
 
 		void OnSelect();
-		void SetFocus(bool focus);
-		void SetStatus(bool enable);
-		void Visibility(bool visibility);
-		void SetTabStop(bool tabStop);
+		void SetFocus(bool Focus);
+		void SetStatus(bool Enable);
+		void Visibility(bool Visibility);
+		void SetTabStop(bool TabStop);
+		void SetPosition(DirectX::XMINT2 Pos);
+		void SetSize(DirectX::XMFLOAT2 Size);
 
 		std::string GetName() const;
-		std::string GetString() const;
 		DirectX::XMFLOAT2 GetSize() const;
 		DirectX::XMINT2 GetPosition() const;
 		bool HasFocus() const;
@@ -47,13 +46,12 @@ namespace Hydro
 		ControlType GetType() const;
 
 	protected:
-		std::string m_name;
-		std::string m_text;
-		DirectX::XMFLOAT2 m_size;
-		DirectX::XMINT2 m_pos;
-		bool m_focus, m_enable, m_visible, m_tabstop, m_ready;
-		DirectX::XMVECTORF32 m_color;
-		ControlType m_type;
+		std::string name;
+		DirectX::XMFLOAT2 size;
+		DirectX::XMINT2 pos;
+		bool focus, enable, visible, tabstop;
+		DirectX::XMVECTORF32 color;
+		ControlType type;
 	};
 }
 

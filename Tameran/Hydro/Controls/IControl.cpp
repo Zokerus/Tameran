@@ -1,106 +1,98 @@
 #include "IControl.h"
 
-Hydro::IControl::IControl()
-	: m_name(), m_text(), m_size(), m_pos(), m_focus(false), m_enable(true), m_visible(true), m_tabstop(false), m_ready(false),
-	m_color(), m_type()
+Hydro::IControl::IControl(std::string Name, DirectX::XMFLOAT2 Size, DirectX::XMINT2 Pos, bool Focus, bool Enable, bool Visible, bool Tabstop, DirectX::XMVECTORF32 Color, ControlType Type)
+	: name(Name), size(Size), pos(Pos), focus(Focus), enable(Enable), visible(Visible), tabstop(Tabstop),	color(Color), type(Type)
 {}
 
 Hydro::IControl::~IControl()
 {
-	if (m_ready)
-	{
-		Shutdown();
-	}
 }
-
-bool Hydro::IControl::Initialize()
-{
-	return true;
-}
-
-void Hydro::IControl::Shutdown()
-{}
 
 bool Hydro::IControl::Update(float eTime)
 {
 	return true;
 }
 
-bool Hydro::IControl::Draw(float eTime, ID3D11DeviceContext * deviceContext, ShaderManager * shaderManager, DirectX::XMMATRIX worldMatrix, DirectX::XMMATRIX viewMatrix, DirectX::XMMATRIX orthoMatrix)
+bool Hydro::IControl::Draw(float eTime, ID3D11DeviceContext* deviceContext, ShaderManager* shaderManager, DirectX::XMMATRIX worldMatrix, DirectX::XMMATRIX viewMatrix, DirectX::XMMATRIX orthoMatrix)
 {
 	return true;
 }
 
-void Hydro::IControl::HandleInput(Input * input)
+void Hydro::IControl::HandleInput(Input* input)
 {
 }
 
-void Hydro::IControl::SetFocus(bool focus)
+void Hydro::IControl::SetFocus(bool Focus)
 {
-	m_focus = focus;
+	focus = Focus;
 }
 
-void Hydro::IControl::SetStatus(bool enable)
+void Hydro::IControl::SetStatus(bool Enable)
 {
-	m_enable = enable;
+	enable = Enable;
 }
 
-void Hydro::IControl::Visibility(bool visibility)
+void Hydro::IControl::Visibility(bool Visibility)
 {
-	m_visible = visibility;
+	visible = Visibility;
 }
 
-void Hydro::IControl::SetTabStop(bool tabStop)
+void Hydro::IControl::SetTabStop(bool TabStop)
 {
-	m_tabstop = tabStop;
+	tabstop = TabStop;
+}
+
+void Hydro::IControl::SetPosition(DirectX::XMINT2 Pos)
+{
+	pos = Pos;
+}
+
+void Hydro::IControl::SetSize(DirectX::XMFLOAT2 Size)
+{
+	size = Size;
 }
 
 std::string Hydro::IControl::GetName() const
 {
-	return m_name;
-}
-
-std::string Hydro::IControl::GetString() const
-{
-	return m_text;
+	return name;
 }
 
 DirectX::XMFLOAT2 Hydro::IControl::GetSize() const
 {
-	return m_size;
+	return size;
 }
 
 DirectX::XMINT2 Hydro::IControl::GetPosition() const
 {
-	return m_pos;
+	return pos;
 }
 
 bool Hydro::IControl::HasFocus() const
 {
-	return m_focus;
+	return focus;
 }
 
 bool Hydro::IControl::IsEnable() const
 {
-	return m_enable;
+	return enable;
 }
 
 bool Hydro::IControl::IsVisible() const
 {
-	return m_visible;
+	return visible;
 }
 
 bool Hydro::IControl::GetTabStop() const
 {
-	return m_tabstop;
+	return tabstop;
 }
 
 DirectX::XMVECTORF32 Hydro::IControl::GetColor() const
 {
-	return m_color;
+	return color;
 }
 
 Hydro::IControl::ControlType Hydro::IControl::GetType() const
 {
-	return m_type;
+	return type;
 }

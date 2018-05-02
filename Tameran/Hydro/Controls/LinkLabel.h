@@ -15,11 +15,8 @@ namespace Hydro
 	class LinkLabel : public Label
 	{
 	public:
-		LinkLabel(DirectX::XMVECTORF32 selectedColor, std::function<void(IControl*)> func, int screenWidth, int screenHeight, int maxLength);
+		LinkLabel(Direct3D* direct3D, Font* font, int ScreenWidth, int ScreenHeight, int MaxLength, std::string Name, std::string text, DirectX::XMINT2 Pos, DirectX::XMFLOAT2 Size, DirectX::XMVECTORF32 Color, DirectX::XMVECTORF32 selectedColor, std::function<void(IControl*)> func);
 		~LinkLabel();
-
-		//bool Initialize(Direct3D *direct3D, Font *font, char* string, DirectX::XMINT2 pos, DirectX::XMFLOAT2 size, DirectX::XMVECTORF32 color);
-		//void Shutdown();
 
 		bool Update(float eTime);
 		bool Draw(float eTime, ID3D11DeviceContext *deviceContext, ShaderManager *shaderManager, DirectX::XMMATRIX worldMatrix, DirectX::XMMATRIX viewMatrix, DirectX::XMMATRIX orthoMatrix);
@@ -27,9 +24,9 @@ namespace Hydro
 		void HandleInput(Input *input);
 
 	private:
-		DirectX::XMVECTORF32 m_selectedColor;
-		int m_counter;
-		std::function<void(IControl*)> m_select;
+		DirectX::XMVECTORF32 selectedColor;
+		int counter;
+		std::function<void(IControl*)> select;
 	};
 }
 #endif // !LINKLABEL

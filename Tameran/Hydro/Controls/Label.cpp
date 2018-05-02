@@ -1,56 +1,21 @@
 #include "Label.h"
 
-Hydro::Label::Label(int screenWidth, int screenHeight, int maxLength)
-	: m_string(screenWidth, screenHeight, maxLength), m_font(nullptr), m_ready(false)
+Hydro::Label::Label(Direct3D* direct3D, Font* font, int ScreenWidth, int ScreenHeight, int MaxLength, std::string Name, std::string text, DirectX::XMINT2 Pos, DirectX::XMFLOAT2 Size, DirectX::XMVECTORF32 Color)
+	: IControl(Name, Size, Pos, false, true, true, false, Color, ControlType::Lablel),
+	string(direct3D, font, ScreenWidth, ScreenHeight, MaxLength, true, &text, Pos, Color)
 {}
 
 Hydro::Label::~Label()
-{
-	if(m_ready)
-	{
-		Shutdown();
-	}
-}
-
-bool Hydro::Label::Initialize(Direct3D* direct3D, Font* font, char* string, DirectX::XMINT2 pos, DirectX::XMFLOAT2 size, DirectX::XMVECTORF32 color)
-{
-	bool result = true;
-
-	m_tabstop = false;
-	m_text = string;
-	m_size = size;
-	m_pos = pos;
-	m_color = color;
-	m_font = font;
-
-	result = m_string.Initialize(direct3D->GetDevice(), direct3D->GetDeviceContext(), true, font, m_text.c_str(), pos, color);
-	if (!result)
-	{
-		return false;
-	}
-
-	m_enable = true;
-	m_visible = true;
-
-	m_ready = true;
-
-	return true;
-}
-
-void Hydro::Label::Shutdown()
-{
-	m_font = nullptr;
-	m_ready = false;
-}
+{}
 
 bool Hydro::Label::Update(float eTime)
 {
 	return true;
 }
 
-bool Hydro::Label::Draw(float eTime, ID3D11DeviceContext * deviceContext, ShaderManager * shaderManager, DirectX::XMMATRIX worldMatrix, DirectX::XMMATRIX viewMatrix, DirectX::XMMATRIX orthoMatrix)
+bool Hydro::Label::Draw(float eTime, ID3D11DeviceContext* deviceContext, ShaderManager* shaderManager, DirectX::XMMATRIX worldMatrix, DirectX::XMMATRIX viewMatrix, DirectX::XMMATRIX orthoMatrix)
 {
-	if (!m_string.Render(deviceContext, shaderManager, worldMatrix, viewMatrix, orthoMatrix, m_font->GetTexture()))
+	if (!string.Render(deviceContext, shaderManager, worldMatrix, viewMatrix, orthoMatrix))
 	{
 		return false;
 	}
@@ -60,4 +25,15 @@ bool Hydro::Label::Draw(float eTime, ID3D11DeviceContext * deviceContext, Shader
 
 void Hydro::Label::HandleInput()
 {
+}
+
+void Hydro::Label::SetPosition(DirectX::XMINT2 Pos)
+{
+	pos = Pos;
+	string.SetPosition(Pos);
+}
+
+const std::string* Hydro::Label::GetString() const
+{
+	return string.GetText();
 }

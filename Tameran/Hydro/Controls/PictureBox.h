@@ -16,12 +16,10 @@ namespace Hydro
 	class PictureBox : public IControl
 	{
 	public:
-		PictureBox();
+		PictureBox(Direct3D* direct3D, std::string Name, DirectX::XMINT2 Pos, std::string textureFileName, int screenWidth, int screenHeight);
+		PictureBox(Direct3D* direct3D, std::string Name, DirectX::XMINT2 Pos, DirectX::XMFLOAT2 Size, std::string textureFileName, int screenWidth, int screenHeight);
+		PictureBox(Direct3D* direct3D, std::string Name, Hydro::Rectangle rect, std::string textureFileName, int screenWidth, int screenHeight);
 		~PictureBox();
-
-		bool Initialize(Direct3D *direct3D, Hydro::Rectangle rect, std::string textureFileName, int screenWidth, int screenHeight);
-		bool Initialize(Direct3D *direct3D, DirectX::XMINT2 pos, std::string textureFileName, int screenWidth, int screenHeight);
-		void Shutdown();
 
 		bool Update(float eTime);
 		bool Draw(float eTime, ID3D11DeviceContext *deviceContext, ShaderManager *shaderManager, DirectX::XMMATRIX worldMatrix, DirectX::XMMATRIX viewMatrix, DirectX::XMMATRIX orthoMatrix);
@@ -30,7 +28,7 @@ namespace Hydro
 		void SetPosition(ID3D11DeviceContext * deviceContext, DirectX::XMINT2 pos);
 
 	private:
-		Sprite* m_sprite;
+		Sprite sprite;
 	};
 }
 
