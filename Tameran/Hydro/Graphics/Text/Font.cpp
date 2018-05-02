@@ -1,7 +1,7 @@
 #include "Font.h"
 #include <exception>
 
-Hydro::Font::Font(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::string fontFilename, float FontHeight, int SpaceSize)
+Hydro::Font::Font(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const std::string fontFilename, float FontHeight, int SpaceSize)
 	: pFont(nullptr), texture(device, deviceContext, fontFilename + ".tga"), fontHeight(FontHeight), spaceSize(SpaceSize)
 {
 	bool result = true;
@@ -25,7 +25,7 @@ ID3D11ShaderResourceView* Hydro::Font::GetTexture()
 	return texture.GetTexture();
 }
 
-void Hydro::Font::BuildVertexArray(void* vertices, const char* sentence, float drawX, float drawY)
+void Hydro::Font::BuildVertexArray(void* vertices, const std::string* sentence, float drawX, float drawY)
 {
 	VertexType* vertexPtr;
 	int numLetters, index, i, letter;
@@ -38,7 +38,7 @@ void Hydro::Font::BuildVertexArray(void* vertices, const char* sentence, float d
 	vertexPtr = (VertexType*)vertices;
 
 	//Get the number of letters in the sentence
-	numLetters = (int)strlen(sentence);
+	numLetters = (int)sentence->length();
 
 	//Initialize the index of the vertex array
 	index = 0;
@@ -46,7 +46,7 @@ void Hydro::Font::BuildVertexArray(void* vertices, const char* sentence, float d
 	//Draw each letter onto a quad
 	for (i = 0; i < numLetters; i++)
 	{
-		letter = ((int)sentence[i]) - 32;
+		letter = ((int)sentence->at(i)) - 32;
 
 		//if the letter is a space then just move over three pixels
 		if (letter == 0)
@@ -75,7 +75,7 @@ void Hydro::Font::BuildVertexArray(void* vertices, const char* sentence, float d
 	}
 }
 
-float Hydro::Font::GetTextWidth(const char* sentence) const
+float Hydro::Font::GetTextWidth(const std::string* sentence) const
 {
 	int numLetters, i, letter;
 	float ratio, width;
@@ -87,12 +87,12 @@ float Hydro::Font::GetTextWidth(const char* sentence) const
 	ratio = fontHeight / 18.0f;
 
 	//Get the number of letters in the sentence
-	numLetters = (int)strlen(sentence);
+	numLetters = (int)sentence->length();
 
 	//Messure the width of the sentence
 	for (i = 0; i < numLetters; i++)
 	{
-		letter = ((int)sentence[i]) - 32;
+		letter = ((int)sentence->at(i)) - 32;
 
 		//if the letter is a space then just move over three pixels
 		if (letter == 0)
@@ -112,7 +112,7 @@ float Hydro::Font::GetFontHeight() const
 	return fontHeight;
 }
 
-bool Hydro::Font::LoadFontData(std::string filename)
+bool Hydro::Font::LoadFontData(const std::string filename)
 {
 	std::ifstream fin;
 	int i;
