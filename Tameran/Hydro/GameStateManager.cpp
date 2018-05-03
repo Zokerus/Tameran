@@ -1,29 +1,28 @@
 #include "GameStateManager.h"
 
 Hydro::GameStateManager::GameStateManager()
-	: m_gameState()
+	: gameState()
 {
 }
 
 Hydro::GameStateManager::~GameStateManager()
 {
 	//Remove all states which are still listed
-	while (m_gameState.size() > 0)
+	while (gameState.size() > 0)
 	{
 		RemoveState();
 	}
-	m_gameState.clear();
-	m_gameState.~vector();
+	gameState.clear();
 }
 
 bool Hydro::GameStateManager::Update(float eTime)
 {
 	//Update all game states which are activated
-	for (int i = 0; i < m_gameState.size(); i++)
+	for (int i = 0; i < gameState.size(); i++)
 	{
-		if (m_gameState[i]->IsEnable())
+		if (gameState[i]->IsEnable())
 		{
-			if (!m_gameState[i]->Update(eTime))
+			if (!gameState[i]->Update(eTime))
 			{
 				return false;
 			}
@@ -36,11 +35,11 @@ bool Hydro::GameStateManager::Update(float eTime)
 bool Hydro::GameStateManager::Draw(float eTime)
 {
 	//Draw all game states which are visible
-	for (int i = 0; i < m_gameState.size(); i++)
+	for (int i = 0; i < gameState.size(); i++)
 	{
-		if (m_gameState[i]->IsVisible())
+		if (gameState[i]->IsVisible())
 		{
-			if (!m_gameState[i]->Draw(eTime))
+			if (!gameState[i]->Draw(eTime))
 			{
 				return false;
 			}
@@ -52,26 +51,26 @@ bool Hydro::GameStateManager::Draw(float eTime)
 int Hydro::GameStateManager::GetGameStateCount() const
 {
 	//Return the number of listed game states
-	return static_cast<int>(m_gameState.size());
+	return static_cast<int>(gameState.size());
 }
 
 Hydro::IGameState* Hydro::GameStateManager::CurrentState() const
 {
 	//Return the current working game state
-	return m_gameState.back();
+	return gameState.back();
 }
 
 void Hydro::GameStateManager::AddState(IGameState *state)
 {
 	//Add a new game state and change the focus
-	m_gameState.push_back(state);
+	gameState.push_back(state);
 	OnStateChange();
 }
 
 void Hydro::GameStateManager::ChangeState(IGameState *state)
 {
 	//Remove all listed game states
-	while (m_gameState.size() > 0)
+	while (gameState.size() > 0)
 	{
 		RemoveState();
 	}
@@ -83,9 +82,9 @@ void Hydro::GameStateManager::ChangeState(IGameState *state)
 void Hydro::GameStateManager::RemoveState()
 {
 	//Remove the last added game state
-	if (m_gameState.size() > 0)
+	if (gameState.size() > 0)
 	{
-		m_gameState.pop_back();
+		gameState.pop_back();
 		OnStateChange();
 	}
 }
@@ -93,8 +92,8 @@ void Hydro::GameStateManager::RemoveState()
 void Hydro::GameStateManager::OnStateChange()
 {
 	//Set the attributes of all states
-	for (int i = 0; i < m_gameState.size(); i++)
+	for (int i = 0; i < gameState.size(); i++)
 	{
-		m_gameState[i]->StateChange(m_gameState.back());
+		gameState[i]->StateChange(gameState.back());
 	}
 }

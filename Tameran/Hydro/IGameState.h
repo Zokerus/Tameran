@@ -14,11 +14,11 @@ namespace Hydro
 	class IGameState
 	{
 	public:
-		IGameState(Direct3D *direct3D, ShaderManager *manager, Camera* camera);
+		IGameState(Direct3D* _direct3D, ShaderManager* _manager, Camera* _camera);
 		~IGameState();
 
-		bool Initialize();
-		void Shutdown();
+		//bool Initialize();
+		//void Shutdown();
 
 		virtual bool Update(float eTime);
 		virtual bool Draw(float eTime);
@@ -28,13 +28,13 @@ namespace Hydro
 
 		void SetVisibility(const bool state);
 		void Enable(const bool state);
-		void StateChange(IGameState *currState);
+		void StateChange(IGameState* currState);
 
 	protected:
-		Direct3D* m_direct3D;
-		ShaderManager* m_shaderManager;
-		Camera* m_camera;
-		bool m_ready, m_visible, m_enable;
+		Direct3D* direct3D;
+		ShaderManager* shaderManager;
+		Camera* camera;
+		bool visible, enable;
 	};
 }
 

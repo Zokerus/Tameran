@@ -24,15 +24,15 @@ namespace Hydro
 		int GetGameStateCount() const;
 		IGameState* CurrentState() const;
 
-		void AddState(IGameState *state);
-		void ChangeState(IGameState *state);
+		void AddState(IGameState* state);
+		void ChangeState(IGameState* state);
 		void RemoveState();
 
 	private:
 		void OnStateChange();
 
 	private:
-		std::vector<IGameState*> m_gameState;
+		std::vector<IGameState*> gameState;
 	};
 }
 #endif // !GAMESTATEMANAGER
