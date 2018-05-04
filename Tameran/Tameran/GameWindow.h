@@ -25,28 +25,22 @@ namespace Tameran
 		GameWindow(HINSTANCE hInst, char *pArgs, const unsigned int screenWidth, const unsigned int screenHeight);
 		GameWindow(HINSTANCE hInst, char *pArgs, const std::string title, const unsigned int screenWidth, const unsigned int screenHeight);
 		GameWindow(HINSTANCE hInst, char *pArgs, const std::string title, const unsigned int screenWidth, const unsigned int screenHeight, bool fullscreen, bool vsync);
-		GameWindow() = delete;
-		GameWindow(const GameWindow &other) = delete;
-		GameWindow& operator=(const GameWindow &other) = delete;
 		~GameWindow();
-
-		bool Initialize();
-		void Shutdown();
 
 	private:
 		bool Update(float eTime) override;
 		bool Draw(float eTime) override;
 
 	private:
-		Hydro::Direct3D m_direct3D;
-		Hydro::ShaderManager m_shaderManager;
-		Hydro::Camera m_camera;
-		Hydro::Input m_input;
+		Hydro::Direct3D direct3D;
+		Hydro::ShaderManager shaderManager;
+		Hydro::Camera camera;
+		Hydro::Input input;
 
 	public:
 		//GameStates + GameStateManager
-		Hydro::GameStateManager m_gameStateManager;
-		TitleScreen m_titleScreen;
+		Hydro::GameStateManager gameStateManager;
+		TitleScreen titleScreen;
 	};
 }
 

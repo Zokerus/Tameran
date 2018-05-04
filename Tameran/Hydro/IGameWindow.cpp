@@ -1,19 +1,19 @@
 #include "IGameWindow.h"
 #define IDI_APPICON	108
 
-Hydro::IGameWindow::IGameWindow(HINSTANCE hInst, char *pArgs, const std::string title, const unsigned int screenWidth, const unsigned int screenHeight, bool fullscreen, bool vsync)
+Hydro::IGameWindow::IGameWindow(HINSTANCE _hInst, char* pArgs, const std::string title, const unsigned int _screenWidth, const unsigned int _screenHeight, bool _fullscreen, bool _vSync)
 	:
-	m_appName(title), m_hInst(hInst), m_hWnd(nullptr), m_args(pArgs), m_screenWidth(screenWidth), m_screenHeight(screenHeight), m_fullscreen(fullscreen), m_vsync(vsync), m_ready(false), m_exit(false), m_timer()
+	appName(title), hInst(_hInst), hWnd(nullptr), args(pArgs), screenWidth(_screenWidth), screenHeight(_screenHeight), fullscreen(_fullscreen), vSync(_vSync), exit(false), timer()
 {
 	//Store window width and height
-	m_screenWidth = screenWidth;
-	m_screenHeight = screenHeight;
+	screenWidth = screenWidth;
+	screenHeight = screenHeight;
 
 	//Convert string to LongPointer Constant CharString
-	LPCSTR name = const_cast<char *>(m_appName.c_str());
+	LPCSTR name = const_cast<char *>(appName.c_str());
 
 	//Register Window class
-	WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, HandleMsgSetup, 0, 0, m_hInst, nullptr, nullptr, nullptr, nullptr, name, nullptr };
+	WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, HandleMsgSetup, 0, 0, hInst, nullptr, nullptr, nullptr, nullptr, name, nullptr };
 	wc.hIconSm = (HICON)LoadImage(hInst, MAKEINTRESOURCE(IDI_APPICON), IMAGE_ICON, 16, 16, 0);
 	wc.hIcon = (HICON)LoadImage(hInst, MAKEINTRESOURCE(IDI_APPICON), IMAGE_ICON, 32, 32, 0);
 	wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
@@ -22,21 +22,21 @@ Hydro::IGameWindow::IGameWindow(HINSTANCE hInst, char *pArgs, const std::string 
 	//Create window and get hWnd
 	RECT windowRect;
 
-	if (m_fullscreen)
+	if (fullscreen)
 	{
 		windowRect.left = 0;
 		windowRect.top = 0;
-		windowRect.right = windowRect.left + m_screenWidth;
-		windowRect.bottom = windowRect.top + m_screenHeight;
+		windowRect.right = windowRect.left + screenWidth;
+		windowRect.bottom = windowRect.top + screenHeight;
 		AdjustWindowRect(&windowRect, WS_SYSMENU | WS_POPUP | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_VISIBLE, FALSE);
-		m_hWnd = CreateWindow(name, name, WS_SYSMENU | WS_POPUP | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_VISIBLE, windowRect.left, windowRect.top, m_screenWidth, m_screenHeight, nullptr, nullptr, m_hInst, this);
+		hWnd = CreateWindow(name, name, WS_SYSMENU | WS_POPUP | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_VISIBLE, windowRect.left, windowRect.top, screenWidth, screenHeight, nullptr, nullptr, hInst, this);
 	
 		DEVMODE dmScreenSettings;
 		// If full screen set the screen to maximum size of the users desktop and 32bit.
 		memset(&dmScreenSettings, 0, sizeof(dmScreenSettings));
 		dmScreenSettings.dmSize = sizeof(dmScreenSettings);
-		dmScreenSettings.dmPelsWidth = (unsigned long)m_screenWidth;
-		dmScreenSettings.dmPelsHeight = (unsigned long)m_screenHeight;
+		dmScreenSettings.dmPelsWidth = (unsigned long)screenWidth;
+		dmScreenSettings.dmPelsHeight = (unsigned long)screenHeight;
 		dmScreenSettings.dmBitsPerPel = 32;
 		dmScreenSettings.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
 
@@ -44,25 +44,25 @@ Hydro::IGameWindow::IGameWindow(HINSTANCE hInst, char *pArgs, const std::string 
 	}
 	else
 	{
-		windowRect.left = (GetSystemMetrics(SM_CXSCREEN) - m_screenWidth) / 2;
-		windowRect.top = (GetSystemMetrics(SM_CYSCREEN) - m_screenHeight) / 2;
-		windowRect.right = windowRect.left + m_screenWidth;
-		windowRect.bottom = windowRect.top + m_screenHeight;
+		windowRect.left = (GetSystemMetrics(SM_CXSCREEN) - screenWidth) / 2;
+		windowRect.top = (GetSystemMetrics(SM_CYSCREEN) - screenHeight) / 2;
+		windowRect.right = windowRect.left + screenWidth;
+		windowRect.bottom = windowRect.top + screenHeight;
 		AdjustWindowRect(&windowRect, WS_CAPTION | WS_POPUPWINDOW, FALSE);
-		m_hWnd = CreateWindow(name, name, WS_CAPTION | WS_POPUPWINDOW | WS_VISIBLE, windowRect.left, windowRect.top, windowRect.right - windowRect.left, windowRect.bottom - windowRect.top, nullptr, nullptr, m_hInst, this);
+		hWnd = CreateWindow(name, name, WS_CAPTION | WS_POPUPWINDOW | WS_VISIBLE, windowRect.left, windowRect.top, windowRect.right - windowRect.left, windowRect.bottom - windowRect.top, nullptr, nullptr, hInst, this);
 	}
 
-	if (m_hWnd == nullptr)
+	if (hWnd == nullptr)
 	{
 		ShowMessageBox("Error", "Failed to get valid window handle");
 		return;
 	}
 
 	// show and update
-	ShowWindow(m_hWnd, SW_SHOWDEFAULT);
-	SetForegroundWindow(m_hWnd);
-	SetFocus(m_hWnd);
-	UpdateWindow(m_hWnd);
+	ShowWindow(hWnd, SW_SHOWDEFAULT);
+	SetForegroundWindow(hWnd);
+	SetFocus(hWnd);
+	UpdateWindow(hWnd);
 
 	//Get the current working directory
 	GetExeDirectory();
@@ -70,28 +70,28 @@ Hydro::IGameWindow::IGameWindow(HINSTANCE hInst, char *pArgs, const std::string 
 
 Hydro::IGameWindow::~IGameWindow()
 {
-	m_timer.~Timer();
+	timer.~Timer();
 
 	//Remove the window
-	DestroyWindow(m_hWnd);
-	m_hWnd = nullptr;
+	DestroyWindow(hWnd);
+	hWnd = nullptr;
 
 	//Convert string to LongPointer Constant CharString
-	LPCSTR name = const_cast<char *>(m_appName.c_str());
+	LPCSTR name = const_cast<char *>(appName.c_str());
 
 	//unregister class
-	UnregisterClass(name, m_hInst);
-	m_hInst = nullptr;
+	UnregisterClass(name, hInst);
+	hInst = nullptr;
 }
 
 bool Hydro::IGameWindow::IsActive() const
 {
-	return GetActiveWindow() == m_hWnd;
+	return GetActiveWindow() == hWnd;
 }
 
 bool Hydro::IGameWindow::IsMinimized() const
 {
-	return IsIconic(m_hWnd) != 0;;
+	return IsIconic(hWnd) != 0;;
 }
 
 void Hydro::IGameWindow::ShowMessageBox(const std::string & title, const std::string & message) const
@@ -100,7 +100,7 @@ void Hydro::IGameWindow::ShowMessageBox(const std::string & title, const std::st
 	LPCSTR lTitle = const_cast<char *>(title.c_str());
 	LPCSTR lMessage = const_cast<char *>(message.c_str());
 
-	MessageBox(m_hWnd, lMessage, lTitle, MB_OK);
+	MessageBox(hWnd, lMessage, lTitle, MB_OK);
 }
 
 bool Hydro::IGameWindow::Run()
@@ -108,27 +108,27 @@ bool Hydro::IGameWindow::Run()
 	bool result = false;
 
 	//The game is about to close or the game is not initialized yet
-	if (m_exit || !m_ready)
+	if (exit)
 	{
 		return false;
 	}
 
 	//Update timer object
-	result = m_timer.Update();
+	result = timer.Update();
 	if (!result)
 	{
 		return false;
 	}
 
 	//Do the frame processing
-	result = Update(m_timer.GetTime());
+	result = Update(timer.GetTime());
 	if (!result)
 	{
 		return false;
 	}
 
 	//Render the new scene
-	result = Draw(m_timer.GetTime());
+	result = Draw(timer.GetTime());
 	if (!result)
 	{
 		return false;
@@ -160,32 +160,32 @@ bool Hydro::IGameWindow::ProcessMessage()
 
 const char* Hydro::IGameWindow::GetArgs() const
 {
-	return m_args;
+	return args;
 }
 
 const HWND Hydro::IGameWindow::GetHandle() const
 {
-	return m_hWnd;
+	return hWnd;
 }
 
 const unsigned int Hydro::IGameWindow::GetWidth() const
 {
-	return m_screenWidth;
+	return screenWidth;
 }
 
 const unsigned int Hydro::IGameWindow::GetHeight() const
 {
-	return m_screenHeight;
+	return screenHeight;
 }
 
 const bool Hydro::IGameWindow::Fullscreen() const
 {
-	return m_fullscreen;
+	return fullscreen;
 }
 
 const bool Hydro::IGameWindow::VSync() const
 {
-	return m_vsync;
+	return vSync;
 }
 
 LRESULT WINAPI Hydro::IGameWindow::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -205,7 +205,7 @@ LRESULT WINAPI Hydro::IGameWindow::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wP
 		//forward message to window class handler
 		return pWnd->HandleMsg(hWnd, msg, wParam, lParam);
 	}
-	//if we get a message before the WM_NCCREATE message, handle with default handler
+	//if we get a message before the WNCCREATE message, handle with default handler
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
@@ -269,40 +269,38 @@ void Hydro::IGameWindow::GetExeDirectory()
 
 bool Hydro::IGameWindow::SwitchFullscreen()
 {
-	if (!m_ready)
-		return false;
 
-	if (!m_fullscreen)
+	if (!fullscreen)
 	{
-		SetWindowLongPtr(m_hWnd, GWL_STYLE,
+		SetWindowLongPtr(hWnd, GWL_STYLE,
 			WS_SYSMENU | WS_POPUP | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_VISIBLE);
-		MoveWindow(m_hWnd, 0, 0, m_screenWidth, m_screenHeight, TRUE);
+		MoveWindow(hWnd, 0, 0, screenWidth, screenHeight, TRUE);
 
 		DEVMODE dmScreenSettings;
 		// If full screen set the screen to maximum size of the users desktop and 32bit.
 		memset(&dmScreenSettings, 0, sizeof(dmScreenSettings));
 		dmScreenSettings.dmSize = sizeof(dmScreenSettings);
-		dmScreenSettings.dmPelsWidth = (unsigned long)m_screenWidth;
-		dmScreenSettings.dmPelsHeight = (unsigned long)m_screenHeight;
+		dmScreenSettings.dmPelsWidth = (unsigned long)screenWidth;
+		dmScreenSettings.dmPelsHeight = (unsigned long)screenHeight;
 		dmScreenSettings.dmBitsPerPel = 32;
 		dmScreenSettings.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
 
 		// Change the display settings to full screen.
 		ChangeDisplaySettings(&dmScreenSettings, CDS_FULLSCREEN);
-		m_fullscreen = true;
+		fullscreen = true;
 	}
 	else
 	{
 		ChangeDisplaySettings(NULL, 0);
 		RECT rect;
-		rect.left = (GetSystemMetrics(SM_CXSCREEN) - m_screenWidth) / 2;
-		rect.top = (GetSystemMetrics(SM_CYSCREEN) - m_screenHeight) / 2;
-		rect.right = rect.left + m_screenWidth;
-		rect.bottom = rect.top + m_screenHeight;
-		SetWindowLongPtr(m_hWnd, GWL_STYLE, WS_CAPTION | WS_POPUPWINDOW | WS_VISIBLE);
+		rect.left = (GetSystemMetrics(SM_CXSCREEN) - screenWidth) / 2;
+		rect.top = (GetSystemMetrics(SM_CYSCREEN) - screenHeight) / 2;
+		rect.right = rect.left + screenWidth;
+		rect.bottom = rect.top + screenHeight;
+		SetWindowLongPtr(hWnd, GWL_STYLE, WS_CAPTION | WS_POPUPWINDOW | WS_VISIBLE);
 		AdjustWindowRect(&rect, WS_CAPTION | WS_POPUPWINDOW, FALSE);
-		MoveWindow(m_hWnd, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, TRUE);
-		m_fullscreen = false;
+		MoveWindow(hWnd, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, TRUE);
+		fullscreen = false;
 	}
 
 

@@ -21,7 +21,7 @@ namespace Hydro
 	class IGameWindow
 	{
 	public:
-		IGameWindow(HINSTANCE hInst, char *pArgs, const std::string title, const unsigned int screenWidth, const unsigned int screenHeight, bool fullscreen, bool vsync);
+		IGameWindow(HINSTANCE _hInst, char* pArgs, const std::string title, const unsigned int _screenWidth, const unsigned int _screenHeight, bool _fullscreen, bool _vSync);
 		IGameWindow() = delete;
 		IGameWindow(const IGameWindow &other) = delete;
 		IGameWindow& operator=(const IGameWindow &other) = delete;
@@ -55,17 +55,17 @@ namespace Hydro
 		bool SwitchFullscreen();
 
 	protected:
-		std::string m_appName;
-		HINSTANCE m_hInst;
-		HWND m_hWnd;
-		char *m_args;
-		unsigned int m_screenWidth, m_screenHeight;
-		bool m_fullscreen, m_vsync;
-		float m_screenNear, m_screenDepth;
-		bool m_ready;
-		bool m_exit;
+		std::string appName;
+		HINSTANCE hInst;
+		HWND hWnd;
+		char* args;
+		unsigned int screenWidth, screenHeight;
+		bool fullscreen, vSync;
+		float screenNear, screenDepth;
+		//bool ready;
+		bool exit;
 
-		Timer m_timer;
+		Timer timer;
 	};
 }
 

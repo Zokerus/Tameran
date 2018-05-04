@@ -18,25 +18,22 @@ namespace Tameran
 	class TitleScreen : public Hydro::IGameState
 	{
 	public:
-		TitleScreen(class GameWindow* game, Hydro::Direct3D* direct3D, Hydro::ShaderManager* manager, Hydro::Camera* camera, Hydro::Input* input);
+		TitleScreen(class GameWindow* _game, Hydro::Direct3D* _direct3D, Hydro::ShaderManager* _manager, Hydro::Camera* _camera, Hydro::Input* _input);
 		~TitleScreen();
-
-		bool Initialize();
-		void Shutdown();
 
 		bool Update(float eTime);
 		bool Draw(float eTime);
 
 	private:
-		void StartLabel_Selected(const Hydro::IControl *sender);
+		void StartLabel_Selected(const Hydro::IControl* sender);
 
 	private:
-		Tameran::GameWindow* m_gameRef;
-		Hydro::Input* m_input;
-		Hydro::ControlManager m_controlManager;
-		Hydro::PictureBox m_background;
-		Hydro::Font m_font;
-		Hydro::LinkLabel m_label;
+		Tameran::GameWindow* gameRef;
+		Hydro::Input* input;
+		Hydro::ControlManager controlManager;
+		Hydro::PictureBox background;
+		Hydro::Font font;
+		Hydro::LinkLabel label;
 	};
 }
 

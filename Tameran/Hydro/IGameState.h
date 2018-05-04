@@ -17,9 +17,6 @@ namespace Hydro
 		IGameState(Direct3D* _direct3D, ShaderManager* _manager, Camera* _camera);
 		~IGameState();
 
-		//bool Initialize();
-		//void Shutdown();
-
 		virtual bool Update(float eTime);
 		virtual bool Draw(float eTime);
 
