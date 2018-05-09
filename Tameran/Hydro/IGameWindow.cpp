@@ -65,7 +65,7 @@ Hydro::IGameWindow::IGameWindow(HINSTANCE _hInst, char* pArgs, const std::string
 	UpdateWindow(hWnd);
 
 	//Get the current working directory
-	GetExeDirectory();
+	//GetExeDirectory();
 }
 
 Hydro::IGameWindow::~IGameWindow()
@@ -238,34 +238,34 @@ LRESULT Hydro::IGameWindow::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
-void Hydro::IGameWindow::GetExeDirectory()
-{
-	//Get the path of executable
-	int indexSlash;
-	WCHAR path[MAX_PATH];
-	char sPath[MAX_PATH];
-
-	HMODULE hModule = GetModuleHandleW(NULL);
-	GetModuleFileName(hModule, sPath, MAX_PATH);
-
-	for (int i = 0; i < MAX_PATH; i++)
-	{
-		char letter = sPath[i];
-		if (letter == 92)
-		{
-			indexSlash = i;
-			sPath[i] = '/';
-		}
-		else if (letter == '\0')
-		{
-			break;
-		}
-		path[i] = sPath[i];
-	}
-
-	wDir = ((std::wstring)path).substr(0, indexSlash + 1);
-	sDir = ((std::string)sPath).substr(0, indexSlash + 1);
-}
+//void Hydro::IGameWindow::GetExeDirectory()
+//{
+//	//Get the path of executable
+//	int indexSlash;
+//	WCHAR path[MAX_PATH];
+//	char sPath[MAX_PATH];
+//
+//	HMODULE hModule = GetModuleHandleW(NULL);
+//	GetModuleFileName(hModule, sPath, MAX_PATH);
+//
+//	for (int i = 0; i < MAX_PATH; i++)
+//	{
+//		char letter = sPath[i];
+//		if (letter == 92)
+//		{
+//			indexSlash = i;
+//			sPath[i] = '/';
+//		}
+//		else if (letter == '\0')
+//		{
+//			break;
+//		}
+//		path[i] = sPath[i];
+//	}
+//
+//	wDir = ((std::wstring)path).substr(0, indexSlash + 1);
+//	sDir = ((std::string)sPath).substr(0, indexSlash + 1);
+//}
 
 bool Hydro::IGameWindow::SwitchFullscreen()
 {

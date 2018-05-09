@@ -14,8 +14,7 @@ Hydro::FontShader::FontShader(ID3D11Device* device, HWND hWnd)
 	D3D11_BUFFER_DESC pixelBufferDesc;
 
 	//Load precompiled shader file
-	std::wstring dir = (wDir + L"/Data/Shader/" + shaderName + L"/VertexShader.cso");
-	result = D3DReadFileToBlob((wDir + L"/Data/Shader/" + shaderName + L"/VertexShader.cso").c_str(), &vertexShaderBuffer);
+	result = D3DReadFileToBlob((L"Data/Shader/" + shaderName + L"/VertexShader.cso").c_str(), &vertexShaderBuffer);
 	if (FAILED(result))
 	{
 		throw std::exception("Failed to load Vertexshader.cso of the FontShader");
@@ -29,7 +28,7 @@ Hydro::FontShader::FontShader(ID3D11Device* device, HWND hWnd)
 	}
 
 	//Load precompiled shader file
-	result = D3DReadFileToBlob((wDir + L"/Data/Shader/" + shaderName + L"/PixelShader.cso").c_str(), &pixelShaderBuffer);
+	result = D3DReadFileToBlob((L"Data/Shader/" + shaderName + L"/PixelShader.cso").c_str(), &pixelShaderBuffer);
 	if (FAILED(result))
 	{
 		throw std::exception("Failed to load Pixelshader.cso of the FontShader");
@@ -148,7 +147,7 @@ Hydro::FontShader::~FontShader()
 	}
 }
 
-bool Hydro::FontShader::Render(ID3D11DeviceContext * deviceContext, int indexCount, DirectX::XMMATRIX world, DirectX::XMMATRIX view, DirectX::XMMATRIX projection, ID3D11ShaderResourceView * texture, DirectX::XMVECTORF32 pixelColor)
+bool Hydro::FontShader::Render(ID3D11DeviceContext* deviceContext, int indexCount, DirectX::XMMATRIX world, DirectX::XMMATRIX view, DirectX::XMMATRIX projection, ID3D11ShaderResourceView * texture, DirectX::XMVECTORF32 pixelColor)
 {
 	//Set the shader parameters
 	if (!SetShaderParameters(deviceContext, world, view, projection, texture, pixelColor))
@@ -172,7 +171,7 @@ bool Hydro::FontShader::Render(ID3D11DeviceContext * deviceContext, int indexCou
 	return true;
 }
 
-bool Hydro::FontShader::SetShaderParameters(ID3D11DeviceContext * deviceContext, DirectX::XMMATRIX world, DirectX::XMMATRIX view, DirectX::XMMATRIX projection, ID3D11ShaderResourceView* texture, DirectX::XMVECTORF32 pixelColor)
+bool Hydro::FontShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, DirectX::XMMATRIX world, DirectX::XMMATRIX view, DirectX::XMMATRIX projection, ID3D11ShaderResourceView* texture, DirectX::XMVECTORF32 pixelColor)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;

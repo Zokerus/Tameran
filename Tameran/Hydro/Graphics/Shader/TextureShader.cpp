@@ -13,8 +13,7 @@ Hydro::TextureShader::TextureShader(ID3D11Device* device, HWND hWnd)
 	D3D11_SAMPLER_DESC samplerDesc;
 
 	//Load precompiled shader file
-	std::wstring dir = (wDir + L"/Data/Shader/" + shaderName + L"/VertexShader.cso");
-	result = D3DReadFileToBlob((wDir + L"/Data/Shader/" + shaderName + L"/VertexShader.cso").c_str(), &vertexShaderBuffer);
+	result = D3DReadFileToBlob((L"Data/Shader/" + shaderName + L"/VertexShader.cso").c_str(), &vertexShaderBuffer);
 	if (FAILED(result))
 	{
 		throw std::exception("Failed to load Vertexshader.cso of the TextureShader");
@@ -28,7 +27,7 @@ Hydro::TextureShader::TextureShader(ID3D11Device* device, HWND hWnd)
 	}
 
 	//Load precompiled shader file
-	result = D3DReadFileToBlob((wDir + L"/Data/Shader/" + shaderName + L"/PixelShader.cso").c_str(), &pixelShaderBuffer);
+	result = D3DReadFileToBlob((L"Data/Shader/" + shaderName + L"/PixelShader.cso").c_str(), &pixelShaderBuffer);
 	if (FAILED(result))
 	{
 		throw std::exception("Failed to load Pixelshader.cso of the TextureShader");
@@ -149,7 +148,7 @@ bool Hydro::TextureShader::Render(ID3D11DeviceContext * deviceContext, int index
 	return true;
 }
 
-bool Hydro::TextureShader::SetShaderParameters(ID3D11DeviceContext * deviceContext, DirectX::XMMATRIX world, DirectX::XMMATRIX view, DirectX::XMMATRIX projection, ID3D11ShaderResourceView * texture)
+bool Hydro::TextureShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, DirectX::XMMATRIX world, DirectX::XMMATRIX view, DirectX::XMMATRIX projection, ID3D11ShaderResourceView * texture)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;

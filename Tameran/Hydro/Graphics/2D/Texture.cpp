@@ -112,7 +112,7 @@ bool Hydro::Texture::LoadTarga(std::string fileName, int & width, int & height)
 	unsigned char* targaImage;
 
 	//Open the targa file for reading in binary
-	error = fopen_s(&filePtr, (sDir + fileName).c_str(), "rb");
+	error = fopen_s(&filePtr, fileName.c_str(), "rb");
 	if (error != 0)
 		return false;
 

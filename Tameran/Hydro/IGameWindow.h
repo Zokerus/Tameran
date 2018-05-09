@@ -46,7 +46,7 @@ namespace Hydro
 		static LRESULT WINAPI HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 		LRESULT HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-		void GetExeDirectory();
+		//void GetExeDirectory();
 
 	protected:
 		virtual bool Update(float eTime) = 0;

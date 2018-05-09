@@ -121,13 +121,12 @@ bool Hydro::Font::LoadFontData(const std::string filename)
 	//Create the font spacing buffer
 	pFont = new FontType[95];  //TODO dynamic number of letters
 	if (!pFont)
+	{
 		return false;
-
-	//Refer to the working directory
-	std::string path = sDir + filename + ".txt";
+	}
 
 	//Read in the font 
-	fin.open(path.c_str());
+	fin.open((filename + ".txt").c_str());
 	if (fin.fail())
 		return false;
 
