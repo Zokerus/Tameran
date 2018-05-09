@@ -7,7 +7,6 @@
 #include <string>
 
 //My Include
-#include "Util/Globals.h"
 #include "Util/Timer.h"
 #include "Graphics/Direct3D.h"
 #include "Graphics/Shader/ShaderManager.h"

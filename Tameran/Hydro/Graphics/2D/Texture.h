@@ -4,9 +4,7 @@
 //Includes
 #include <d3d11.h>
 #include <stdio.h>
-
-//My Includes
-#include "../../Util/Globals.h"
+#include <string>
 
 //////////////////////////////////////////////////////////////////////////
 //Class: Texture

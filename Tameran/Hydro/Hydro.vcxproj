@@ -96,7 +96,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <FxCompile>
-      <ObjectFileOutput>$(OutDir)%(RelativeDir)%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput>$(SolutionDir)$(SolutionName)\%(RelativeDir)%(Filename).cso</ObjectFileOutput>
       <ShaderModel>4.1</ShaderModel>
     </FxCompile>
   </ItemDefinitionGroup>
@@ -172,7 +172,6 @@
     <ClInclude Include="IGameWindow.h" />
     <ClInclude Include="Graphics\Direct3D.h" />
     <ClInclude Include="Input\Input.h" />
-    <ClInclude Include="Util\Globals.h" />
     <ClInclude Include="Util\Timer.h" />
   </ItemGroup>
   <ItemGroup>
@@ -197,7 +196,6 @@
     <ClCompile Include="IGameState.cpp" />
     <ClCompile Include="IGameWindow.cpp" />
     <ClCompile Include="Input\Input.cpp" />
-    <ClCompile Include="Util\Globals.cpp" />
     <ClCompile Include="Util\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>

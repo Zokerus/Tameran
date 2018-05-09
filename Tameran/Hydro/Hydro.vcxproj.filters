@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Util\Globals.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Util\Timer.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -86,9 +83,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Util\Globals.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="Util\Timer.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>

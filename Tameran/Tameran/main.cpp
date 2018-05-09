@@ -1,4 +1,7 @@
 #include "GameWindow.h"
+#include "Character/StatManager.h"
+
+#include <fstream>
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdLine, int iCmdshow)
 {
@@ -6,7 +9,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdLine,
 	using namespace Hydro;
 	using namespace Tameran;
 
-	
+	StatManager manager;
+
 	try
 	{
 		GameWindow wnd(hInstance, pScmdLine, "Tameran - Hydro Engine", 1024, 768, false, false);
@@ -18,11 +22,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdLine,
 	}
 	catch (const std::exception& e)
 	{
-		MessageBox(nullptr, e.what(), "Error", MB_OK);
+		MessageBox(0, e.what(), "Error", MB_OK);
+		//Not Showing
 	}
 	catch (...)
 	{
-		MessageBox(nullptr, "Error in window operations", "Error", MB_OK);
+		MessageBox(0, "Error in window operations", "Error", MB_OK);
+		//Not Showing
 	}
 
 	return 0;

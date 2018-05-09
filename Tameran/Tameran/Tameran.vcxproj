@@ -153,6 +153,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Character\BonusStat.cpp" />
+    <ClCompile Include="Character\CharacterStat.cpp" />
+    <ClCompile Include="Character\Stat.cpp" />
+    <ClCompile Include="Character\StatManager.cpp" />
     <ClCompile Include="GameWindow.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Screens\TitleScreen.cpp">
@@ -161,6 +165,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Character\BonusStat.h" />
+    <ClInclude Include="Character\CharacterStat.h" />
+    <ClInclude Include="Character\Stat.h" />
+    <ClInclude Include="Character\StatManager.h" />
     <ClInclude Include="GameWindow.h" />
     <ClInclude Include="Screens\TitleScreen.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
