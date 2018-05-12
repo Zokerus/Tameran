@@ -35,5 +35,5 @@ namespace Tameran
 		std::string description;
 	};
 }
-#endif // STATS
+#endif // STAT
 

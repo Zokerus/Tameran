@@ -33,6 +33,11 @@ void Hydro::Label::SetPosition(DirectX::XMINT2 Pos)
 	string.SetPosition(Pos);
 }
 
+DirectX::XMFLOAT2 Hydro::Label::GetItemSize()
+{
+	return DirectX::XMFLOAT2(string.GetFont()->GetTextWidth(string.GetText()), string.GetFont()->GetFontHeight());
+}
+
 const std::string* Hydro::Label::GetString() const
 {
 	return string.GetText();

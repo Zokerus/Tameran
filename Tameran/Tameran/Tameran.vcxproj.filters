@@ -24,16 +24,22 @@
     <ClCompile Include="GameWindow.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="Character\Stat.cpp">
+    <ClCompile Include="Character\Stat\BonusStat.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="Character\BonusStat.cpp">
+    <ClCompile Include="Character\Stat\CharacterStat.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="Character\CharacterStat.cpp">
+    <ClCompile Include="Character\Stat\Stat.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="Character\StatManager.cpp">
+    <ClCompile Include="Character\Stat\StatManager.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Character\Character.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Screens\MenuScreen.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
@@ -44,16 +50,22 @@
     <ClInclude Include="GameWindow.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Character\Stat.h">
+    <ClInclude Include="Character\Stat\StatManager.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Character\CharacterStat.h">
+    <ClInclude Include="Character\Stat\BonusStat.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Character\BonusStat.h">
+    <ClInclude Include="Character\Stat\CharacterStat.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Character\StatManager.h">
+    <ClInclude Include="Character\Stat\Stat.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Character\Character.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Screens\MenuScreen.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

@@ -25,6 +25,8 @@ namespace Hydro
 
 		void SetPosition(DirectX::XMINT2 Pos);
 
+		DirectX::XMFLOAT2 GetItemSize();
+
 		const std::string* GetString() const;
 
 	protected:

@@ -1,5 +1,5 @@
-#ifndef TITLESCREEN
-#define TITLESCREEN
+#ifndef MENUSCREEN
+#define MENUSCREEN
 
 //My Includes
 #include <IGameState.h>
@@ -11,22 +11,24 @@
 #include <Graphics/Text/Font.h>
 
 //////////////////////////////////////////////////////////////////////////
-//Class: TitleScreen
+//Class: MenuScreen
 //////////////////////////////////////////////////////////////////////////
 namespace Tameran
 {
-	class TitleScreen : public Hydro::IGameState
+	class MenuScreen : public Hydro::IGameState
 	{
 	public:
-		TitleScreen(class GameWindow* _game, Hydro::Direct3D* _direct3D, Hydro::ShaderManager* _manager, Hydro::Camera* _camera, Hydro::Input* _input);
-		~TitleScreen();
+		MenuScreen(class GameWindow* _game, Hydro::Direct3D* _direct3D, Hydro::ShaderManager* _manager, Hydro::Camera* _camera, Hydro::Input* _input);
+		~MenuScreen();
 
 		bool Update(float eTime);
 		bool Draw(float eTime);
 
 	private:
-		void StartLabel_Selected(const Hydro::IControl* sender);
-
+		void MenuItem_Selected(Hydro::IControl* sender);
+		void MenuItem_Changed(const Hydro::IControl* sender);
+		void ArrangeMenuItems(Hydro::LinkLabel& label, int& yPos);
+		
 	private:
 		Tameran::GameWindow* gameRef;
 		Hydro::Input* input;
@@ -34,9 +36,13 @@ namespace Tameran
 		Hydro::PictureBox background;
 		Hydro::Font font;
 
+		Hydro::LinkLabel continueGame;
+		Hydro::LinkLabel startGame;
+		Hydro::LinkLabel loadGame;
+		Hydro::LinkLabel options;
+		Hydro::LinkLabel exitGame;
 
-		Hydro::LinkLabel label;
 	};
 }
+#endif // !MENUSCREEN
 
-#endif // !TITLESCREEN

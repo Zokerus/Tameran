@@ -11,6 +11,7 @@
 
 //Screens
 #include "Screens/TitleScreen.h"
+#include "Screens/MenuScreen.h"
 
 //////////////////////////////////////////////////////////////////////////
 //Class: Game
@@ -41,6 +42,7 @@ namespace Tameran
 		//GameStates + GameStateManager
 		Hydro::GameStateManager gameStateManager;
 		TitleScreen titleScreen;
+		MenuScreen menuScreen;
 	};
 }
 

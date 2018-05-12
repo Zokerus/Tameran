@@ -31,6 +31,7 @@ namespace Hydro
 		void ShowMessageBox(const std::string &title, const std::string &message) const;
 		bool Run();
 		void Kill();
+		void Exit();
 		bool ProcessMessage();
 		const char* GetArgs() const;
 		const HWND GetHandle() const;
@@ -44,8 +45,6 @@ namespace Hydro
 		static LRESULT WINAPI HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 		static LRESULT WINAPI HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 		LRESULT HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
-		//void GetExeDirectory();
 
 	protected:
 		virtual bool Update(float eTime) = 0;
@@ -61,7 +60,6 @@ namespace Hydro
 		unsigned int screenWidth, screenHeight;
 		bool fullscreen, vSync;
 		float screenNear, screenDepth;
-		//bool ready;
 		bool exit;
 
 		Timer timer;

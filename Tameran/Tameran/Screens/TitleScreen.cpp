@@ -82,5 +82,5 @@ bool Tameran::TitleScreen::Draw(float eTime)
 
 void Tameran::TitleScreen::StartLabel_Selected(const Hydro::IControl *sender)
 {
-	gameRef->Kill();
+	gameRef->gameStateManager.ChangeState(&(gameRef->menuScreen));
 }

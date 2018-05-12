@@ -143,6 +143,11 @@ void Hydro::IGameWindow::Kill()
 	PostQuitMessage(0);
 }
 
+void Hydro::IGameWindow::Exit()
+{
+	exit = true;
+}
+
 bool Hydro::IGameWindow::ProcessMessage()
 {
 	MSG msg;

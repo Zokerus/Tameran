@@ -2,7 +2,9 @@
 
 Hydro::LinkLabel::LinkLabel(Direct3D* direct3D, Font* font, int ScreenWidth, int ScreenHeight, int MaxLength, std::string Name, std::string text, DirectX::XMINT2 Pos, DirectX::XMFLOAT2 Size, DirectX::XMVECTORF32 Color, DirectX::XMVECTORF32 selectedColor, std::function<void(IControl*)> func)
 	: Label(direct3D, font, ScreenWidth, ScreenHeight, MaxLength, Name, text, Pos, Size, Color), selectedColor(selectedColor), counter(0), select(func)
-{}
+{
+	tabstop = true;
+}
 
 Hydro::LinkLabel::~LinkLabel()
 {

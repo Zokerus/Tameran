@@ -1,15 +1,10 @@
 #include "GameWindow.h"
-#include "Character/StatManager.h"
-
-#include <fstream>
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdLine, int iCmdshow)
 {
 	bool run = true;
 	using namespace Hydro;
 	using namespace Tameran;
-
-	StatManager manager;
 
 	try
 	{
