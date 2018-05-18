@@ -156,6 +156,7 @@
     <ClInclude Include="Controls\Label.h" />
     <ClInclude Include="Controls\LinkLabel.h" />
     <ClInclude Include="Controls\PictureBox.h" />
+    <ClInclude Include="Controls\ProgressBar.h" />
     <ClInclude Include="GameStateManager.h" />
     <ClInclude Include="Graphics\2D\Forms\Rectangle.h" />
     <ClInclude Include="Graphics\2D\Sprite.h" />
@@ -180,6 +181,7 @@
     <ClCompile Include="Controls\Label.cpp" />
     <ClCompile Include="Controls\LinkLabel.cpp" />
     <ClCompile Include="Controls\PictureBox.cpp" />
+    <ClCompile Include="Controls\ProgressBar.cpp" />
     <ClCompile Include="GameStateManager.cpp" />
     <ClCompile Include="Graphics\2D\Forms\Rectangle.cpp" />
     <ClCompile Include="Graphics\2D\Sprite.cpp" />

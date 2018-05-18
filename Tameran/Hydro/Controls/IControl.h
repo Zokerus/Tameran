@@ -17,7 +17,7 @@ namespace Hydro
 	class IControl
 	{
 	public:
-		enum ControlType { Lablel, LinkLabel, PictureBox, Button};
+		enum ControlType { Lablel, LinkLabel, PictureBox, Button, ProgressBar};
 
 	public:
 		IControl(std::string Name, DirectX::XMFLOAT2 Size, DirectX::XMINT2 Pos, bool Focus, bool Enable, bool Visible, bool Tabstop, DirectX::XMVECTORF32 Color, ControlType Type);

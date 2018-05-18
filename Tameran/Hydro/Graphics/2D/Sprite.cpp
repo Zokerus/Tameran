@@ -22,6 +22,27 @@ Hydro::Sprite::Sprite(ID3D11Device* device, ID3D11DeviceContext* deviceContext, 
 	}
 }
 
+Hydro::Sprite::Sprite(ID3D11Device* _device, ID3D11DeviceContext* _deviceContext, int _screenWidth, int _screenHeight, std::string _textureFilename, Rectangle& _srcRect)
+	: pVertexBuffer(nullptr), pIndexBuffer(nullptr), vertexCount(0), indexCount(0), pTexture(nullptr), ownTexture(true), screenWidth(_screenWidth), screenHeight(_screenHeight),
+	imageWidth(_srcRect.GetWidth()), imageHeight(_srcRect.GetHeight()), xPrevPosition(-1), yPrevPosition(-1)
+{
+	bool result = true;
+
+	//Initialize the vertex and the index buffers
+	result = InitializeBuffers(_device);
+	if (!result)
+	{
+		throw std::exception("Failed to initialize buffers from a sprite");
+	}
+
+	//Load the texture for this sprite
+	result = LoadTexture(_device, _deviceContext, _textureFilename, _srcRect);
+	if (!result)
+	{
+		throw std::exception(("Failed to load Texture: " + _textureFilename).c_str());
+	}
+}
+
 Hydro::Sprite::Sprite(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int ScreenWidth, int ScreenHeight, std::string TextureFilename)
 	: Sprite(device, deviceContext, ScreenWidth, ScreenHeight, TextureFilename, 0, 0)
 {
@@ -58,7 +79,12 @@ Hydro::Sprite::~Sprite()
 	ShutdownBuffers();
 }
 
-bool Hydro::Sprite::Update(ID3D11DeviceContext* deviceContext, int xPosition, int yPosition)
+bool Hydro::Sprite::Update(ID3D11DeviceContext* _deviceContext, DirectX::XMINT2& _pos)
+{
+	return Update(_deviceContext, Rectangle(_pos.x, _pos.y, 0, 0));
+}
+
+bool Hydro::Sprite::Update(ID3D11DeviceContext* _deviceContext, Rectangle & _dstRect)
 {
 	float left, right, top, bottom;
 	VertexType *vertices;
@@ -67,23 +93,23 @@ bool Hydro::Sprite::Update(ID3D11DeviceContext* deviceContext, int xPosition, in
 	HRESULT result;
 
 	//Check the position of the sprite, if no change has occured, no update is needed, bc the vertex buffer has the right parameters
-	if (xPrevPosition == xPosition && yPrevPosition == yPosition)
+	if (xPrevPosition == _dstRect.GetXPos() && yPrevPosition == _dstRect.GetYPos())
 	{
 		return true;
 	}
 
 	//update the prevposition to the new position
-	xPrevPosition = xPosition;
-	yPrevPosition = yPosition;
+	xPrevPosition = _dstRect.GetXPos();
+	yPrevPosition = _dstRect.GetYPos();
 
 	//Calculate the screenCoords of left side of the sprite
-	left = (float)((screenWidth / 2) * -1) + (float)xPosition;
+	left = (float)((screenWidth / 2) * -1) + (float)_dstRect.GetXPos();
 
 	//Calculate the screen coordinates of the right side of the bitmap.
 	right = left + (float)imageWidth;
 
 	//Calculate the screen coordinates of the top of the bitmap.
-	top = (float)(screenHeight / 2) - (float)yPosition;
+	top = (float)(screenHeight / 2) - (float)_dstRect.GetYPos();
 
 	//Calculate the screen coordinates of the bottom of the bitmap.
 	bottom = top - (float)imageHeight;
@@ -109,7 +135,7 @@ bool Hydro::Sprite::Update(ID3D11DeviceContext* deviceContext, int xPosition, in
 
 
 	// Lock the vertex buffer so it can be written to.
-	result = deviceContext->Map(pVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	result = _deviceContext->Map(pVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	if (FAILED(result))
 	{
 		return false;
@@ -122,7 +148,7 @@ bool Hydro::Sprite::Update(ID3D11DeviceContext* deviceContext, int xPosition, in
 	memcpy(verticesPtr, (void*)vertices, (sizeof(VertexType) * vertexCount));
 
 	// Unlock the vertex buffer.
-	deviceContext->Unmap(pVertexBuffer, 0);
+	_deviceContext->Unmap(pVertexBuffer, 0);
 
 	// Release the vertex array as it is no longer needed.
 	delete[] vertices;
@@ -299,6 +325,21 @@ void Hydro::Sprite::ShutdownBuffers()
 		pVertexBuffer->Release();
 		pVertexBuffer = nullptr;
 	}
+}
+
+bool Hydro::Sprite::LoadTexture(ID3D11Device* device, ID3D11DeviceContext * deviceContext, std::string textureFilename, Rectangle& _srcRect)
+{
+	// Create the texture object.
+	pTexture = new Texture(device, deviceContext, textureFilename, _srcRect);
+	if (!pTexture)
+	{
+		return false;
+	}
+
+	//Flag that the texture is loaded by this sprite and must be destroyed at the end
+	ownTexture = true;
+
+	return true;
 }
 
 bool Hydro::Sprite::LoadTexture(ID3D11Device * device, ID3D11DeviceContext * deviceContext, std::string textureFilename)

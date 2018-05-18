@@ -160,6 +160,8 @@
     <ClCompile Include="Character\Stat\StatManager.cpp" />
     <ClCompile Include="GameWindow.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Screens\GameScreen.cpp" />
+    <ClCompile Include="Screens\LoadingScreen.cpp" />
     <ClCompile Include="Screens\MenuScreen.cpp" />
     <ClCompile Include="Screens\TitleScreen.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -173,6 +175,8 @@
     <ClInclude Include="Character\Stat\Stat.h" />
     <ClInclude Include="Character\Stat\StatManager.h" />
     <ClInclude Include="GameWindow.h" />
+    <ClInclude Include="Screens\GameScreen.h" />
+    <ClInclude Include="Screens\LoadingScreen.h" />
     <ClInclude Include="Screens\MenuScreen.h" />
     <ClInclude Include="Screens\TitleScreen.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

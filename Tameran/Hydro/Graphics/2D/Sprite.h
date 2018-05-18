@@ -8,6 +8,7 @@
 
 //My Includes
 #include "Texture.h"
+#include "Forms/Rectangle.h"
 
 //////////////////////////////////////////////////////////////////////////
 //Class: Sprite
@@ -25,12 +26,14 @@ namespace Hydro
 
 	public:
 		Sprite(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int screenWidth, int screenHeight, std::string textureFilename, int imageWidth, int imageHeight);
+		Sprite(ID3D11Device* device, ID3D11DeviceContext* _deviceContext, int _screenWidth, int _screenHeight, std::string _textureFilename, Rectangle& _srcRect);
 		Sprite(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int screenWidth, int screenHeight, std::string textureFilename);
 		Sprite(ID3D11Device* device, int screenWidth, int screenHeight, Texture* texture, int imageWidth, int imageHeight);
 		Sprite(ID3D11Device* device, int screenWidth, int screenHeight, Texture* texture);
 		~Sprite();
 
-		bool Update(ID3D11DeviceContext* deviceContext, int xPosition, int yPosition);
+		bool Update(ID3D11DeviceContext* _deviceContext, DirectX::XMINT2& _pos);
+		bool Update(ID3D11DeviceContext* _deviceContext, Rectangle& _dstRect);
 		bool Render(ID3D11DeviceContext* deviceContext);
 
 		void SetTexture(Texture* texture);
@@ -45,6 +48,7 @@ namespace Hydro
 		bool InitializeBuffers(ID3D11Device* device);
 		void ShutdownBuffers();
 
+		bool LoadTexture(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::string textureFilename, Rectangle& _srcRect);
 		bool LoadTexture(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::string textureFilename);
 		void ReleaseTexture();
 

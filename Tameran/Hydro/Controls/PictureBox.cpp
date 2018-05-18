@@ -7,7 +7,7 @@ Hydro::PictureBox::PictureBox(Direct3D* direct3D, std::string Name, DirectX::XMI
 	size = DirectX::XMFLOAT2((float)sprite.GetImageWidth(), (float)sprite.GetImageHeight());
 
 	//Set the initial position of the pictureBox
-	if (!sprite.Update(direct3D->GetDeviceContext(), pos.x, pos.y))
+	if (!sprite.Update(direct3D->GetDeviceContext(), pos))
 	{
 		throw std::exception(("Failed to position and create a sprite: " + textureFileName).c_str());
 	}
@@ -17,7 +17,7 @@ Hydro::PictureBox::PictureBox(Direct3D * direct3D, std::string Name, DirectX::XM
 	: IControl(Name, Size, Pos, false, true, true, false, DirectX::Colors::Black, ControlType::PictureBox), sprite(direct3D->GetDevice(), direct3D->GetDeviceContext(), screenWidth, screenHeight, textureFileName)
 {
 	//Set the initial position of the pictureBox
-	if (!sprite.Update(direct3D->GetDeviceContext(), pos.x, pos.y))
+	if (!sprite.Update(direct3D->GetDeviceContext(), pos))
 	{
 		throw std::exception(("Failed to position and create a sprite: " + textureFileName).c_str());
 	}
@@ -27,7 +27,7 @@ Hydro::PictureBox::PictureBox(Direct3D * direct3D, std::string Name, Hydro::Rect
 	: IControl(Name, DirectX::XMFLOAT2((float)rect.GetWidth(), (float)rect.GetHeight()), DirectX::XMINT2(rect.GetXPos(), rect.GetYPos()), false, true, true, false, DirectX::Colors::Black, ControlType::PictureBox), sprite(direct3D->GetDevice(), direct3D->GetDeviceContext(), screenWidth, screenHeight, textureFileName)
 {
 	//Set the initial position of the pictureBox
-	if (!sprite.Update(direct3D->GetDeviceContext(), pos.x, pos.y))
+	if (!sprite.Update(direct3D->GetDeviceContext(), pos))
 	{
 		throw std::exception(("Failed to position and create a sprite: " + textureFileName).c_str());
 	}
@@ -73,5 +73,5 @@ void Hydro::PictureBox::SetPosition(ID3D11DeviceContext* deviceContext, DirectX:
 	pos = pos;
 	
 	//Update the position of the sprite
-	sprite.Update(deviceContext, pos.x, pos.y);
+	sprite.Update(deviceContext, pos);
 }

@@ -6,6 +6,9 @@
 #include <stdio.h>
 #include <string>
 
+//My Includes
+#include "Forms/Rectangle.h"
+
 //////////////////////////////////////////////////////////////////////////
 //Class: Texture
 //////////////////////////////////////////////////////////////////////////
@@ -24,18 +27,17 @@ namespace Hydro
 		};
 
 	public:
-		Texture(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::string fileName);
+		Texture(ID3D11Device* _device, ID3D11DeviceContext* _deviceContext, std::string _fileName, Rectangle& _srcRect);
+		Texture(ID3D11Device* _device, ID3D11DeviceContext* _deviceContext, std::string _fileName);
 		~Texture();
-
-		//bool Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::string fileName);
-		//void Shutdown();
 
 		ID3D11ShaderResourceView* GetTexture();
 		int GetTextureWidth() const;
 		int GetTextureHeight() const;
 
 	private:
-		bool LoadTarga(std::string fileName, int &width, int &height);  //Loading *.tga files
+		bool Initialize(ID3D11Device* _device, ID3D11DeviceContext* _deviceContext, std::string _fileName);
+		bool LoadTarga(std::string fileName, int& width, int& height, Rectangle& _srcRect);  //Loading *.tga files
 																		//TODO Load other formats and add the relevant method
 	private:
 		unsigned char* pTargaData;
