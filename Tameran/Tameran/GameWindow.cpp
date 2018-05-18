@@ -19,7 +19,7 @@ Tameran::GameWindow::GameWindow(HINSTANCE hInst, char* pArgs, const std::string 
 Tameran::GameWindow::GameWindow(HINSTANCE hInst, char * pArgs, const std::string title, const unsigned int screenWidth, const unsigned int screenHeight, bool fullscreen, bool vsync)
 	: IGameWindow(hInst, pArgs, title, screenWidth, screenHeight, fullscreen, vsync),
 	direct3D(this), shaderManager(direct3D.GetDevice(), hWnd), camera(), input(screenWidth, screenHeight, hInst, hWnd), gameStateManager(), titleScreen(this, &direct3D, &shaderManager, &camera, &input),
-	menuScreen(this, &direct3D, &shaderManager, &camera, &input)
+	menuScreen(this, &direct3D, &shaderManager, &camera, &input), loadingScreen(this, &direct3D, &shaderManager, &camera, &input), gameScreen(this, &direct3D, &shaderManager, &camera, &input)
 {
 	//Set the initial position of the camera and build the matrices needed for rendering
 	camera.SetPosition(DirectX::XMFLOAT3(0.0f, 0.0f, -10.0f));

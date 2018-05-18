@@ -1,7 +1,9 @@
 #include "MenuScreen.h"
 #include "../GameWindow.h"
 
-Tameran::MenuScreen::MenuScreen(GameWindow* _game, Hydro::Direct3D* _direct3D, Hydro::ShaderManager* _manager, Hydro::Camera* _camera, Hydro::Input* _input)
+using namespace Hydro;
+
+Tameran::MenuScreen::MenuScreen(GameWindow* _game, Direct3D* _direct3D, ShaderManager* _manager, Camera* _camera, Input* _input)
 	:IGameState(_direct3D, _manager, _camera), gameRef(_game), input(_input), controlManager(), background(_direct3D, "Background", Hydro::Rectangle(0, 0, gameRef->GetWidth(), gameRef->GetHeight()), "Data/Images/titlescreen32.tga", gameRef->GetWidth(), gameRef->GetHeight()),
 	font(direct3D->GetDevice(), direct3D->GetDeviceContext(), "Data/Font/font01", 36.0f, 3),
 	continueGame(direct3D, &font, gameRef->GetWidth(), gameRef->GetHeight(), 30, "Continue", "The story continues", DirectX::XMINT2(0, 0), DirectX::XMFLOAT2(0, 0), DirectX::Colors::White, DirectX::Colors::Yellow, std::bind(&MenuScreen::MenuItem_Selected, this, std::placeholders::_1)),
@@ -88,9 +90,9 @@ bool Tameran::MenuScreen::Draw(float eTime)
 	return true;
 }
 
-void Tameran::MenuScreen::MenuItem_Selected(Hydro::IControl* sender)
+void Tameran::MenuScreen::MenuItem_Selected(IControl* sender)
 {
-	if (Hydro::LinkLabel* control = dynamic_cast<Hydro::LinkLabel*>(sender))
+	if (LinkLabel* control = dynamic_cast<LinkLabel*>(sender))
 	{
 		if (control == &continueGame)
 		{
@@ -100,6 +102,7 @@ void Tameran::MenuScreen::MenuItem_Selected(Hydro::IControl* sender)
 		else if (control == &startGame)
 		{
 			//Start the game fram a new beginning
+			gameRef->gameStateManager.ChangeState(&(gameRef->loadingScreen));
 		}
 		else if (control == &loadGame)
 		{
@@ -118,11 +121,11 @@ void Tameran::MenuScreen::MenuItem_Selected(Hydro::IControl* sender)
 	}
 }
 
-void Tameran::MenuScreen::MenuItem_Changed(const Hydro::IControl* sender)
+void Tameran::MenuScreen::MenuItem_Changed(const IControl* sender)
 {
 }
 
-void Tameran::MenuScreen::ArrangeMenuItems(Hydro::LinkLabel& label, int& yPos)
+void Tameran::MenuScreen::ArrangeMenuItems(LinkLabel& label, int& yPos)
 {
 	DirectX::XMFLOAT2 size = label.GetItemSize();
 	DirectX::XMINT2 pos(gameRef->GetWidth() / 2 - (int)(size.x / 2.0f), yPos);
