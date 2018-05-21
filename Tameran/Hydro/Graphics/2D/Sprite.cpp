@@ -106,14 +106,21 @@ bool Hydro::Sprite::Update(ID3D11DeviceContext* _deviceContext, Rectangle & _dst
 	left = (float)((screenWidth / 2) * -1) + (float)_dstRect.GetXPos();
 
 	//Calculate the screen coordinates of the right side of the bitmap.
-	right = left + (float)imageWidth;
+	right = left + (float)_dstRect.GetWidth();
+	if(_dstRect.GetWidth() <= 0)
+	{
+		right = left + (float)imageWidth;
+	}
 
 	//Calculate the screen coordinates of the top of the bitmap.
 	top = (float)(screenHeight / 2) - (float)_dstRect.GetYPos();
 
 	//Calculate the screen coordinates of the bottom of the bitmap.
-	bottom = top - (float)imageHeight;
-
+	bottom = top - (float)_dstRect.GetHeight();
+	if (_dstRect.GetHeight() <= 0)
+	{
+		bottom = top - (float)imageHeight;
+	}
 	//Create the vertex array
 	vertices = new VertexType[vertexCount];
 	if (!vertices)

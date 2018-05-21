@@ -4,7 +4,7 @@
 using namespace Hydro;
 
 Tameran::TitleScreen::TitleScreen(GameWindow* _game, Direct3D* _direct3D, ShaderManager* _manager, Camera* _camera, Input* _input)
-	: IGameState(_direct3D, _manager, _camera), gameRef(_game), input(_input), controlManager(), background(_direct3D, "Background", Hydro::Rectangle(0,0, gameRef->GetWidth(), gameRef->GetHeight()), "Data/Images/titlescreen32.tga", gameRef->GetWidth(), gameRef->GetHeight()),
+	: IGameState(_direct3D, _manager, _camera), gameRef(_game), input(_input), controlManager(), background(_direct3D, "Background", Hydro::Rectangle(0,0, gameRef->GetWidth(), gameRef->GetHeight()), "Data/Images/titlescreen.tga", gameRef->GetWidth(), gameRef->GetHeight()),
 	 font(direct3D->GetDevice(), direct3D->GetDeviceContext(), "Data/Font/font01", 18.0f, 3), 
  	label(direct3D, &font, gameRef->GetWidth(), gameRef->GetHeight(), 30, "Start_Label", "Press ENTER to start", DirectX::XMINT2(0,0), DirectX::XMFLOAT2(0,0),DirectX::Colors::White, DirectX::Colors::Yellow, std::bind(&TitleScreen::StartLabel_Selected, this, std::placeholders::_1))
 {

@@ -5,8 +5,8 @@
 using namespace Hydro;
 
 Tameran::LoadingScreen::LoadingScreen(GameWindow * _game, Hydro::Direct3D * _direct3D, Hydro::ShaderManager * _manager, Hydro::Camera * _camera, Hydro::Input * _input)
-	: IGameState(_direct3D, _manager, _camera), gameRef(_game), input(_input), controlManager(), background(_direct3D, "Background", Hydro::Rectangle(0, 0, gameRef->GetWidth(), gameRef->GetHeight()), "Data/Images/titlescreen32.tga", gameRef->GetWidth(), gameRef->GetHeight()),
-	bar(_direct3D, "ProgressBar", Hydro::Rectangle( 30,gameRef->GetHeight() - 70,10,50), "Data/Images/ProgressBar.tga", gameRef->GetWidth(), gameRef->GetHeight(), true)
+	: IGameState(_direct3D, _manager, _camera), gameRef(_game), input(_input), controlManager(), background(_direct3D, "Background", Hydro::Rectangle(0, 0, gameRef->GetWidth(), gameRef->GetHeight()), "Data/Images/titlescreen.tga", gameRef->GetWidth(), gameRef->GetHeight()),
+	bar(_direct3D, "ProgressBar", Hydro::Rectangle( 30,gameRef->GetHeight() - 70, 964, 50), "Data/Images/ProgressBar.tga", gameRef->GetWidth(), gameRef->GetHeight(), true)
 {
 	//Set the picture box as not selectable
 	background.SetTabStop(false);

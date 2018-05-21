@@ -4,7 +4,7 @@
 using namespace Hydro;
 
 Tameran::MenuScreen::MenuScreen(GameWindow* _game, Direct3D* _direct3D, ShaderManager* _manager, Camera* _camera, Input* _input)
-	:IGameState(_direct3D, _manager, _camera), gameRef(_game), input(_input), controlManager(), background(_direct3D, "Background", Hydro::Rectangle(0, 0, gameRef->GetWidth(), gameRef->GetHeight()), "Data/Images/titlescreen32.tga", gameRef->GetWidth(), gameRef->GetHeight()),
+	:IGameState(_direct3D, _manager, _camera), gameRef(_game), input(_input), controlManager(), background(_direct3D, "Background", Hydro::Rectangle(0, 0, gameRef->GetWidth(), gameRef->GetHeight()), "Data/Images/titlescreen.tga", gameRef->GetWidth(), gameRef->GetHeight()),
 	font(direct3D->GetDevice(), direct3D->GetDeviceContext(), "Data/Font/font01", 36.0f, 3),
 	continueGame(direct3D, &font, gameRef->GetWidth(), gameRef->GetHeight(), 30, "Continue", "The story continues", DirectX::XMINT2(0, 0), DirectX::XMFLOAT2(0, 0), DirectX::Colors::White, DirectX::Colors::Yellow, std::bind(&MenuScreen::MenuItem_Selected, this, std::placeholders::_1)),
 	startGame(direct3D, &font, gameRef->GetWidth(), gameRef->GetHeight(), 30, "NewGame", "The story begins", DirectX::XMINT2(0, 0), DirectX::XMFLOAT2(0, 0), DirectX::Colors::White, DirectX::Colors::Yellow, std::bind(&MenuScreen::MenuItem_Selected, this, std::placeholders::_1)),

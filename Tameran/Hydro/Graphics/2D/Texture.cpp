@@ -80,8 +80,8 @@ bool Hydro::Texture::Initialize(ID3D11Device * _device, ID3D11DeviceContext * _d
 	// Setup the description of the texture.
 	textureDesc.Height = height;
 	textureDesc.Width = width;
-	textureDesc.MipLevels = 0;
-	textureDesc.ArraySize = 1;
+	textureDesc.MipLevels = 3;
+	textureDesc.ArraySize = 4;
 	textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	textureDesc.SampleDesc.Count = 1;
 	textureDesc.SampleDesc.Quality = 0;

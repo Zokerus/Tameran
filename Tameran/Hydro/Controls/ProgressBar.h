@@ -16,21 +16,28 @@ namespace Hydro
 	class ProgressBar : public IControl
 	{
 	public:
-		ProgressBar(Direct3D* _direct3D, std::string _name, Hydro::Rectangle _rect, std::string _textureFileName, int _screenWidth, int _screenHeight, bool _border);
+		ProgressBar(Direct3D* _direct3D, std::string _name, Hydro::Rectangle _rect, std::string _textureFileName, int _screenWidth, int _screenHeight);
 
 		bool Update(float eTime);
 		bool Draw(float eTime, ID3D11DeviceContext *deviceContext, ShaderManager *shaderManager, DirectX::XMMATRIX worldMatrix, DirectX::XMMATRIX viewMatrix, DirectX::XMMATRIX orthoMatrix);
 
 		void SetPosition(ID3D11DeviceContext * deviceContext, DirectX::XMINT2 pos);
 
+		void IncreaseValue(short add);
+		void DecreaseValue(short dec);
+
+		void SetMaxValue(short _maxValue);
+
 	private:
-		bool border;
+		Rectangle rect;
 		Sprite borderBeg;
 		Sprite borderEnd;
-		//Sprite borderMid;
-		//Sprite fillingBeg;
+		Sprite borderMid;
+		Sprite fillingBeg;
 		//Sprite fillingEnd;
-		//Sprite fillingMid;
+		Sprite fillingMid;
+		short value = 0;
+		short maxValue = 100;
 	};
 }
 
