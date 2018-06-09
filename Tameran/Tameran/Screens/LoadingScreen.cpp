@@ -4,10 +4,11 @@
 
 using namespace Hydro;
 
-Tameran::LoadingScreen::LoadingScreen(GameWindow * _game, Hydro::Direct3D * _direct3D, Hydro::ShaderManager * _manager, Hydro::Camera * _camera, Hydro::Input * _input)
+Tameran::LoadingScreen::LoadingScreen(GameWindow * _game, Hydro::Direct3D *_direct3D, Hydro::ShaderManager *_manager, Hydro::Camera *_camera, Hydro::Input *_input)
 	: IGameState(_direct3D, _manager, _camera), gameRef(_game), input(_input), controlManager(), background(_direct3D, "Background", Hydro::Rectangle(0, 0, gameRef->GetWidth(), gameRef->GetHeight()), "Data/Images/titlescreen.tga", gameRef->GetWidth(), gameRef->GetHeight()),
-	bar(_direct3D, "ProgressBar", Hydro::Rectangle( 30,gameRef->GetHeight() - 70, 964, 50), "Data/Images/ProgressBar.tga", gameRef->GetWidth(), gameRef->GetHeight(), true)
+	bar(_direct3D, "ProgressBar", Hydro::Rectangle( 30,gameRef->GetHeight() - 50, 960, 20), "Data/Images/ProgressBar2.tga", gameRef->GetWidth(), gameRef->GetHeight())
 {
+	bar.SetMaxValue((short)waitingTime*20);
 	//Set the picture box as not selectable
 	background.SetTabStop(false);
 
@@ -27,12 +28,13 @@ Tameran::LoadingScreen::~LoadingScreen()
 
 bool Tameran::LoadingScreen::Update(float eTime)
 {
+	waitingTime -= eTime;
+	bar.SetValue(bar.GetMaxValue() - (short)(waitingTime*20));
 	if (!controlManager.Update(eTime, input))
 	{
 		return false;
 	}
 
-	waitingTime -= eTime;
 	if (waitingTime < 0.0f)
 	{
 		gameRef->gameStateManager.ChangeState(&(gameRef->gameScreen));

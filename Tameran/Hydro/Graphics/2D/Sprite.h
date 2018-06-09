@@ -44,7 +44,7 @@ namespace Hydro
 		int GetImageHeight() const;
 
 	private:
-		void InitializeParameters(int screenWidth, int screenHeight, int imageWidth, int imageHeight);
+		//void InitializeParameters(int screenWidth, int screenHeight, int imageWidth, int imageHeight);
 		bool InitializeBuffers(ID3D11Device* device);
 		void ShutdownBuffers();
 
@@ -60,7 +60,7 @@ namespace Hydro
 		bool ownTexture;
 		int screenWidth, screenHeight;
 		int imageWidth, imageHeight;
-		int xPrevPosition, yPrevPosition;
+		Rectangle prevRect;
 	};
 }
 #endif // !SPRITE

@@ -21,21 +21,24 @@ namespace Hydro
 		bool Update(float eTime);
 		bool Draw(float eTime, ID3D11DeviceContext *deviceContext, ShaderManager *shaderManager, DirectX::XMMATRIX worldMatrix, DirectX::XMMATRIX viewMatrix, DirectX::XMMATRIX orthoMatrix);
 
-		void SetPosition(ID3D11DeviceContext * deviceContext, DirectX::XMINT2 pos);
+		void SetPosition(ID3D11DeviceContext * deviceContext, DirectX::XMINT2 _pos);
 
+		void SetValue(short _value);
 		void IncreaseValue(short add);
 		void DecreaseValue(short dec);
 
 		void SetMaxValue(short _maxValue);
+		short GetMaxValue() const;
 
 	private:
 		Rectangle rect;
-		Sprite borderBeg;
-		Sprite borderEnd;
-		Sprite borderMid;
-		Sprite fillingBeg;
+		Rectangle inner;
+		Sprite border;
+		//Sprite borderEnd;
+		//Sprite borderMid;
+		Sprite filling;
 		//Sprite fillingEnd;
-		Sprite fillingMid;
+		//Sprite fillingMid;
 		short value = 0;
 		short maxValue = 100;
 	};

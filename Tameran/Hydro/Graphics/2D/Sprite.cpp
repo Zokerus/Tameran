@@ -3,7 +3,7 @@
 
 Hydro::Sprite::Sprite(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int ScreenWidth, int ScreenHeight, std::string TextureFilename, int ImageWidth, int ImageHeight)
 	: pVertexBuffer(nullptr), pIndexBuffer(nullptr), vertexCount(0), indexCount(0), pTexture(nullptr), ownTexture(true), screenWidth(ScreenWidth), screenHeight(ScreenHeight),
-	imageWidth(ImageWidth), imageHeight(ImageHeight), xPrevPosition(-1), yPrevPosition(-1)
+	imageWidth(ImageWidth), imageHeight(ImageHeight), prevRect(-1, -1, 0, 0)
 {
 	bool result = true;
 
@@ -24,7 +24,7 @@ Hydro::Sprite::Sprite(ID3D11Device* device, ID3D11DeviceContext* deviceContext, 
 
 Hydro::Sprite::Sprite(ID3D11Device* _device, ID3D11DeviceContext* _deviceContext, int _screenWidth, int _screenHeight, std::string _textureFilename, Rectangle& _srcRect)
 	: pVertexBuffer(nullptr), pIndexBuffer(nullptr), vertexCount(0), indexCount(0), pTexture(nullptr), ownTexture(true), screenWidth(_screenWidth), screenHeight(_screenHeight),
-	imageWidth(_srcRect.GetWidth()), imageHeight(_srcRect.GetHeight()), xPrevPosition(-1), yPrevPosition(-1)
+	imageWidth(_srcRect.GetWidth()), imageHeight(_srcRect.GetHeight()), prevRect(-1, -1, 0, 0)
 {
 	bool result = true;
 
@@ -44,7 +44,7 @@ Hydro::Sprite::Sprite(ID3D11Device* _device, ID3D11DeviceContext* _deviceContext
 }
 
 Hydro::Sprite::Sprite(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int ScreenWidth, int ScreenHeight, std::string TextureFilename)
-	: Sprite(device, deviceContext, ScreenWidth, ScreenHeight, TextureFilename, 0, 0)
+	: Sprite(device, deviceContext, ScreenWidth, ScreenHeight, TextureFilename, -1, -1)
 {
 	//Get the actual width and height of the texture
 	imageWidth = pTexture->GetTextureWidth();
@@ -57,7 +57,7 @@ Hydro::Sprite::Sprite(ID3D11Device* device, ID3D11DeviceContext* deviceContext, 
 
 Hydro::Sprite::Sprite(ID3D11Device* device, int ScreenWidth, int ScreenHeight, Texture* texture, int ImageWidth, int ImageHeight)
 	: pVertexBuffer(nullptr), pIndexBuffer(nullptr), vertexCount(0), indexCount(0), pTexture(texture), ownTexture(false), screenWidth(ScreenWidth), screenHeight(ScreenHeight),
-	imageWidth(ImageWidth), imageHeight(ImageHeight), xPrevPosition(-1), yPrevPosition(-1)
+	imageWidth(ImageWidth), imageHeight(ImageHeight), prevRect(-1, -1, 0, 0)
 {
 	//Initialize the vertex and the index buffers
 	if(!InitializeBuffers(device))
@@ -81,7 +81,7 @@ Hydro::Sprite::~Sprite()
 
 bool Hydro::Sprite::Update(ID3D11DeviceContext* _deviceContext, DirectX::XMINT2& _pos)
 {
-	return Update(_deviceContext, Rectangle(_pos.x, _pos.y, 0, 0));
+	return Update(_deviceContext, Rectangle(_pos.x, _pos.y, -1, -1));
 }
 
 bool Hydro::Sprite::Update(ID3D11DeviceContext* _deviceContext, Rectangle & _dstRect)
@@ -93,21 +93,20 @@ bool Hydro::Sprite::Update(ID3D11DeviceContext* _deviceContext, Rectangle & _dst
 	HRESULT result;
 
 	//Check the position of the sprite, if no change has occured, no update is needed, bc the vertex buffer has the right parameters
-	if (xPrevPosition == _dstRect.GetXPos() && yPrevPosition == _dstRect.GetYPos())
+	if (prevRect.GetXPos() == _dstRect.GetXPos() && prevRect.GetYPos() == _dstRect.GetYPos() && prevRect.GetWidth() == _dstRect.GetWidth() && prevRect.GetHeight() == _dstRect.GetHeight())
 	{
 		return true;
 	}
 
 	//update the prevposition to the new position
-	xPrevPosition = _dstRect.GetXPos();
-	yPrevPosition = _dstRect.GetYPos();
+	prevRect.SetParameters(_dstRect.GetXPos(), _dstRect.GetYPos(), _dstRect.GetWidth(), _dstRect.GetHeight());
 
 	//Calculate the screenCoords of left side of the sprite
 	left = (float)((screenWidth / 2) * -1) + (float)_dstRect.GetXPos();
 
 	//Calculate the screen coordinates of the right side of the bitmap.
 	right = left + (float)_dstRect.GetWidth();
-	if(_dstRect.GetWidth() <= 0)
+	if(_dstRect.GetWidth() < 0)
 	{
 		right = left + (float)imageWidth;
 	}
@@ -117,7 +116,7 @@ bool Hydro::Sprite::Update(ID3D11DeviceContext* _deviceContext, Rectangle & _dst
 
 	//Calculate the screen coordinates of the bottom of the bitmap.
 	bottom = top - (float)_dstRect.GetHeight();
-	if (_dstRect.GetHeight() <= 0)
+	if (_dstRect.GetHeight() < 0)
 	{
 		bottom = top - (float)imageHeight;
 	}
@@ -214,20 +213,19 @@ int Hydro::Sprite::GetImageHeight() const
 	return imageHeight;
 }
 
-void Hydro::Sprite::InitializeParameters(int screenWidth, int screenHeight, int imageWidth, int imageHeight)
-{
-	//Store the screen size
-	screenWidth = screenWidth;
-	screenHeight = screenHeight;
-
-	//Store the size of the image in pixels
-	imageWidth = imageWidth;
-	imageHeight = imageHeight;
-
-	//Initialize the previous rendering position
-	xPrevPosition = -1;
-	yPrevPosition = -1;
-}
+//void Hydro::Sprite::InitializeParameters(int _screenWidth, int _screenHeight, int _imageWidth, int _imageHeight)
+//{
+//	//Store the screen size
+//	screenWidth = _screenWidth;
+//	screenHeight = _screenHeight;
+//
+//	//Store the size of the image in pixels
+//	imageWidth = _imageWidth;
+//	imageHeight = _imageHeight;
+//
+//	//Initialize the previous rendering position
+//	prevRect.SetParameters(-1, -1, 0, 0);
+//}
 
 bool Hydro::Sprite::InitializeBuffers(ID3D11Device* device)
 {
