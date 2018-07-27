@@ -6,7 +6,8 @@
 #include <GameStateManager.h>
 #include <Input/Input.h>
 #include <Controls/ControlManager.h>
-#include <Controls/PictureBox.h>
+
+#include <Graphics/Models/Model.h>
 
 //////////////////////////////////////////////////////////////////////////
 //Class: GameScreen
@@ -28,6 +29,8 @@ namespace Tameran
 		Tameran::GameWindow* gameRef;
 		Hydro::Input* input;
 		Hydro::ControlManager controlManager;
+
+		Hydro::Model test;
 	};
 }
 

@@ -163,6 +163,7 @@
     <ClInclude Include="Graphics\2D\Texture.h" />
     <ClInclude Include="Graphics\Camera.h" />
     <ClInclude Include="Graphics\DXErr.h" />
+    <ClInclude Include="Graphics\Models\Model.h" />
     <ClInclude Include="Graphics\Shader\FontShader.h" />
     <ClInclude Include="Graphics\Shader\IShader.h" />
     <ClInclude Include="Graphics\Shader\ShaderManager.h" />
@@ -173,6 +174,7 @@
     <ClInclude Include="IGameWindow.h" />
     <ClInclude Include="Graphics\Direct3D.h" />
     <ClInclude Include="Input\Input.h" />
+    <ClInclude Include="Util\BinaryFile.h" />
     <ClInclude Include="Util\Timer.h" />
   </ItemGroup>
   <ItemGroup>
@@ -189,6 +191,7 @@
     <ClCompile Include="Graphics\Camera.cpp" />
     <ClCompile Include="Graphics\Direct3D.cpp" />
     <ClCompile Include="Graphics\DXErr.cpp" />
+    <ClCompile Include="Graphics\Models\Model.cpp" />
     <ClCompile Include="Graphics\Shader\FontShader.cpp" />
     <ClCompile Include="Graphics\Shader\IShader.cpp" />
     <ClCompile Include="Graphics\Shader\ShaderManager.cpp" />

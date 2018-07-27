@@ -84,6 +84,12 @@
     <ClInclude Include="Controls\ProgressBar.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\Models\Model.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\BinaryFile.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Util\Timer.cpp">
@@ -153,6 +159,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Controls\ProgressBar.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Models\Model.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

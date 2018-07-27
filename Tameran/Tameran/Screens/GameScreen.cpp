@@ -1,7 +1,7 @@
 #include "GameScreen.h"
 
 Tameran::GameScreen::GameScreen(GameWindow * _game, Hydro::Direct3D * _direct3D, Hydro::ShaderManager * _manager, Hydro::Camera * _camera, Hydro::Input * _input)
-	: IGameState(_direct3D, _manager, _camera), gameRef(_game), input(_input), controlManager()
+	: IGameState(_direct3D, _manager, _camera), gameRef(_game), input(_input), controlManager(), test(_direct3D, "Data/Models/cube.mdl", DirectX::Colors::Red)
 {
 }
 
