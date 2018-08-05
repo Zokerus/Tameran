@@ -31,7 +31,7 @@ namespace Tameran
 		Hydro::ControlManager controlManager;
 		Hydro::PictureBox background;
 		Hydro::ProgressBar bar;
-		float waitingTime = 5.0f;
+		float waitingTime = 1.0f;
 	};
 }
 #endif // !LOADINGSCREEN

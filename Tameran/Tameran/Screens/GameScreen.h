@@ -8,6 +8,7 @@
 #include <Controls/ControlManager.h>
 
 #include <Graphics/Models/Model.h>
+#include <Graphics/Models/Terrain.h>
 
 //////////////////////////////////////////////////////////////////////////
 //Class: GameScreen
@@ -31,6 +32,7 @@ namespace Tameran
 		Hydro::ControlManager controlManager;
 
 		Hydro::Model test;
+		Hydro::Terrain terrain;
 	};
 }
 

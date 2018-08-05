@@ -1,8 +1,9 @@
 #include "GameScreen.h"
 
 Tameran::GameScreen::GameScreen(GameWindow * _game, Hydro::Direct3D * _direct3D, Hydro::ShaderManager * _manager, Hydro::Camera * _camera, Hydro::Input * _input)
-	: IGameState(_direct3D, _manager, _camera), gameRef(_game), input(_input), controlManager(), test(_direct3D, "Data/Models/cube.mdl", DirectX::Colors::Red)
+	: IGameState(_direct3D, _manager, _camera), gameRef(_game), input(_input), controlManager(), test(_direct3D, "Data/Models/cube.mdl"), terrain(_direct3D)
 {
+	
 }
 
 Tameran::GameScreen::~GameScreen()
@@ -20,6 +21,32 @@ void Tameran::GameScreen::LoadContent()
 
 bool Tameran::GameScreen::Update(float eTime)
 {
+	if (input->IsKeyDown(DIK_A))
+	{
+		DirectX::XMFLOAT3 pos = camera->GetPosition();
+		pos.y = pos.y + 10.0f * eTime;
+		camera->SetPosition(pos);
+	}
+	else if(input->IsKeyDown(DIK_Z))
+	{
+		DirectX::XMFLOAT3 pos = camera->GetPosition();
+		pos.y = pos.y - 10.0f * eTime;
+		camera->SetPosition(pos);
+	}
+
+	if (input->IsKeyDown(DIK_RIGHT))
+	{
+		DirectX::XMFLOAT3 rot = camera->GetRotation();
+		rot.y = rot.y + 1.0f * eTime;
+		camera->SetRotation(rot);
+	}
+	else if (input->IsKeyDown(DIK_LEFT))
+	{
+		DirectX::XMFLOAT3 rot = camera->GetRotation();
+		rot.y = rot.y - 1.0f * eTime;
+		camera->SetRotation(rot);
+	}
+
 	if (!controlManager.Update(eTime, input))
 	{
 		return false;
@@ -41,6 +68,32 @@ bool Tameran::GameScreen::Draw(float eTime)
 	direct3D->GetProjectionMatrix(projection);
 	camera->GetViewMatrix(view);
 	camera->GetBaseViewMatrix(baseView);
+
+	direct3D->EnableWireframe();
+
+	result = terrain.Draw(direct3D->GetDeviceContext(), eTime);
+	if (!result)
+	{
+		return false;
+	}
+	result = shaderManager->RenderColorShader(direct3D->GetDeviceContext(), terrain.GetIndexCount(), world, view, projection);
+	if(!result)
+	{
+		return false;
+	}
+
+	direct3D->DisableWireframe();
+	result = test.Draw(direct3D->GetDeviceContext(), eTime);
+	if (!result)
+	{
+		return false;
+	}
+	result = shaderManager->RenderColorShader(direct3D->GetDeviceContext(), test.GetIndexCount(), world, view, projection);
+	if (!result)
+	{
+		return false;
+	}
+
 
 	//Turn off the Z buffer to begin 2D drawing
 	direct3D->TurnZBufferOff();

@@ -22,7 +22,7 @@ Tameran::GameWindow::GameWindow(HINSTANCE hInst, char * pArgs, const std::string
 	menuScreen(this, &direct3D, &shaderManager, &camera, &input), loadingScreen(this, &direct3D, &shaderManager, &camera, &input), gameScreen(this, &direct3D, &shaderManager, &camera, &input)
 {
 	//Set the initial position of the camera and build the matrices needed for rendering
-	camera.SetPosition(DirectX::XMFLOAT3(0.0f, 0.0f, -10.0f));
+	camera.SetPosition(DirectX::XMFLOAT3(0.0f, 1.0f, -10.0f));
 	camera.Render(true);
 
 	//add the title screen to the gamestate manager
