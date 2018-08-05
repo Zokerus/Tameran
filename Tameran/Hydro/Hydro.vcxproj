@@ -164,6 +164,8 @@
     <ClInclude Include="Graphics\Camera.h" />
     <ClInclude Include="Graphics\DXErr.h" />
     <ClInclude Include="Graphics\Models\Model.h" />
+    <ClInclude Include="Graphics\Models\Terrain.h" />
+    <ClInclude Include="Graphics\Shader\ColorShader.h" />
     <ClInclude Include="Graphics\Shader\FontShader.h" />
     <ClInclude Include="Graphics\Shader\IShader.h" />
     <ClInclude Include="Graphics\Shader\ShaderManager.h" />
@@ -192,6 +194,8 @@
     <ClCompile Include="Graphics\Direct3D.cpp" />
     <ClCompile Include="Graphics\DXErr.cpp" />
     <ClCompile Include="Graphics\Models\Model.cpp" />
+    <ClCompile Include="Graphics\Models\Terrain.cpp" />
+    <ClCompile Include="Graphics\Shader\ColorShader.cpp" />
     <ClCompile Include="Graphics\Shader\FontShader.cpp" />
     <ClCompile Include="Graphics\Shader\IShader.cpp" />
     <ClCompile Include="Graphics\Shader\ShaderManager.cpp" />
@@ -204,6 +208,18 @@
     <ClCompile Include="Util\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Data\Shader\ColorShader\PixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Data\Shader\ColorShader\VertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="Data\Shader\FontShader\PixelShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
@@ -230,6 +246,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Data\Shader\ColorShader\Header.hlsli" />
     <None Include="Data\Shader\FontShader\Header.hlsli" />
     <None Include="Data\Shader\TextureShader\Header.hlsli" />
   </ItemGroup>

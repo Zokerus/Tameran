@@ -90,6 +90,12 @@
     <ClInclude Include="Util\BinaryFile.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\Shader\ColorShader.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Models\Terrain.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Util\Timer.cpp">
@@ -164,15 +170,24 @@
     <ClCompile Include="Graphics\Models\Model.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\Shader\ColorShader.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Models\Terrain.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Data\Shader\TextureShader\VertexShader.hlsl" />
     <FxCompile Include="Data\Shader\TextureShader\PixelShader.hlsl" />
     <FxCompile Include="Data\Shader\FontShader\VertexShader.hlsl" />
     <FxCompile Include="Data\Shader\FontShader\PixelShader.hlsl" />
+    <FxCompile Include="Data\Shader\ColorShader\PixelShader.hlsl" />
+    <FxCompile Include="Data\Shader\ColorShader\VertexShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\Shader\TextureShader\Header.hlsli" />
     <None Include="Data\Shader\FontShader\Header.hlsli" />
+    <None Include="Data\Shader\ColorShader\Header.hlsli" />
   </ItemGroup>
 </Project>

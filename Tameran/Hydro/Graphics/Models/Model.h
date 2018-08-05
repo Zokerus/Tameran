@@ -30,7 +30,7 @@ namespace Hydro
 		};
 
 	public:
-		Model(Direct3D *_direct3D, const std::string modelfile, DirectX::XMVECTORF32 color);
+		Model(Direct3D *_direct3D, const std::string modelfile);
 		~Model();
 
 		bool Update(float eTime);
@@ -48,9 +48,9 @@ namespace Hydro
 	private:
 		ID3D11Buffer *pVertexBuffer;
 		ID3D11Buffer *pIndexBuffer;
-		int vertexCount, indexCount;
+		unsigned int vertexCount, indexCount;
 		ModelType *pModel;
-		unsigned long *pIndices;
+		unsigned int *pIndices;
 	};
 }
 #endif // !MODEL

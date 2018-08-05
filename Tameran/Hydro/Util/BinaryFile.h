@@ -16,9 +16,17 @@ namespace Hydro
 		enum Option{Load, Save};
 	public:
 		BinaryFile(const std::string path, Option opt)
-			: option(opt), file()
+			: file(), option(opt), length(0)
 		{
-			file.open(path);
+			if (option == Option::Load)
+			{
+				file.open(path, std::ios::in | std::ios::binary);
+			}
+			else
+			{
+				file.open(path, std::ios::out | std::ios::binary);
+			}
+			
 			if (!file)
 			{
 				throw std::exception(("Failed open filestream on: " + path).c_str());
@@ -28,42 +36,45 @@ namespace Hydro
 			{
 				throw std::exception(("Failed open filestream on: " + path).c_str());
 			}
+
+			// get length of file:
+			file.seekg(0, file.end);
+			length = (unsigned int)file.tellg();
+			file.seekg(0, file.beg);
 		}
 		~BinaryFile()
 		{}
 
 		template<typename T>
-		bool LoadData(T *data)
+		void LoadData(T *data)
 		{
 			size_t test = sizeof(T);
-			file.read(reinterpret_cast<char*>(&data), sizeof(T));
+			file.read(reinterpret_cast<char*>(data), sizeof(T));
 			if (!file.good())
 			{
-				return false;
+				throw std::exception();
 			}
-			return true;
 		}
 
 		template<typename T>
-		bool LoadData(T &data, int length) 
+		void LoadData(T *data, int length) 
 		{
 			file.read(reinterpret_cast<char*>(data), length);
 			if (!file.good())
 			{
-				return false;
+				throw std::exception();
 			}
-			return true;
 		}
 
 
-		bool GetString(std::string *text)
+		void GetString(std::string *text)
 		{
 			unsigned short length;
 			char* buffer = nullptr;
 			file.read(reinterpret_cast<char*>(&length), sizeof(length));
 			if (length == 0 || !file.good())
 			{
-				return false;
+				throw std::exception();
 			}
 			buffer = new char[length];
 			file.read(buffer, length);
@@ -71,7 +82,7 @@ namespace Hydro
 			{
 				delete[] buffer;
 				buffer = nullptr;
-				return false;
+				throw std::exception();
 			}
 			*text = "";
 			text->append(buffer, length);
@@ -79,13 +90,12 @@ namespace Hydro
 			{
 				delete[] buffer;
 				buffer = nullptr;
-				return false;
+				throw std::exception();
 			}
 			delete[] buffer;
 			buffer = nullptr;
-			return true;
 		}
-		bool GetString(std::string *text, int length)
+		void GetString(std::string *text, int length)
 		{
 			char* buffer = new char[length];
 			file.read(buffer, length);
@@ -93,7 +103,7 @@ namespace Hydro
 			{
 				delete[] buffer;
 				buffer = nullptr;
-				return false;
+				throw std::exception();
 			}
 			*text = "";
 			text->append(buffer, length);
@@ -101,19 +111,39 @@ namespace Hydro
 			{
 				delete[] buffer;
 				buffer = nullptr;
-				return false;
+				throw std::exception();
 			}
 			delete[] buffer;
 			buffer = nullptr;
-			return true;
 		}
 
 		template<typename T>
 		void SaveData(T &data)
 		{}
+
+		bool EndOfFile()
+		{
+			return file.eof();
+		}
+
+		bool Error()
+		{
+			return file.eof() | file.fail() | file.bad();
+		}
+
+		unsigned int FileLength()
+		{
+			return length;
+		}
+
+		int TillEnd()
+		{
+			return (int)(length - (unsigned int)file.tellg());
+		}
 	private:
 		std::fstream file;
 		Option option;
+		unsigned int length;
 	};
 }
 #endif // !BINARYFILE
